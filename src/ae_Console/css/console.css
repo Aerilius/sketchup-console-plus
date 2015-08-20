@@ -1,0 +1,454 @@
+﻿/*          General Styles          */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    overflow: hidden;
+}
+
+body {
+    position: fixed; /* Prevents scrolling of content in IE. */
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: Window;
+    color: WindowText;
+    font: message-box; /* use system font */
+    font-size: 80% !important; /* This overrides the font-size contained in the system font if it does not follow dpi settings. */
+    cursor: default;
+}
+
+input,
+select,
+label {
+    /*min-height: 1.2em;*/
+    vertical-align: middle;
+    /*padding: 0.25em;*/
+    font: message-box; /* use system font */
+    font-size: 100% !important; /* This overrides the font-size contained in the system font if it does not follow dpi settings. */
+    font-weight: normal !important;/* override bootstrap forms.less */
+    display: block !important; /* override bootstrap forms.less */
+}
+
+input[type=text],
+input[type=number] {
+    cursor: auto;
+}
+
+input[type=text][disabled],
+input[type=number][disabled] {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+input[type=text].num,
+input[type=number] {
+    text-align: right;
+    width: 4em;
+}
+
+button {
+    font: message-box; /* use system font */
+    font-size: 100% !important; /* This overrides the font-size contained in the system font if it does not follow dpi settings. */
+    color: ButtonText;
+    vertical-align: middle;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+}
+
+code {
+    font-size: inherit !important; /* override bootstrap code.less */
+}
+
+.hide {
+    display: none !important;
+}
+
+ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    display: block;
+    margin: 0;
+    padding: 0;
+    clear: both;
+}
+
+hr {
+    margin: 0 !important; /* override bootstrap.css */
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.selectable {
+    user-select: initial;
+    -webkit-user-select: initial;
+    -moz-user-select: initial;
+    user-select: element;
+    -webkit-user-select: element;
+    -moz-user-select: element;
+}
+
+.unselectable {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+/*          Individual Styles          */
+
+/* Toolbar */
+
+.toolbar {
+    background-color: Menu;
+    color: MenuText;
+    text-align: center;
+    height: 3em;
+    padding: 0 0.25em;
+}
+
+.toolbar,
+.toolbar > .left,
+.toolbar > .right {
+    line-height: 3em;
+}
+
+.toolbar > *,
+.toolbar > .left > *,
+.toolbar > .right > * {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1em;
+}
+
+.toolbar > .left {
+    float: left;
+    height: 100%;
+}
+
+.toolbar > .right {
+    float: right;
+    height: 100%;
+}
+
+/* Toolbar buttons */
+
+.toolbar button img {
+    vertical-align: middle;
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0.25em;
+}
+
+.toolbar .caption {
+    font: Menu;
+    font-weight: bold !important;
+    font-size: inherit;
+}
+
+/* TODO: remove jQueryUI rules if not needed */
+.ui-button-text-only .ui-button-text {
+    padding: 0;
+}
+
+.ui-button-text-icon-secondary .ui-button-text,
+.ui-button-text-icons .ui-button-text {
+    padding: 0;
+    margin-right: 16px; /* width of secondary-icon */
+}
+
+.ui-button-text-icon-secondary .ui-button-icon-secondary,
+.ui-button-text-icons .ui-button-icon-secondary,
+.ui-button-icons-only .ui-button-icon-secondary {
+    right: 0.25em;
+}
+
+/* Menu */
+.dispatch {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom !important;
+    overflow: visible;
+}
+
+.menu, .dropdown-menu {
+    width: 15em;
+    /*position: absolute;*/
+    /*z-index: 1000;*/
+    /*text-align: left;*/
+    background-color: Menu !important;
+    color: MenuText !important;
+    font: menu !important;
+    font-size: 100% !important;
+    border: 1px solid ButtonShadow;
+    box-shadow: 0 0.25em 1em 0 rgba(0, 0, 0, 0.25);
+}
+
+.menu.right {
+    right: 0;
+}
+
+.menu li {
+    padding: 0.5em 0.5em 0.25em 1em !important; /* overrides jquery-ui.css */
+}
+
+.menu li:hover {
+    background-color: Highlight;
+    color: HighlightText;
+}
+.menu li.disabled:hover,
+.menu li.dropdown-header:hover {
+    background-color: transparent;
+    color: inherit;
+}
+
+.menu label input,
+.menu label select {
+    float: right;
+    max-width: 100%;
+}
+.menu label:after { /* clear fix */
+    clear: both;
+    content: "";
+    display: block;
+}
+
+.popover {
+    font: inherit;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-style: inherit !important;
+    font-weight: inherit !important;
+    max-width: 20em !important;
+}
+
+/* Overrides for jquery-ui.css */
+
+.ui-widget {
+    font: inherit; /* jQuery, how do you dare to specify and hardcode something that is neither relevant to you nor do you care about? */
+}
+
+.ui-menu .ui-state-focus {
+    background: highlight url("../external/jquery-ui/images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
+}
+
+.ui-menu .ui-state-active {
+    background: highlight url("../external/jquery-ui/images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+    background: white url("../external/jquery-ui/images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
+}
+
+.ui-widget-header .ui-state-highlight {
+    background: white url("../external/jquery-ui/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
+}
+
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error {
+    background: white url("../external/jquery-ui/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x;
+}
+
+.ui-widget-header {
+    background: white url("../external/jquery-ui/images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x;
+}
+
+#console,
+#editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#console.hidden {
+    left: -100%;
+}
+#editor.hidden {
+    left: 100%;
+}
+
+#consoleContentWrapper, #editorContentWrapper {
+    position: absolute;
+    top: 3em;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    z-index: -1;
+    /*border: 0;*/
+}
+
+#consoleContent {
+    /* Scrollable */
+    position: absolute;
+    width: 100%;
+    border: 0;
+    top: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#consoleOutputFakeGutter {
+    /*width: 3em; /* 1.75em */
+    height: 100%;
+    z-index: 0;
+}
+
+#consoleInput {
+    position: relative;
+    height: 100%;
+    min-height: 5em;
+    bottom: 0;
+}
+
+#editorInput {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+}
+
+/*          OUTPUT          */
+
+#consoleOutput {
+    /*overflow: hidden; TODO: enable again when needed */
+    /* overflow-x: auto; */
+    /*margin-top: -1px;*/
+    /* Hide the first visible child's top border to avoid a double border. */
+    /*font-size: inherit;*/
+    font-size: inherit!important; /* override hard-coded font-size in .ace_editor */
+}
+
+#consoleOutput.wrap_lines {
+    white-space: pre-wrap;
+    word-wrap: break-word; /* needs layout in Internet Explorer */
+    zoom: 1; /* makes layout */
+}
+
+#consoleOutput .message {
+    position: relative;
+    display: block;
+    padding-left: 3em;
+    min-height: 1em;
+    overflow: visible;
+}
+
+#consoleOutput .message.input,
+.message.result + .message,
+#consoleInput,
+#editorInput {
+    border-top: 1px #ddd solid;
+    border-top: 1px rgba(128, 128, 128, 0.2) solid;
+}
+
+#consoleOutput .message .content {
+    display: block;
+    font-family: inherit;
+    position: relative;
+    padding-left: 4px; /* from ace_layer ace_text-layer */
+}
+
+#consoleOutput .message .gutter {
+    /*width: 3em;  /* 1.75 em */
+    background-position: 50% -2px;
+    background-repeat: no-repeat;
+}
+
+#consoleOutput .message.input .gutter {
+    background-image: url("../images/icon_input.png");
+}
+
+#consoleOutput .message.result .gutter {
+    background-image: url("../images/icon_result.png");
+}
+
+#consoleOutput .message.error .gutter {
+    background-image: url("../images/icon_error.png");
+}
+
+#consoleOutput .message.warn .gutter {
+    background-image: url("../images/icon_warn.png");
+}
+
+#consoleOutput .message.stdout .gutter {
+    background-image: url("../images/icon_puts.png");
+}
+
+#consoleOutput .message.puts .gutter {
+    background-image: url("../images/icon_puts.png");
+}
+
+#consoleOutput .message.print .gutter {
+    background-image: url("../images/icon_puts.png");
+}
+
+#consoleOutput .message .counter {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    min-width: 1em;
+    background: red;
+    color: white;
+    border-radius: 0.5em;
+    text-align: center;
+}
+
+#consoleOutput .message .time {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: GrayText;
+    opacity: 0.5;
+}
+
+/*          ACE Tweaks          */
+
+/* Hide line number for single lines. */
+.ace_gutter-cell:first-child:last-child {
+    visibility: hidden;
+}
+
+/* Reduce gutter width. */
+.ace_gutter-layer,
+#consoleOutputFakeGutter,
+#consoleOutput .message .gutter {
+    width: 3em !important; /* 1.75em */
+}
+
+#consoleInput .ace_gutter {
+    min-height: inherit; /* #consoleInput{ height } */
+}
+
+.ace_gutter-cell {
+    padding-left: 2px !important;
+}
+
+/* Hide scrollbar. */
+/*.ace_scrollbar {
+    display: none;
+}*/
+
+/* Additional highlighter class for ace/mode/ruby_sketchup */
+.ace_sketchup {
+    color: rgb(77, 82, 89) !important;
+}
+
+.ace_dark .ace_sketchup {
+    color: rgb(178, 173, 166) !important;
+}

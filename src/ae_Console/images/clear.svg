@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   id="svg3140"
+   height="64"
+   width="64">
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3142" />
+  <g
+     transform="translate(0,-988.36218)"
+     id="layer1">
+    <rect
+       y="962.36218"
+       x="0"
+       height="90"
+       width="90"
+       id="rect4198"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:none;stroke-width:7.5;marker:none;enable-background:accumulate" />
+    <g
+       transform="matrix(0.71111108,0,0,0.71111079,-42.666665,693.70481)"
+       id="g4978">
+      <rect
+         transform="translate(60,414.36216)"
+         y="1.7382814e-05"
+         x="0"
+         height="90"
+         width="90"
+         id="rect3032"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:none;stroke-width:6;marker:none;enable-background:accumulate" />
+      <rect
+         transform="scale(1,-1)"
+         y="-504.36215"
+         x="60.000004"
+         height="90.000015"
+         width="90"
+         id="rect3844"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:0.05;fill:none;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+      <ellipse
+         ry="37.265644"
+         rx="37.265625"
+         cy="459.36212"
+         cx="105"
+         id="path2995-0"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#808080;stroke-width:9.84375286;stroke-miterlimit:4;stroke-dasharray:none;marker:none;enable-background:accumulate" />
+      <path
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#808080;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;enable-background:accumulate"
+         d="m 116.68288,477.40901 -29.729731,-29.72974 6.36397,-6.36396 29.729731,29.72973 z"
+         id="path825" />
+      <path
+         id="path4002"
+         d="m 86.953149,471.04504 29.729741,-29.72973 6.36396,6.36397 -29.729731,29.72973 z"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#808080;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    </g>
+  </g>
+</svg>

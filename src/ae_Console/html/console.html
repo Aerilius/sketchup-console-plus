@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+    <title>Ruby Console+</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="MSThemeCompatible" content="Yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link href="../css/Console.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../js/bridge.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../external/ace/ace.js" data-ace-base="../js/ace" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/Console.js"></script>
+    <script type="text/javascript" src="../js/extensions.js"></script>
+</head>
+<body scroll="no">
+
+<div id="toolbar">
+
+    <span class="left">
+
+        <button id="button_clear" class="button icon" title="Clear the console output">
+            <img src="../images/icon_clear.png" alt="Clear"/>
+        </button>
+
+        <span class="button-menu">
+            <button id="button_reload" class="button icon" style="position: relative; z-index: 1" title="Select scripts to reload automatically">
+                <img src="../images/icon_reload.png" alt="Reload"/>
+            </button>
+            <div class="menu-wrapper" style="margin-left: -3em">
+                <ul class="menu" name="menu_reload">
+                </ul>
+            </div>
+        </span>
+
+    </span>
+
+    <input id="button_binding" type="text" class="button" style="min-width: 4em; width: 4em; min-height: 2em; height: 2em; line-height: 2em" value="global" title="Context in which the commands will be executed, it can be a Class or Module, a variable or 'global'."/>
+
+    <span class="right">
+
+        <!--<span class="button-menu">
+          <button id="button_snippets" class="button" title="Insert code snippets">Snippets</button>
+          <div class="menu-wrapper">
+            <ul class="menu">
+            </ul>
+          </div>
+        </span>-->
+
+        <button id="button_select" class="button icon" title="Get a reference to an entity in the model">
+            <img src="../images/icon_select.png" alt="Select"/>
+        </button>
+
+        <button id="button_help" class="button icon" title="Get documentation for the focused word.">
+            <img src="../images/icon_help.png" alt="Select"/>
+        </button>
+
+        <span class="button-menu">
+            <button id="button_preferences" class="button icon" title="Preferences">
+                <img src="../images/icon_preferences.png" alt="Preferences"/>
+            </button>
+            <div class="menu-wrapper">
+                <ul class="menu" name="preferences">
+                    <li>
+                        <label>
+                            Verbosity
+                            <select name="verbosity">
+                                <option value="false">false</option>
+                                <option value="null">nil</option>
+                                <option value="true">true</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="wrap_lines" checked/>
+                            Wrap long lines
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="show_time" checked/>
+                            Show time
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </span>
+    </span>
+</div>
+
+<div id="content_wrapper">
+    <div id="content" class="ace-tm">
+        <div id="fake_gutter"></div>
+        <div id="output"></div>
+        <div id="input"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    if (/Firefox|Chromium|OPR/.test(navigator.userAgent)) {
+        // If browser engine is Firefox or Chromium, we can assume we are not in Sketchup.
+        AE.debugOutsideSketchUp();
+    }
+    AE.Console.initialize();
+    Bridge.call('translate');
+</script>
+
+</body>
+</html>

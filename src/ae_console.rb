@@ -3,12 +3,12 @@ require 'sketchup.rb'
 require 'extensions.rb'
 
 # Create the extension.
-ext = SketchupExtension.new('Ruby Console+', File.join('ae_Console', 'main.rb'))
+ext = SketchupExtension.new('Ruby Console+', File.join('ae_console', 'core.rb'))
 
 # Attach some nice info.
 ext.creator     = 'Aerilius'
-ext.version     = '2.2.0'
-ext.copyright   = '2012-2015 Andreas Eisenbarth'
+ext.version     = '3.0.0'
+ext.copyright   = '2012-2017 Andreas Eisenbarth'
 ext.description = 'An alternative Ruby Console with command history and code highlighting.'
 
 # Register and load the extension on startup.

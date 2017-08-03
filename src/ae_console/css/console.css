@@ -63,7 +63,9 @@ form {
 }
 
 code {
-    font-size: inherit !important; /* override bootstrap code.less */
+    font-family: inherit !important; /* override bootstrap code.less */
+    color: initial; /* override bootstrap code.less */
+    font-size: inherit !important;
 }
 
 .hide {
@@ -92,55 +94,100 @@ table {
     border-collapse: collapse;
 }
 
-.selectable {
-    user-select: initial;
-    -webkit-user-select: initial;
-    -moz-user-select: initial;
-    user-select: element;
-    -webkit-user-select: element;
-    -moz-user-select: element;
+﻿/*       General Styles Classes      */
+
+.unselectable::after {
+    /* CSS pseudo-element text is never included in selection ranges.
+       By adding text through a data-text attribute, we can avoid that it 
+       appears inbetween console commands when selecting and copying text. */
+    content: attr(data-text);
 }
 
-.unselectable {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
+.active, .selected {
+    color: HighlightText;
+    background-color: Highlight;
+}
+
+.ellipsis {
+    overflow: hidden;        /* Hide any overflow */
+    white-space: nowrap;     /* Prevent any line-break */
+    text-overflow: ellipsis; /* Add ellipsis at end of line */
+}
+
+.ellipsis-left {
+    overflow: hidden;        /* Hide any overflow */
+    white-space: nowrap;     /* Prevent any line-break */
+    text-overflow: ellipsis; /* Add ellipsis at end of line */
+    direction: rtl;
+    float: right;
+    width: 100%;
+}
+/* Not working clearfix */
+.ellipsis-left:after {
+    display: block;
+    clear: both;
 }
 
 /*          Individual Styles          */
 
-/* Toolbar */
+/* Toolbar left, center, right */
 
 .toolbar {
     background-color: Menu;
     color: MenuText;
-    text-align: center;
+    /* layout */
+    display: table-row;
     height: 3em;
-    padding: 0 0.25em;
-}
-
-.toolbar,
-.toolbar > .left,
-.toolbar > .right {
+    /* vertical centering */
     line-height: 3em;
 }
 
-.toolbar > *,
-.toolbar > .left > *,
-.toolbar > .right > * {
+.toolbar > .toolbar-left,
+.toolbar > .toolbar-right {
+    padding: 0 0.5em;
+    line-height: inherit;
+}
+
+.toolbar > .toolbar-left,
+.toolbar > .toolbar-center,
+.toolbar > .toolbar-right {
+    /* expand to content width */
+    display: table-cell;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.toolbar > .toolbar-left > *,
+.toolbar > .toolbar-right > * {
     display: inline-block;
-    vertical-align: middle;
+    /* vertical centering */
     line-height: 1em;
 }
 
-.toolbar > .left {
-    float: left;
-    height: 100%;
+.toolbar > .toolbar-center.toolbar-center-expandable-outer {
+    /* expand to all available space */
+    position: relative;
+    width: 100%;
 }
 
-.toolbar > .right {
-    float: right;
-    height: 100%;
+.toolbar > .toolbar-center-expandable-outer > .toolbar-center-expandable-inner {
+    position: absolute; /* prevent overflow */
+    width: inherit; /* 100% */
+}
+
+.toolbar > .toolbar-center .toolbar-center-centering {
+    /* horizontal centering */
+    text-align: center;
+    /* vertical centering */
+    display: inline-block; /* inlining */
+    vertical-align: middle;
+    /* enable ellipsis on content */
+    width: inherit;
+}
+
+.toolbar > .toolbar-center .toolbar-center-centering > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Toolbar buttons */
@@ -152,30 +199,25 @@ table {
     padding: 0.25em;
 }
 
-.toolbar .caption {
+.toolbar h1 {
     font: Menu;
     font-weight: bold !important;
     font-size: inherit;
-}
-
-/* TODO: remove jQueryUI rules if not needed */
-.ui-button-text-only .ui-button-text {
+    margin: 0;
     padding: 0;
 }
 
-.ui-button-text-icon-secondary .ui-button-text,
-.ui-button-text-icons .ui-button-text {
+.toolbar h2 {
+    font: Menu;
+    font-weight: normal !important;
+    font-size: 75%;
+    opacity: 0.66;
+    margin: 0;
     padding: 0;
-    margin-right: 16px; /* width of secondary-icon */
-}
-
-.ui-button-text-icon-secondary .ui-button-icon-secondary,
-.ui-button-text-icons .ui-button-icon-secondary,
-.ui-button-icons-only .ui-button-icon-secondary {
-    right: 0.25em;
 }
 
 /* Menu */
+
 .dispatch {
     position: relative;
     display: inline-block;
@@ -225,67 +267,34 @@ table {
     display: block;
 }
 
+/* Bootstrap Popover*/
+
 .popover {
     font: inherit;
     font-family: inherit !important;
     font-size: inherit !important;
     font-style: inherit !important;
     font-weight: inherit !important;
-    max-width: 20em !important;
+    width: 20em !important;
 }
 
-/* Overrides for jquery-ui.css */
-
-.ui-widget {
-    font: inherit; /* jQuery, how do you dare to specify and hardcode something that is neither relevant to you nor do you care about? */
+/* Make popover arrow match the popover title background-color (gray instead of default white). */
+.popover.bottom > .arrow:after {
+    border-bottom-color: #f7f7f7; /* bootstrap popover.less: .popover-title[background-color] */
 }
 
-.ui-menu .ui-state-focus {
-    background: highlight url("../external/jquery-ui/images/ui-bg_glass_75_dadada_1x400.png") 50% 50% repeat-x;
-}
+/* Main Page Layout */
 
-.ui-menu .ui-state-active {
-    background: highlight url("../external/jquery-ui/images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
-}
-
-.ui-state-default,
-.ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default {
-    background: white url("../external/jquery-ui/images/ui-bg_glass_75_e6e6e6_1x400.png") 50% 50% repeat-x;
-}
-
-.ui-widget-header .ui-state-highlight {
-    background: white url("../external/jquery-ui/images/ui-bg_glass_55_fbf9ee_1x400.png") 50% 50% repeat-x;
-}
-
-.ui-state-error,
-.ui-widget-content .ui-state-error,
-.ui-widget-header .ui-state-error {
-    background: white url("../external/jquery-ui/images/ui-bg_glass_95_fef1ec_1x400.png") 50% 50% repeat-x;
-}
-
-.ui-widget-header {
-    background: white url("../external/jquery-ui/images/ui-bg_highlight-soft_75_cccccc_1x100.png") 50% 50% repeat-x;
-}
-
-#console,
-#editor {
+#consoleToolbar, #editorToolbar {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    z-index: 1; /* above the console/editor content wrapper */
 }
-#console.hidden {
-    left: -100%;
-}
-#editor.hidden {
-    left: 100%;
-}
-
 #consoleContentWrapper, #editorContentWrapper {
     position: absolute;
-    top: 3em;
+    top: 3em; /* toolbar height */
     left: 0;
     width: 100%;
     bottom: 0;
@@ -324,21 +333,10 @@ table {
     bottom: 0;
 }
 
-/*          OUTPUT          */
+/* Output */
 
 #consoleOutput {
-    /*overflow: hidden; TODO: enable again when needed */
-    /* overflow-x: auto; */
-    /*margin-top: -1px;*/
-    /* Hide the first visible child's top border to avoid a double border. */
-    /*font-size: inherit;*/
     font-size: inherit!important; /* override hard-coded font-size in .ace_editor */
-}
-
-#consoleOutput.wrap_lines {
-    white-space: pre-wrap;
-    word-wrap: break-word; /* needs layout in Internet Explorer */
-    zoom: 1; /* makes layout */
 }
 
 #consoleOutput .message {
@@ -362,46 +360,62 @@ table {
     font-family: inherit;
     position: relative;
     padding-left: 4px; /* from ace_layer ace_text-layer */
+    white-space: pre; /* if not .wrap_line */
+}
+
+#consoleOutput.wrap_lines .message .content {
+    white-space: pre-wrap;
+    word-wrap: break-word; /* needs layout in Internet Explorer */
+    zoom: 1; /* makes layout */
 }
 
 #consoleOutput .message .gutter {
+    position: absolute;
     /*width: 3em;  /* 1.75 em */
-    background-position: 50% -2px;
-    background-repeat: no-repeat;
+    background-position: 50% -2px !important;
+    background-repeat: no-repeat !important;
 }
 
 #consoleOutput .message.input .gutter {
-    background-image: url("../images/icon_input.png");
+    background: url("../images/gutter_input.png"); /* fallback for no svg support */
+    background-image: url("../images/gutter_input.svg"), none;
 }
 
 #consoleOutput .message.result .gutter {
-    background-image: url("../images/icon_result.png");
+    background: url("../images/gutter_result.png");
+    background-image: url("../images/gutter_result.svg"), none;
 }
 
 #consoleOutput .message.error .gutter {
-    background-image: url("../images/icon_error.png");
+    background: url("../images/gutter_error.png");
+    background-image: url("../images/gutter_error.svg"), none;
 }
 
 #consoleOutput .message.warn .gutter {
-    background-image: url("../images/icon_warn.png");
+    background: url("../images/gutter_warn.png");
+    background-image: url("../images/gutter_warn.svg"), none;
 }
 
 #consoleOutput .message.stdout .gutter {
-    background-image: url("../images/icon_puts.png");
+    background: url("../images/gutter_puts.png");
+    background-image: url("../images/gutter_puts.svg"), none;
 }
 
 #consoleOutput .message.puts .gutter {
-    background-image: url("../images/icon_puts.png");
+    background: url("../images/gutter_puts.png");
+    background-image: url("../images/gutter_puts.svg"), none;
 }
 
 #consoleOutput .message.print .gutter {
-    background-image: url("../images/icon_puts.png");
+    background: url("../images/gutter_puts.png");
+    background-image: url("../images/gutter_puts.svg"), none;
 }
 
 #consoleOutput .message .counter {
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 1000;
     min-width: 1em;
     background: red;
     color: white;
@@ -417,12 +431,25 @@ table {
     opacity: 0.5;
 }
 
+#consoleOutput .message.error .header:hover {
+    cursor: pointer;
+}
+
 /*          ACE Tweaks          */
 
 /* Hide line number for single lines. */
 .ace_gutter-cell:first-child:last-child {
     visibility: hidden;
 }
+
+.ace_folding-enabled > .ace_gutter-cell {
+    padding-right: 40%;
+}
+
+#consoleOutput .message .gutter {
+    background-position: 90% -2px !important;
+}
+
 
 /* Reduce gutter width. */
 .ace_gutter-layer,
@@ -451,4 +478,19 @@ table {
 
 .ace_dark .ace_sketchup {
     color: rgb(178, 173, 166) !important;
+}
+
+/* Shortcut menu: centering */
+#kbshortcutmenu {
+    left: 0; right: 0;
+    margin: 1em auto !important;
+    width: 30em;
+    max-width: 100%;
+    border-radius: 0.5em;
+}
+
+/* Search & Replace box: Move it to the top of dialog just below the toolbar */
+.ace_search {
+    position: fixed !important;
+    top: 3em !important; /* .toolbar height */
 }

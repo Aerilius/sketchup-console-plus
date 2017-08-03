@@ -1,0 +1,12 @@
+--- /home/andreas/Schreibtisch/aktuelle_Aufgaben/ae_console/ace-builds-master/src/ext-language_tools.js
++++ /home/andreas/Schreibtisch/aktuelle_Aufgaben/ae_console/src/ae_console/external/ace/ext-language_tools.js
+@@ -1618,7 +1618,7 @@
+         tooltipNode.style.top = popup.container.style.top;
+         tooltipNode.style.bottom = popup.container.style.bottom;
+ 
+-        if (window.innerWidth - rect.right < 320) {
++        if (window.innerWidth - rect.right < 160) {
+             tooltipNode.style.right = window.innerWidth - rect.left + "px";
+             tooltipNode.style.left = "";
+         } else {
+

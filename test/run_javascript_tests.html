@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>QUnit tests</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<link rel="stylesheet" href="external/qunit/qunit-1.18.0.css" />
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="../src/ae_console/external/requirejs/require.js" data-main="../src/ae_console/js/"></script>
+<script type="text/javascript">
+requirejs.config({
+    paths: {
+        test: '../../../test',
+        qunit: '../../../test/external/qunit/qunit-2.4.0',
+        jquery: '../external/jquery/jquery'
+    }
+});
+requirejs(['bridge_debug_helper'], function (brigdeDebugHelper) {
+  brigdeDebugHelper.mockRequests({
+    'update_property': function () {}
+  });
+  requirejs(['qunit', 'test/tc_settings'], function (QUnit) {
+      QUnit.start();
+  });
+});
+</script>
+</body>
+</html>

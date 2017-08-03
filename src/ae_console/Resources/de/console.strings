@@ -1,0 +1,87 @@
+/* Plugin metadata */
+"Ruby Console+"="Ruby-Konsole+";
+"An alternative Ruby Console with many useful features."="Eine alternative Ruby-Konsole mit vielen nützlichen Funktionen.";
+
+/* Settings */
+"fontSize"="Schriftgröße";
+"tabSize"="Tabgröße";
+"useSoftTabs"="Leerzeichen für Tabstops";
+"useWrapMode"="Zeilen umbrechen";
+"editMode"="Programmiersprache";
+"theme"="Thema";
+
+/* Console */
+"Console"="Konsole";
+"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Zum Ausführen der Eingabe die Eingabetaste drücken, und Umschalt- und Eingabetaste drücken für Zeilenwechsel.";
+"Ruby Console %0 operation %1"="Ruby-Konsole %0 Operation %1";
+"Clear"="Leeren";
+"Menu"="Menü";
+"Show shortcuts"="Tastenkürzel anzeigen";
+
+/* Editor */
+"Editor"="Editor";
+"Run"="Ausführen";
+"Open"="Öffnen";
+"More files…"="Mehr Dateien…";
+"Open a text file to edit"="Öffne eine Textdatei zum bearbeiten";
+"Only Ruby code can be run."="Nur Ruby-Code kann ausgeführt werden.";
+"If this is Ruby code, set the edit mode in the menu."="Wenn das Ruby-Code ist, ändere die Programmiersprache im Menü.";
+"Running the code…"="Code wird ausgeführt…";
+"Code was run and returned: \n %0"="Code wurde ausgeführt und gab zurück: \n %0";
+"Code was run successfully!"="Code wurde erfolgreich ausgeführt!";
+"Code failed with an error: \n %0"="Code schlug fehl mit folgendem Fehler: \n %0";
+"Unsaved document"="Ungespeichertes Dokument";
+"Save changes to current file?"="Änderungen der aktuellen Datei speichern?";
+"Save"="Speichern";
+"Save the current file as…"="Aktuelle Datei speichern als…";
+"Failed to save file"="Speichern schlug fehl";
+"New"="Neu";
+"Save as…"="Speichern als…";
+"Find…"="Suchen…";
+"Find and replace…"="Suchen und ersetzen…";
+"Go to line…"="Gehe zu Zeile…";
+"The file has been changed externally.\nOverwrite external changes and save the current file?"="Die Datei wurde von außerhalb geändert.\nExterne Änderungen überschreiben und die aktuelle Datei speichern?";
+"The file was changed externally"="Die Datei wurde von außerhalb geändert";
+"Reload"="Neuladen";
+"Ignore"="Ignoren";
+"Yes"="Ja";
+"No"="Nein";
+
+
+/* Features */
+
+/* Binding */
+"binding"="Bindung";
+
+/* History */
+"Go one command back in the history."="Ein Befehl im Verlauf zurückgehen.";
+"Go one command forward in the history."="Ein Befehl im Verlauf vorwärtsgehen.";
+
+/* Reload Scripts */
+"%0 reloaded"="%0 neugeladen";
+"Scripts reloaded"="Skripte neugeladen";
+"Click to remove files from auto-loading"="Klicken um Dateien vom automatischen Neuladen zu entfernen.";
+
+/* Autocomplete */
+"global_variable"="globale Variable";
+"instance_variable"="Instanzvariable";
+"class_variable"="Klassenvariable";
+"local_variable"="lokale Variable";
+"instance_method"="Instanzmethode";
+"class_method"="Klassenmethode";
+"module_function"="Modulfunktion";
+"constant"="Konstante";
+"module"="Modul";
+"class"="Klasse";
+
+/* Documentation */
+"Help"="Hilfe";
+"Show documentation for the currently focussed word in a browser window."="Zeige Dokumentation für das aktuell ausgewählte Wort in einem Browser-Fenster.";
+"The help function can only lookup Ruby documentation."="Die Hilfe-Funktion kann nur Ruby-Dokumentation nachschlagen.";
+"Documentation not found"="Dokumentation nicht gefunden";
+"Parameters"="Parameter";
+"Return value"="Rückgabewert";
+
+/* Select entity */
+"Select"="Auswählen";
+"Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Zum Auswählen eines Elements klicken. Zum Abbrechen rechtsklicken. Die Strg-Taste halten um Punkte auszuwählen. Die Umschalttaste halten zum Einrasten.";

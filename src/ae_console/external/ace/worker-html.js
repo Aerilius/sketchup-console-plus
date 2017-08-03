@@ -5,15 +5,16 @@ if (typeof window.window != "undefined" && window.document)
 if (window.require && window.define)
     return;
 
-window.console = function() {
-    var msgs = Array.prototype.slice.call(arguments, 0);
-    postMessage({type: "log", data: msgs});
-};
-window.console.error =
-window.console.warn = 
-window.console.log =
-window.console.trace = window.console;
-
+if (!window.console) {
+    window.console = function() {
+        var msgs = Array.prototype.slice.call(arguments, 0);
+        postMessage({type: "log", data: msgs});
+    };
+    window.console.error =
+    window.console.warn = 
+    window.console.log =
+    window.console.trace = window.console;
+}
 window.window = window;
 window.ace = window;
 
@@ -216,7 +217,7 @@ window.onmessage = function(e) {
 };
 })(this);
 
-ace.define("ace/lib/oop",["require","exports","module"], function(require, exports, module) {
+define("ace/lib/oop",["require","exports","module"], function(require, exports, module) {
 "use strict";
 
 exports.inherits = function(ctor, superCtor) {
@@ -244,7 +245,7 @@ exports.implement = function(proto, mixin) {
 
 });
 
-ace.define("ace/lib/lang",["require","exports","module"], function(require, exports, module) {
+define("ace/lib/lang",["require","exports","module"], function(require, exports, module) {
 "use strict";
 
 exports.last = function(a) {
@@ -290,7 +291,7 @@ exports.copyArray = function(array){
     var copy = [];
     for (var i=0, l=array.length; i<l; i++) {
         if (array[i] && typeof array[i] == "object")
-            copy[i] = this.copyObject( array[i] );
+            copy[i] = this.copyObject(array[i]);
         else 
             copy[i] = array[i];
     }
@@ -308,14 +309,12 @@ exports.deepCopy = function deepCopy(obj) {
         }
         return copy;
     }
-    var cons = obj.constructor;
-    if (cons === RegExp)
+    if (Object.prototype.toString.call(obj) !== "[object Object]")
         return obj;
     
-    copy = cons();
-    for (var key in obj) {
+    copy = {};
+    for (var key in obj)
         copy[key] = deepCopy(obj[key]);
-    }
     return copy;
 };
 
@@ -434,7 +433,7 @@ exports.delayedCall = function(fcn, defaultTimeout) {
 };
 });
 
-ace.define("ace/range",["require","exports","module"], function(require, exports, module) {
+define("ace/range",["require","exports","module"], function(require, exports, module) {
 "use strict";
 var comparePoints = function(p1, p2) {
     return p1.row - p2.row || p1.column - p2.column;
@@ -562,7 +561,7 @@ var Range = function(startRow, startColumn, endRow, endColumn) {
         if (!this.isMultiLine()) {
             if (row === this.start.row) {
                 return column < this.start.column ? -1 : (column > this.end.column ? 1 : 0);
-            };
+            }
         }
 
         if (row < this.start.row)
@@ -673,7 +672,7 @@ Range.comparePoints = function(p1, p2) {
 exports.Range = Range;
 });
 
-ace.define("ace/apply_delta",["require","exports","module"], function(require, exports, module) {
+define("ace/apply_delta",["require","exports","module"], function(require, exports, module) {
 "use strict";
 
 function throwDeltaError(delta, errorText){
@@ -738,7 +737,7 @@ exports.applyDelta = function(docLines, delta, doNotValidate) {
 }
 });
 
-ace.define("ace/lib/event_emitter",["require","exports","module"], function(require, exports, module) {
+define("ace/lib/event_emitter",["require","exports","module"], function(require, exports, module) {
 "use strict";
 
 var EventEmitter = {};
@@ -864,7 +863,7 @@ exports.EventEmitter = EventEmitter;
 
 });
 
-ace.define("ace/anchor",["require","exports","module","ace/lib/oop","ace/lib/event_emitter"], function(require, exports, module) {
+define("ace/anchor",["require","exports","module","ace/lib/oop","ace/lib/event_emitter"], function(require, exports, module) {
 "use strict";
 
 var oop = require("./lib/oop");
@@ -989,7 +988,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
 
 });
 
-ace.define("ace/document",["require","exports","module","ace/lib/oop","ace/apply_delta","ace/lib/event_emitter","ace/range","ace/anchor"], function(require, exports, module) {
+define("ace/document",["require","exports","module","ace/lib/oop","ace/apply_delta","ace/lib/event_emitter","ace/range","ace/anchor"], function(require, exports, module) {
 "use strict";
 
 var oop = require("./lib/oop");
@@ -1102,7 +1101,7 @@ var Document = function(textOrLines) {
         return this.removeFullLines(firstRow, lastRow);
     };
     this.insertNewLine = function(position) {
-        console.warn("Use of document.insertNewLine is deprecated. Use insertMergedLines(position, [\'\', \'\']) instead.");
+        console.warn("Use of document.insertNewLine is deprecated. Use insertMergedLines(position, ['', '']) instead.");
         return this.insertMergedLines(position, ["", ""]);
     };
     this.insert = function(position, text) {
@@ -1245,7 +1244,7 @@ var Document = function(textOrLines) {
         }
     };
     this.replace = function(range, text) {
-        if (!range instanceof Range)
+        if (!(range instanceof Range))
             range = Range.fromPoints(range.start, range.end);
         if (text.length === 0 && range.isEmpty())
             return range.start;
@@ -1345,7 +1344,7 @@ var Document = function(textOrLines) {
 exports.Document = Document;
 });
 
-ace.define("ace/worker/mirror",["require","exports","module","ace/range","ace/document","ace/lib/lang"], function(require, exports, module) {
+define("ace/worker/mirror",["require","exports","module","ace/range","ace/document","ace/lib/lang"], function(require, exports, module) {
 "use strict";
 
 var Range = require("../range").Range;
@@ -1407,7 +1406,7 @@ var Mirror = exports.Mirror = function(sender) {
 
 });
 
-ace.define("ace/mode/html/saxparser",["require","exports","module"], function(require, exports, module) {
+define("ace/mode/html/saxparser",["require","exports","module"], function(require, exports, module) {
 module.exports = (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({
 1:[function(_dereq_,module,exports){
 function isScopeMarker(node) {
@@ -10845,7 +10844,7 @@ module.exports=_dereq_(15)
 
 });
 
-ace.define("ace/mode/html_worker",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/worker/mirror","ace/mode/html/saxparser"], function(require, exports, module) {
+define("ace/mode/html_worker",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/worker/mirror","ace/mode/html/saxparser"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -10856,7 +10855,7 @@ var SAXParser = require("./html/saxparser").SAXParser;
 var errorTypes = {
     "expected-doctype-but-got-start-tag": "info",
     "expected-doctype-but-got-chars": "info",
-    "non-html-root": "info",
+    "non-html-root": "info"
 }
 
 var Worker = exports.Worker = function(sender) {
@@ -10908,7 +10907,7 @@ oop.inherits(Worker, Mirror);
 
 });
 
-ace.define("ace/lib/es5-shim",["require","exports","module"], function(require, exports, module) {
+define("ace/lib/es5-shim",["require","exports","module"], function(require, exports, module) {
 
 function Empty() {}
 

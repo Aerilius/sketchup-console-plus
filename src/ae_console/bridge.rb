@@ -58,6 +58,7 @@ Promises which allow easy asynchronous and delayed callback paths for both succe
   });
 
 =end
+
 require(File.join(File.dirname(__FILE__), 'promise.rb'))
 # Optionally requires 'json.rb'
 # Requires modules Sketchup, UI
@@ -66,17 +67,17 @@ require(File.join(File.dirname(__FILE__), 'promise.rb'))
 module AE
 
 
-  class Console
+  module ConsolePlugin
 
 
     class Bridge
 
 
-      # Add the bridge to an existing UI::WebDialog.
+      # Add the bridge to an existing UI::WebDialog/UI::HtmlDialog.
       # This can be used for convenience and will define the bridge's methods
       # on the dialog and delegate them to the bridge.
-      # @param  [UI::WebDialog] dialog
-      # @return [UI::WebDialog] The decorated dialog
+      # @param  [UI::WebDialog, UI::HtmlDialog] dialog
+      # @return [UI::WebDialog, UI::HtmlDialog] The decorated dialog
       def self.decorate(dialog)
         bridge = self.new(dialog)
         dialog.instance_variable_set(:@bridge, bridge)
@@ -115,26 +116,16 @@ module AE
         return dialog
       end
 
-
-      # The name space to avoid clashes with internal callback handlers or other action_callbacks.
-      # It must match the module path of the corresponding JavaScript implementation.
+      # The namespace for prefixing internal callback names to avoid clashes with code using this library.
       NAMESPACE = 'Bridge'
+      # The module path of the corresponding JavaScript implementation.
+      JSMODULE = 'requirejs("bridge")' # Here using requirejs, when using public modules then 'Bridge'.
 
       # The url which responds to requests.
-      URL_RECEIVE = "#{NAMESPACE}.receive"
+      URL_RECEIVE = "LoginSuccess" # Workaround issue: Failure to register new callbacks in Chromium, thus overwriting existing ones.
 
       # Names that are used internally and not allowed to be used as callback handler names.
       RESERVED_NAMES = []
-
-      # Workaround for SketchUp's bug that Procs are never released for garbage collection and may prevent webdialogs
-      # or ruby objects referenced in the to be garbage collected. This proc is re-used and delegates to the actual
-      # proc of each action_callback.
-      CALLBACK_WRAPPER = Proc.new { |dialog, params|
-        ObjectSpace.each_object(Bridge){ |bridge|
-          break bridge.__callback_wrapper__(dialog, params) if bridge.dialog == dialog
-        }
-      }
-      private_constant :CALLBACK_WRAPPER if methods.include?(:private_constant)
 
 
       attr_reader :dialog
@@ -144,8 +135,8 @@ module AE
       # @param  [String]              name      The name under which the callback can be called from the dialog.
       # @param  [Proc,UnboundMethod]  callback  A method or proc for the callback, if no yield block given.
       # @yield  A callback to be called from the dialog to execute Ruby code.
-      # @yieldparam [Message]         dialog    An object referencing the dialog, enhanced with methods
-      #                                         {Message#resolve} and {Message#resolve} to return results to the dialog.
+      # @yieldparam [ActionContext]         dialog    An object referencing the dialog, enhanced with methods
+      #                                         {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
       # @yieldparam [Array<Object>]   arguments The JSON-compatible arguments passed from the dialog.
       # @return [self]
       def on(name, callback=nil, &callback_)
@@ -162,11 +153,10 @@ module AE
       # @param  [String]              name      The name under which the callback can be called from the dialog.
       # @param  [Proc,UnboundMethod]  callback  A method or proc for the callback, if no yield block given.
       # @yield  A callback to be called from the dialog to execute Ruby code.
-      # @yieldparam [Message]         dialog    An object referencing the dialog, enhanced with methods
-      #                                         {Message#resolve} and {Message#resolve} to return results to the dialog.
+      # @yieldparam [ActionContext]         dialog    An object referencing the dialog, enhanced with methods
+      #                                         {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
       # @yieldparam [Array<Object>]   arguments The JSON-compatible arguments passed from the dialog.
       # @return [self]
-      # TODO: nice, but only if not-found handler names don't raise an error.
       # TODO: Maybe allow many handlers for the same name?
       def once(name, callback=nil, &callback_)
         raise(ArgumentError, 'Argument `name` must be a String.') unless name.is_a?(String)
@@ -194,12 +184,12 @@ module AE
       # Call a JavaScript function with JSON arguments in the webdialog.
       # @param [String] name       name of a public JavaScript function
       # @param [Object] arguments  array of JSON-compatible objects or Callables (Proc, UnboundMethod)
-      # TODO: error catching!
+      # TODO: Catch JavaScript errors!
       def call(name, *arguments)
         raise(ArgumentError, 'Argument `name` must be a valid method identifier string.') unless name.is_a?(String) && name[/^[\w\.]+$/]
-        arguments = self.class.serialize(arguments)[1...-1]
+        arguments = self.class.serialize(arguments)
         arguments = 'undefined' if arguments.nil? || arguments.empty?
-        @dialog.execute_script("#{name}(#{arguments})")
+        @dialog.execute_script("#{name}.apply(undefined, #{arguments})")
       end
 
 
@@ -208,17 +198,11 @@ module AE
       # @param  [String] name       name of a public JavaScript function
       # @param  [Object] arguments  array of JSON-compatible objects
       # @return [Promise]
-      # TODO: This uses the request handler, but is not async
-      # The same could be done by just writing to the messageField and reading the value; Problem: collisions with pump?
-      #   __passToRuby__(id, javascriptFunction()) creates a messagefield with unique id;
-      #   then it can be read immediately with get_element_value; no promise needed.
-      #   Needed: create unique id on ruby side, js method to set up (or re-use) messagefield; new RequestHandler();
-      #   that creates message field and removes it when/before being garbage collected? __getSync__ ?
-      # And still an async solution would be needed…
+      # This does the same as writing the function's return value to an input field
+      # and reading the value (using the old UI::WebDialog).
       def get(name, *arguments)
         raise(ArgumentError, 'Argument `name` must be a valid method identifier string.') unless name.is_a?(String) && name[/^[\w\.]+$/]
-        arguments = self.class.serialize(arguments)[1...-1]
-        arguments = 'undefined' if arguments.nil? || arguments.empty?
+        arguments = self.class.serialize(arguments)
         return Promise.new { |resolve, reject|
           handler_name = create_unique_handler_name('resolve/reject')
           once(handler_name) { |dlg, success, arguments|
@@ -230,84 +214,44 @@ module AE
           }
           @dialog.execute_script(
             <<-SCRIPT
-            try{
-                #{NAMESPACE}.call('#{handler_name}', true, #{name}(#{arguments}) );
+            try {
+                var Bridge = #{JSMODULE};
+                new Bridge.Promise(function (resolve, reject) {
+                    // The called function may immediately return a result or a Promise.
+                    resolve(#{name}.apply(undefined, #{arguments}));
+                }).then(function (result) {
+                    Bridge.call('#{handler_name}', true, result);
+                }, function (error) {
+                    Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
+                });
             } catch (error) {
-                #{NAMESPACE}.call('#{handler_name}', false, error.name + ': ' + error.message);
-                #{NAMESPACE}.error(error);
+                Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
+                Bridge.error(error);
             }
             SCRIPT
           )
         }
       end
+
       def get_sync(name, *arguments)
+        raise(ArgumentError, 'Bridge#get_sync is not supported for UI::HtmlDialog because of missing get_element_value')
         raise(ArgumentError, 'Argument `name` must be a valid method identifier string.') unless name.is_a?(String) && name[/^[\w\.]+$/]
         arguments = self.class.serialize(arguments)[1...-1]
         arguments = 'undefined' if arguments.nil? || arguments.empty?
-        success = @dialog.execute_script("#{NAMESPACE}.responseHandler( #{name}(#{arguments}) )");
-        result = @dialog.get_element_value("#{NAMESPACE}.responseField")
+        success = @dialog.execute_script("#{JSMODULE}.responseHandler( #{name}(#{arguments}) )");
+        result = @dialog.get_element_value("#{JSMODULE}.responseField")
         result = self.class.unserialize(result)
         return result
       end
-
-=begin # TODO: test and remove:
-      # Call a JavaScript function with JSON arguments in the webdialog.
-      # @param  [String]   name       name of a public JavaScript function
-      # @param  [Object]   arguments  array of JSON-compatible objects or Callables (Proc, UnboundMethod)
-      # @return [Promise]
-      def call(name, *arguments, &callback)
-        arguments << callback if block_given?
-        arguments = arguments.map { |arg|
-          if arg.is_a?(Proc) || arg.is_a?(UnboundMethod)
-            function_name = create_unique_handler_name("call")
-            on(function_name) { |dlg, *arguments|
-              arg.call(*arguments)
-            }
-            'function(){ ' <<
-                '  var args = Array.prototype.slice.call(arguments);' <<
-                "  args.unshift('#{function_name}');" <<
-                "  #{NAMESPACE}.call.apply(window, args);" <<
-                '}'
-          else
-            self.class.serialize([arg])[1...-1]
-          end
-        }.compact.join(', ')
-        # @dialog.execute_script("#{name}(#{arguments})")
-        @dialog.execute_script("try{ #{name}(#{arguments}) } catch(error) { #{NAMESPACE}.error(error) }")
-      end
-
-
-      # Call a JavaScript function with JSON arguments in the webdialog and get the
-      # return value in a promise.
-      # @param  [String]   name       name of a public JavaScript function
-      # @param  [Object]   arguments  array of JSON-compatible objects
-      # @return [Promise]
-      def get(name, *arguments)
-        arguments = self.class.serialize(arguments)
-        arguments = 'undefined' if arguments.nil? || arguments.empty?
-        return Promise.new { |resolve, reject|
-          handler = create_unique_handler_name('resolve/reject')
-          once(handler) { |dlg, success, arguments|
-            if success
-              resolve.call(*arguments)
-            else
-              reject.call(*arguments)
-            end
-          }
-          # TODO: what if name(arguments) → Promise? then resolve this promise later!
-          @dialog.execute_script("#{NAMESPACE}.__get__('#{handler}', #{name}, #{arguments})")
-        }
-      end
-=end
 
 
       private
 
 
       # Create an instance of the Bridge and associate it with a dialog.
-      # @param [UI::WebDialog] dialog
+      # @param [UI::WebDialog, UI::HtmlDialog] dialog
       def initialize(dialog)
-        raise(ArgumentError, 'Argument `dialog` must be a UI::WebDialog.') unless dialog.is_a?(UI::WebDialog)
+        raise(ArgumentError, 'Argument `dialog` must be a UI::WebDialog.') unless dialog.is_a?(UI::WebDialog) || defined?(UI::HtmlDialog) && dialog.is_a?(UI::HtmlDialog)
         @dialog         = dialog
         @handlers       = {}
         @handlers_show  = []
@@ -316,60 +260,47 @@ module AE
         # SketchUp does not release procs of WebDialogs. Because of that, we need to
         # make sure that the proc contains no reference to this instance. The proc
         # receives a reference to this dialog, so it can call the follow-up method #action_callback.
-        @dialog.add_action_callback(URL_RECEIVE, &CALLBACK_WRAPPER)
+        $dialog = @dialog
+        $bridge = self
+        @dialog.add_action_callback(URL_RECEIVE) { |action_context, request|
+          begin
+            unless request.is_a?(Hash) &&
+                request['id'].is_a?(Fixnum) &&
+                request['name'].is_a?(String) &&
+                request['arguments'].is_a?(Array)
+              raise(ArgumentError, "Bridge received invalid data: \n#{value}")
+            end
+            id        = request['id']
+            name      = request['name']
+            arguments = request['arguments'] || []
+
+            # Here we pass a wrapper around the dialog which preserves the message id to
+            # identify the corresponding JavaScript callback.
+            # This allows to run asynchronous code (external application etc.) and return
+            # later the result to the JavaScript callback even if the dialog has continued
+            # sending/receiving messages.
+            response = ActionContext.new(@dialog, id)
+            # Get the callback.
+            unless @handlers.include?(name)
+              error = ArgumentError.new("No registered callback `#{name}` for #{@dialog} found.")
+              response.reject(error)
+              raise(error)
+            end
+            handler = @handlers[name]
+            begin
+              handler.call(response, *arguments)
+            rescue Exception => error
+              response.reject(error)
+              raise(error)
+            end
+
+          rescue Exception => e
+            AE::ConsolePlugin.error(e)
+          end
+        }
 
         add_default_handlers
       end
-
-
-      # Receives the raw messages from the WebDialog (AE.Bridge.call) and calls the individual callbacks.
-      # @private Not for public use.
-      # @param   [UI::WebDialog] dialog
-      # @param   [String] params
-      # @private
-      def __callback_wrapper__(dialog, params)
-        # Get message data from the hidden input element.
-        value   = dialog.get_element_value("#{NAMESPACE}.requestField") # returns empty string if element not found
-        request = self.class.unserialize(value)
-        unless request.is_a?(Hash) &&
-            request['id'].is_a?(Fixnum) &&
-            request['name'].is_a?(String) &&
-            request['arguments'].is_a?(Array)
-          raise(ArgumentError, "Bridge received invalid data: \n#{value}")
-        end
-        id        = request['id']
-        name      = request['name']
-        arguments = request['arguments'] || []
-
-        # Here we pass a wrapper around the dialog which preserves the message id to
-        # identify the corresponding JavaScript callback.
-        # This allows to run asynchronous code (external application etc.) and return
-        # later the result to the JavaScript callback even if the dialog has continued
-        # sending/receiving messages.
-        response  = Message.new(dialog, id)
-        # Get the callback.
-        unless @handlers.include?(name)
-          error = ArgumentError.new("No registered callback `#{name}` for #{dialog} found.")
-          response.reject(error)
-          raise(error)
-        end
-        handler = @handlers[name]
-        begin
-          handler.call(response, *arguments)
-        rescue Exception => error
-          response.reject(error)
-          raise(error)
-        end
-
-      rescue Exception => e
-        UI.messagebox(e.message+"\n"+e.backtrace.join("\n")) # TODO: remove
-        AE::Console.error(e)
-      ensure
-        # Acknowledge that the message has been received and enable the bridge to send
-        # the next message if available.
-        dialog.execute_script("#{NAMESPACE}.__ack__()")
-      end
-      public :__callback_wrapper__
 
 
       # Add additional optional handlers for calls from JavaScript to Ruby.
@@ -382,7 +313,7 @@ module AE
 
         # Error channel (for debugging)
         @handlers["#{NAMESPACE}.error"] = Proc.new { |dialog, type, message, backtrace|
-          AE::Console.error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
+          AE::ConsolePlugin.error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
         }
         RESERVED_NAMES << "#{NAMESPACE}.error"
       end
@@ -406,10 +337,10 @@ module AE
       # remember the message id. We retain SketchUp's default behavior by delegating to the webdialog, while adding
       # the functionality of a promise.
       # @!parse include UI::WebDialog
-      class Message < Promise
+      class ActionContext < Promise
 
 
-        # @param   [UI::WebDialog] dialog
+        # @param   [UI::WebDialog, UI::HtmlDialog] dialog
         # @param   [Fixnum] id
         # @private
         def initialize(dialog, id)
@@ -427,8 +358,9 @@ module AE
             else
               arguments = Bridge.serialize(results)[1...-1]
               arguments = 'undefined' if arguments.nil? || arguments.empty?
-              @dialog.execute_script("#{NAMESPACE}.__resolve__(#{@id}, #{arguments})")
+              @dialog.execute_script("#{JSMODULE}.__resolve__(#{@id}, #{arguments})")
             end
+            nil
           }
           # Rejects a query from JavaScript and and give the reason/error message.
           on_reject = Proc.new{ |reason|
@@ -452,7 +384,8 @@ module AE
             else
               reason = Bridge.serialize(reason)
             end
-            @dialog.execute_script("#{NAMESPACE}.__reject__(#{@id}, #{reason})")
+            @dialog.execute_script("#{JSMODULE}.__reject__(#{@id}, #{reason})")
+            nil
           }
           # Register these two handlers.
           @handlers << Handler.new(on_resolve, on_reject, nil, nil)
@@ -469,7 +402,7 @@ module AE
         end
 
       
-      end # class Message
+      end # class ActionContext
 
 
       # For serializing objects, we choose JSON.
@@ -560,7 +493,7 @@ module AE
     end # class Bridge
 
 
-  end # class Console
+  end # module ConsolePlugin
 
 
 end # module AE

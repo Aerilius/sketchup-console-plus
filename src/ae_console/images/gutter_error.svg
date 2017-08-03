@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="10"
+   height="18"
+   viewBox="0 0 2.6458333 4.7625002"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92+devel unknown"
+   sodipodi:docname="gutter_error2.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.627418"
+     inkscape:cx="9.2823025"
+     inkscape:cy="7.8894679"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     units="px"
+     inkscape:document-rotation="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:measure-start="0,0"
+     inkscape:measure-end="0,0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4306" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-96.790161,-104.54764)">
+    <path
+       style="color:#000000;overflow:visible;fill:#ca0000;fill-opacity:1;fill-rule:evenodd;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round"
+       d="M 5 4.5 A 4.5000002 4.5000002 0 0 0 0.5 9 A 4.5000002 4.5000002 0 0 0 5 13.5 A 4.5000002 4.5000002 0 0 0 9.5 9 A 4.5000002 4.5000002 0 0 0 5 4.5 z M 3.1679688 6.125 C 3.2784065 6.125 3.3880704 6.1676697 3.4726562 6.2519531 L 5 7.7792969 L 6.5273438 6.2519531 C 6.6965267 6.0830082 6.9675471 6.0830082 7.1367188 6.2519531 L 7.7480469 6.8632812 C 7.9172185 7.0324529 7.9172185 7.3033334 7.7480469 7.4726562 L 6.2207031 9 L 7.7480469 10.527344 C 7.9172185 10.696553 7.9172185 10.967774 7.7480469 11.136719 L 7.1367188 11.748047 C 6.9675358 11.916992 6.6965532 11.916992 6.5273438 11.748047 L 5 10.220703 L 3.4726562 11.748047 C 3.3034808 11.916992 3.0324529 11.916992 2.8632812 11.748047 L 2.2519531 11.136719 C 2.0827815 10.967509 2.0827815 10.696289 2.2519531 10.527344 L 3.7792969 9 L 2.2519531 7.4726562 C 2.0827815 7.3034846 2.0827815 7.0322261 2.2519531 6.8632812 L 2.8632812 6.2519531 C 2.9478671 6.1688035 3.0575688 6.125 3.1679688 6.125 z "
+       transform="matrix(0.26458334,0,0,0.26458334,96.790161,104.54764)"
+       id="path4235" />
+  </g>
+</svg>

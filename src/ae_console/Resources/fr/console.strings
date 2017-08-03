@@ -1,0 +1,87 @@
+/* Plugin metadata */
+"Ruby Console+"="Console Ruby+";
+"An alternative Ruby Console with many useful features."="Une console Ruby alternative avec beaucoup de fonctions utiles.";
+
+/* Settings */
+"fontSize"="Taille de la police";
+"tabSize"="Largeur de tabulations";
+"useSoftTabs"="Espaces pour des tabulations";
+"useWrapMode"="Retour automatique à la ligne";
+"editMode"="Language";
+"theme"="thème";
+
+/* Console */
+"Console"="Console";
+"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Appuyez la touche d'entrée pour évaluer l'entrée, et utilisez shift-entrée pour des sauts de ligne.";
+"Ruby Console %0 operation %1"="Opération %1 de la Console Ruby %0";
+"Clear"="Effacer";
+"Menu"="Menu";
+"Show shortcuts"="Afficher les raccourcis clavier";
+
+/* Editor */
+"Editor"="Éditeur";
+"Run"="Exécuter";
+"Open"="Ouvrir";
+"More files…"="Plus de fichiers…";
+"Open a text file to edit"="Ouvrir un fichier texte à éditer";
+"Only Ruby code can be run."="On peut seulement exécuter code Ruby.";
+"If this is Ruby code, set the edit mode in the menu."="Si c'est du code Ruby, changez le language dans le menu.";
+"Running the code…"="Exécution du code…";
+"Code was run and returned: \n %0"="Code a été exécuté et retourné: \n %0";
+"Code was run successfully!"="Le code a été exécuté avec succès!";
+"Code failed with an error: \n %0"="Echec du code avec une erreur: \n %0";
+"Unsaved document"="Document non sauvegardé";
+"Save changes to current file?"="Enregistrer les modifications dans le fichier actuel?";
+"Save"="Enregistrer";
+"Save the file as…"="Enregistrer le fichier sous…";
+"Failed to save file"="Echec de l'enregistrement du fichier";
+"New"="Nouveau";
+"Save as…"="Enregistrer sous…";
+"Find…"="Rechercher…";
+"Find and replace…"="Rechercher et remplacer…";
+"Go to line…"="Go to line…";
+"The file has been changed externally.\nOverwrite external changes and save the current file?"="Le fichier a été modifié à l'extérieur. Remplacer les modifications externes et enregistrer le fichier en cours?";
+"The file was changed externally"="Le fichier a été modifié en externe";
+"Reload"="Recharger";
+"Ignore"="Ignorer";
+"Yes"="Oui";
+"No"="Non";
+
+
+/* Features */
+
+/* Binding */
+"binding"="Liaison";
+
+/* History */
+"Go one command back in the history."="Retourne une commande dans l'histoire.";
+"Go one command forward in the history."="Avance une commande dans l'histoire.";
+
+/* Reload Scripts */
+"%0 reloaded"="%0 rechargé";
+"Scripts reloaded"="Scripts rechargés";
+"Click to remove files from auto-loading"="Cliquez pour enlever des fichiers du chargement automatique";
+
+/* Autocomplete */
+"global_variable"="variable globale";
+"instance_variable"="variable d'instance";
+"class_variable"="variable de classe";
+"local_variable"="variable locale";
+"instance_method"="méthode d'instance";
+"class_method"="méthode de classe";
+"module_function"="fonction de module";
+"constant"="constante";
+"module"="module";
+"class"="classe";
+
+/* Documentation */
+"Help"="Aide";
+"Show documentation for the currently focussed word in a browser window."="Afficher la documentation pour le mot ciblé dans une fenêtre de navigateur.";
+"The help function can only lookup Ruby documentation."="La fonction d'aide ne peut que rechercher la documentation Ruby.";
+"Documentation not found"="Documentation pas trouvée";
+"Parameters"="Paramètres";
+"Return value"="Valeur de retour";
+
+/* Select entity */
+"Select"="Sélectionner";
+"Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Cliquer pour sélectionner un objet. Cliquer-droit pour annuler. Appuyez sur Ctrl pour sélectionner des points. Appuyez sur Maj pour utiliser l'inférence.";

@@ -58,11 +58,30 @@
  *     alert(failureReason);
  *   });
  *
+ * This is a rudimentary port to SketchUp's UI::HtmlDialog:
+ * - communication still asynchronous
+ * - sequential (assumption): subsequent messages don't harm/abort previous messages => no ack needed.
+ * - UI::HtmlDialogs are now garbage-collected, but Procs are still not garbage-collected and remain in memory
+ * - UI::HtmlDialog#execute_script does not anymore add extra script elements (or cleans them up now)
+ * - might later make use of onCompleted callback (for both resolve/reject)
+ * - TODO: integrate with Bridge for UI::WebDialog or completely deprecate old version
+ *
  * TODO: require('es6-promise').polyfill(); ?
  * TODO: delayed __get__? or on? pass a Promise or callback function to a JavaScript method like ajax?
  * TODO: rename get? it should not be confused with HTTP request methods, because it acutally uses POST instead of GET
  */
-var Bridge = function (window, document, JSON) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+        module.exports = factory();
+    } else {
+        // Browser globals
+        root.Bridge = factory();
+    }
+}(this, function() {
     /**
      * @exports self as Bridge
      */
@@ -79,7 +98,7 @@ var Bridge = function (window, document, JSON) {
      * The url which responds to requests.
      * @constant {string}
      */
-    var URL_RECEIVE = 'skp:' + NAMESPACE + '.receive';
+    var URL_RECEIVE = 'LoginSuccess';
 
 
     /**
@@ -251,132 +270,6 @@ var Bridge = function (window, document, JSON) {
          */
         var handlers = {};
 
-        /**
-         * The queue of messages waiting to be sent.
-         * SketchUp/OSX/Safari skips skp urls if they happen in a too short time interval.
-         * We pass all skp urls through a queue that makes sure that a new message is only
-         * sent after the SketchUp side has received the previous message and acknowledged it with `Bridge.__ack__()`.
-         * @type {Array<Message>}
-         * @private
-         */
-        var queue = [];
-
-        /**
-         * Whether the queue is running and fetches on its own new messages from the queue.
-         * @type {boolean}
-         * @private
-         */
-        var running = false;
-
-        /**
-         * A hidden input field for message data.
-         * Since skp: urls have a limited length and don't support arbitrary characters, we store the complete message
-         * data in a hidden input field and retrieve it from SketchUp with `UI::WebDialog#get_element_value`.
-         */
-        var requestField;
-
-
-        function createMessageField(id) {
-            var messageField = document.createElement('input');
-            messageField.setAttribute('type', 'hidden');
-            messageField.setAttribute('style', 'display: none');
-            messageField.setAttribute('id', NAMESPACE + '.' + id);
-            document.documentElement.appendChild(messageField);
-            return messageField;
-        }
-
-
-        function cleanUpScripts() {
-            var scripts = document.body.getElementsByTagName('script');
-            for (var i = 0; i < scripts.length; i++) {
-                document.body.removeChild(scripts[i]);
-            }
-        }
-
-
-        /**
-         * Puts a new message into the queue.
-         * If is not running, start it.
-         * @param {Message}          message
-         * @param {function(object)} resolve  A function to call on successful response from server / SketchUp.
-         * @param {function(string)} reject   A function to call on error.
-         * @private
-         */
-        function enQueue (message, resolve, reject) {
-            // We assign an id to this message so we can identify a callback (if there is one).
-            var id = message.id = messageID++;
-            handlers[id] = {
-                name: message.name,
-                resolve: resolve,
-                reject: reject
-            };
-            queue.push(message);
-            // If the queue is not running, start it.
-            // If the message queue contains messages, then it is already running.
-            if (!running) {
-                deQueue();
-            }
-        }
-
-
-        /**
-         * Fetches the next message from the queue and sends it.
-         * If the queue is empty, set the queue not running / idle.
-         * @private
-         */
-        function deQueue() {
-            var message = queue.shift();
-            if (!message) {
-                running = false;
-                return;
-            }
-            // Lock the status variable before sending the message.
-            // (because window.location is synchronous in IE and finishes
-            // before this function finishes.)
-            running = true;
-            send(message);
-        }
-
-
-        /**
-         * Sends a message.
-         * @param {Message} message
-         */
-        function send(message) {
-            // Lazy initialization: On first call of the requestHandler, create the messageField.
-            // Wait a timeout to make sure the DOM is loaded before creating the messageField. (Otherwise blank page)
-            window.setTimeout(function () {
-                // Create the messageField.
-                requestField = createMessageField('requestField');
-                // Now replace this function by the implementation without intialization:
-                var sendImplementation = function (message) {
-                    requestField.value = serialize(message);
-                    // Give enough time to refresh the DOM, so that SketchUp will be able to
-                    // access the latest values of messageField.
-                    window.setTimeout(function () {
-                        window.location.href = URL_RECEIVE;
-                    }, 0);
-                };
-                send = sendImplementation;
-                sendImplementation(message);
-            }, 0);
-        }
-
-
-        /**
-         * Remote tells the bridge that the most recently sent message has been received.
-         * Enables the bridge to send the next message if available.
-         * @param {number} [id]  The id of the message to be acknowledged.
-         * @private              (only for use by corresponding Remote)
-         */
-        self.__ack__ = function (id) {
-            running = false; // Ready to send new messages.
-            cleanUpScripts();
-            if (queue.length > 0) {
-                deQueue();
-            }
-        };
-
 
         /**
          * Remote calls a JavaScript success handler.
@@ -432,7 +325,20 @@ var Bridge = function (window, document, JSON) {
         };
 
 
-        return enQueue;
+        /**
+         * Sends a message.
+         * @param {Message} message
+         */
+        return function send (message, resolve, reject) {
+            // We assign an id to this message so we can identify a callback (if there is one).
+            var id = message.id = messageID++;
+            handlers[id] = {
+                name: message.name,
+                resolve: resolve,
+                reject: reject
+            };
+            sketchup[URL_RECEIVE](message);
+        };
     })();
 
 
@@ -442,13 +348,14 @@ var Bridge = function (window, document, JSON) {
      * @param {function(object)} resolve  A function to call on successful response from server / SketchUp.
      * @param {function(string)} reject   A function to call on error.
      * TODO: error handling, use serialized arguments and apply?
+     * TODO: remove, this was only used for testing syncronous Ruby→JS calls with return value
      * @private
      */
     self.responseHandler = (function () {
 
         var responseField;
 
-        function createMessageField(id) {
+        function createMessageField (id) {
             var messageField = document.createElement('input');
             messageField.setAttribute('type', 'hidden');
             messageField.setAttribute('style', 'display: none');
@@ -458,16 +365,25 @@ var Bridge = function (window, document, JSON) {
         }
 
         /**
+         * Serializes an object.
+         * For serializing/unserializing objects, we currently use JSON.
+         * @param   {object} object  The object to serialize into a string.
+         * @returns {string}
+         */
+        function serialize (object) {
+            return JSON.stringify(object);
+        }
+
+        /**
          * Executes a function and prepares the response field.
          * @param {Message} message
          */
-        function capture(result) {
+        function capture (result) {
             // Lazy initialization: On first call of the requestHandler, create the messageField.
             // Create the messageField.
             responseField = createMessageField('responseField');
             // Now replace this function by the implementation without intialization:
             var captureImplementation = function (result) {
-                self.puts(serialize(result));
                 responseField.value = serialize(result);
             };
             capture = captureImplementation;
@@ -476,28 +392,6 @@ var Bridge = function (window, document, JSON) {
 
         return capture;
     })();
-
-
-    /**
-     * Serializes an object.
-     * For serializing/unserializing objects, we currently use JSON.
-     * @param   {object} object  The object to serialize into a string.
-     * @returns {string}
-     */
-    function serialize(object) {
-        return JSON.stringify(object);
-    }
-
-
-    /**
-     * Unserializes an object.
-     * For serializing/unserializing objects, we currently use JSON.
-     * @param   {string} string  The string of the serialized object.
-     * @returns {object}
-     */
-    function unserialize(string) {
-        return JSON.parse(string);
-    }
 
 
     /**
@@ -677,4 +571,4 @@ var Bridge = function (window, document, JSON) {
 
 
     return self;
-}(window, document, JSON);
+}));

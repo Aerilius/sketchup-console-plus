@@ -1,4 +1,4 @@
-ace.define("ace/occur",["require","exports","module","ace/lib/oop","ace/range","ace/search","ace/edit_session","ace/search_highlight","ace/lib/dom"], function(require, exports, module) {
+define("ace/occur",["require","exports","module","ace/lib/oop","ace/range","ace/search","ace/edit_session","ace/search_highlight","ace/lib/dom"], function(require, exports, module) {
 "use strict";
 
 var oop = require("./lib/oop");
@@ -106,7 +106,7 @@ exports.Occur = Occur;
 
 });
 
-ace.define("ace/commands/occur_commands",["require","exports","module","ace/config","ace/occur","ace/keyboard/hash_handler","ace/lib/oop"], function(require, exports, module) {
+define("ace/commands/occur_commands",["require","exports","module","ace/config","ace/occur","ace/keyboard/hash_handler","ace/lib/oop"], function(require, exports, module) {
 
 var config = require("../config"),
     Occur = require("../occur").Occur;
@@ -151,7 +151,7 @@ function OccurKeyboardHandler() {}
 
 oop.inherits(OccurKeyboardHandler, HashHandler);
 
-;(function() {
+(function() {
 
     this.isOccurHandler = true;
 
@@ -185,7 +185,7 @@ exports.occurStartCommand = occurStartCommand;
 
 });
 
-ace.define("ace/commands/incremental_search_commands",["require","exports","module","ace/config","ace/lib/oop","ace/keyboard/hash_handler","ace/commands/occur_commands"], function(require, exports, module) {
+define("ace/commands/incremental_search_commands",["require","exports","module","ace/config","ace/lib/oop","ace/keyboard/hash_handler","ace/commands/occur_commands"], function(require, exports, module) {
 
 var config = require("../config");
 var oop = require("../lib/oop");
@@ -328,7 +328,8 @@ oop.inherits(IncrementalSearchKeyboardHandler, HashHandler);
         var iSearch = this.$iSearch;
         HashHandler.call(this, exports.iSearchCommands, editor.commands.platform);
         this.$commandExecHandler = editor.commands.addEventListener('exec', function(e) {
-            if (!e.command.isIncrementalSearchCommand) return undefined;
+            if (!e.command.isIncrementalSearchCommand)
+                return iSearch.deactivate();
             e.stopPropagation();
             e.preventDefault();
             var scrollTop = editor.session.getScrollTop();
@@ -355,7 +356,7 @@ oop.inherits(IncrementalSearchKeyboardHandler, HashHandler);
             var extendCmd = this.commands.extendSearchTerm;
             if (extendCmd) { return {command: extendCmd, args: key}; }
         }
-        return {command: "null", passEvent: hashId == 0 || hashId == 4};
+        return false;
     };
 
 }).call(IncrementalSearchKeyboardHandler.prototype);
@@ -365,7 +366,7 @@ exports.IncrementalSearchKeyboardHandler = IncrementalSearchKeyboardHandler;
 
 });
 
-ace.define("ace/incremental_search",["require","exports","module","ace/lib/oop","ace/range","ace/search","ace/search_highlight","ace/commands/incremental_search_commands","ace/lib/dom","ace/commands/command_manager","ace/editor","ace/config"], function(require, exports, module) {
+define("ace/incremental_search",["require","exports","module","ace/lib/oop","ace/range","ace/search","ace/search_highlight","ace/commands/incremental_search_commands","ace/lib/dom","ace/commands/command_manager","ace/editor","ace/config"], function(require, exports, module) {
 "use strict";
 
 var oop = require("./lib/oop");
@@ -405,7 +406,7 @@ function objectToRegExp(obj) {
     return stringToRegExp(obj.expression, obj.flags);
 }
 
-;(function() {
+(function() {
 
     this.activate = function(ed, backwards) {
         this.$editor = ed;
@@ -603,7 +604,7 @@ require("./config").defineOptions(Editor.prototype, "editor", {
 
 });
 
-ace.define("ace/keyboard/emacs",["require","exports","module","ace/lib/dom","ace/incremental_search","ace/commands/incremental_search_commands","ace/keyboard/hash_handler","ace/lib/keys"], function(require, exports, module) {
+define("ace/keyboard/emacs",["require","exports","module","ace/lib/dom","ace/incremental_search","ace/commands/incremental_search_commands","ace/keyboard/hash_handler","ace/lib/keys"], function(require, exports, module) {
 "use strict";
 
 var dom = require("../lib/dom");
@@ -1063,17 +1064,27 @@ exports.handler.addCommands({
     },
     killLine: function(editor) {
         editor.pushEmacsMark(null);
-        var pos = editor.getCursorPosition();
-        if (pos.column === 0 &&
-            editor.session.doc.getLine(pos.row).length === 0) {
-            editor.selection.selectLine();
-        } else {
-            editor.clearSelection();
-            editor.selection.selectLineEnd();
-        }
+        editor.clearSelection();
         var range = editor.getSelectionRange();
+        var line = editor.session.getLine(range.start.row);
+        range.end.column = line.length;
+        line = line.substr(range.start.column)
+        
+        var foldLine = editor.session.getFoldLine(range.start.row);
+        if (foldLine && range.end.row != foldLine.end.row) {
+            range.end.row = foldLine.end.row;
+            line = "x";
+        }
+        if (/^\s*$/.test(line)) {
+            range.end.row++;
+            line = editor.session.getLine(range.end.row);
+            range.end.column = /^\s*$/.test(line) ? line.length : 0;
+        }
         var text = editor.session.getTextRange(range);
-        exports.killRing.add(text);
+        if (editor.prevOp.command == this)
+            exports.killRing.append(text);
+        else
+            exports.killRing.add(text);
 
         editor.session.remove(range);
         editor.clearSelection();
@@ -1094,6 +1105,7 @@ exports.handler.addCommands({
         exec: function(editor) {
             exports.killRing.add(editor.getCopyText());
             editor.commands.byName.cut.exec(editor);
+            editor.setEmacsMark(null);
         },
         readOnly: true,
         multiSelectAction: "forEach"
@@ -1144,6 +1156,12 @@ exports.killRing = {
         str && this.$data.push(str);
         if (this.$data.length > 30)
             this.$data.shift();
+    },
+    append: function(str) {
+        var idx = this.$data.length - 1;
+        var text = this.$data[idx] || "";
+        if (str) text += str;
+        if (text) this.$data[idx] = text;
     },
     get: function(n) {
         n = n || 1;

@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+    <title>Ruby Console+</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="MSThemeCompatible" content="Yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <style type="text/css">
+    html {
+      height: 100%;
+    }
+    body {
+      height: inherit;
+      margin: 0;
+    }
+    #content_frame {
+      border: none;
+      height: inherit;
+      width: 100%;
+    }
+    </style>
+<script type="text/javascript">
+var mocks = {
+    get_settings: {
+        recently_opened_files: ['/home/user/some/folder/recent_file1.rb', '/home/user/somewhere/else/recent_file2.js'],
+    },
+    search_files: function (pattern) {
+        // Return some dummy file paths matching the pattern.
+        var filepaths = ['/home/user/ae_console/src/ae_console/js/base.js', '/home/user/ae_console/src/ae_console/js/ui_bootstrap.js', '/home/user/ae_console/src/ae_console/js/console.js', '/home/user/ae_console/src/ae_console/js/editor.js', '/home/user/ae_console/src/ae_console/core.rb', '/home/user/ae_console/src/ae_console/console.rb', '/home/user/ae_console/src/ae_console/feature.rb', '/home/user/ae_console/src/ae_console/feature_autocomplete.rb', '/home/user/ae_console/src/ae_console/feature_history.rb', '/home/user/ae_console/src/ae_console/feature_highlight_entity.rb', '/home/user/ae_console/src/ae_console/feature_select_entity.rb'];
+        var filepaths = ['Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_advancedcameratools.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_bezier.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_dynamiccomponents.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_dynamiccomponents/css/components.css'];
+        return filepaths.filter(path => path.search(pattern) != -1);
+    },
+    autocomplete_token_list: function(tokens, prefix) {
+        // Generate a random list of autocompletions.
+        var completions = [];
+        var count = 2 + Math.round(3 * Math.random());
+        var types = ['global variable', 'local variable', 'class method', 'instance method', 'constant']
+        for (var i = 0; i < count; i++) {
+            var value = prefix + loremIpsum(1);
+            var type = types[Math.round(5 * Math.random())];
+            completions.push({
+                value:   value,
+                caption: value,
+                meta:    type,
+                docHTML: 
+'<h3><strong>'+value+'</strong>(param1, param2) ⇒ <tt>Type3</tt></h3><hl></hl><p>'+loremIpsum(15, 1)+'</p>' +
+'<p><b>Parameters:</b></p><ul>' +
+'<li><b>param1</b> (<tt>String</tt>) — '+loremIpsum(6, 1)+'</li>' +
+'<li><b>param2</b> (<tt>Numeric</tt>) — '+loremIpsum(5, 1)+'</li>' +
+'</ul><p><b>Return value:</b></p><ul><li>(<tt>Boolean</tt>) — '+loremIpsum(4, 1)+'</li></ul>'
+            });
+        }
+        return completions;
+    },
+    readfile: function(filepath) {
+        return loremIpsum(100 + 900 * Math.random(), 1 + 9 * Math.random());
+    },
+    observe_external_file_changes: null,
+    highlight_entity: true, // success, entity exists
+    get_history: ['Prehistoric', 'Copper Age', 'Bronze Age', 'Iron Age', 'Middle Ages', 'Renaissance', '18th Century', '19th Century'],
+};
+
+function loremIpsum (nWords, nParagraphs) {
+    if (!nWords) nWords = 1;
+    var usePhrases = true;
+    if (!nParagraphs || nParagraphs == 0) { nParagraphs = 1; usePhrases = false; }
+    // Generate a random text.
+    var words = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit'];
+    var paragraphs = [];
+    var wordsPerParagraph = nWords / nParagraphs;
+    for (var i = 0; i < nParagraphs; i++) {
+      var paragraph = [];
+      for (var j = 0; j < wordsPerParagraph; j++) {
+          var index = Math.round(words.length * Math.random());
+          paragraph.push(words[index]);
+      }
+      paragraph = paragraph.join(' ');
+      if (usePhrases) paragraph = paragraph.replace(/^./, paragraph[0].toUpperCase()) + '.';
+      paragraphs.push(paragraph);
+    }
+    return paragraphs.join('\n');
+};
+
+function setupDebugging (requirejs) {
+    // Before loading app, enable the debug helper by setting it as extra dependency.
+    requirejs.config({
+        shim: {
+            app: {
+                deps: ['bridge_debug_helper']
+            }
+        }
+    });
+    requirejs(['bridge_debug_helper'], function (BridgeDebug) {
+        BridgeDebug.mockRequests(mocks);
+    });
+
+    requirejs(['translate'], function (Translate) { Translate.html(); });
+
+    // Load extra features that would normally be loaded through ruby.
+    requirejs(['../features/feature_autocomplete']);
+    requirejs(['../features/feature_highlight_entity']);
+    requirejs(['../features/feature_history']);
+    requirejs(['../features/feature_reload_scripts']);
+    requirejs(['../features/feature_select_entity']);
+}
+
+function onFrameLoad(frame) {
+    try {
+        setupDebugging(frame.contentWindow.requirejs);
+    } catch (e) {
+        if (e.name=='SecurityError') {
+            alert(e.message+'\n Run this from a local server like `python -m SimpleHttpServer`');
+        } else {
+            alert(e);
+        }
+    }
+}
+</script>
+</head>
+<body>
+<iframe id="content_frame" src="../src/ae_console/html/console.html" onload="onFrameLoad(this)"/>
+</body>
+</html>

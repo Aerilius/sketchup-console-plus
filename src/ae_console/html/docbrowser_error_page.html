@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+    <title>Documentation Browser</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="MSThemeCompatible" content="Yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+        body {
+            position: relative;
+            height: 100%;
+            background-color: Window;
+            color: WindowText;
+            font: message-box; /* use system font */
+            font-size: 80% !important; /* This overrides the font-size contained in the system font if it does not follow dpi settings. */
+            cursor: default;
+            overflow: hidden;
+            margin: 0;
+        }
+        .verticallyCentered {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            height: 240px;
+            margin: auto;
+            left: 0;
+            right: 0;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript" src="../external/requirejs/require.js" charset="utf-8"></script>
+</head>
+<body scroll="no" class="unselectable">
+<div class="verticallyCentered">
+<image src="../images/documentation_not_found.svg">
+<h3>Documentation not found</h3>
+</div>
+<script type="text/javascript">
+requirejs(['bridge', 'translate'], function (Bridge, Translate) { Bridge.call('translate'); });
+</script>
+</body>
+</html>

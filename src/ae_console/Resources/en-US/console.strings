@@ -1,0 +1,86 @@
+/* Plugin metadata */
+"Ruby Console+"="Ruby Console+";
+"An alternative Ruby Console with many useful features."="An alternative Ruby Console with many useful features.";
+
+/* Settings */
+"fontSize"="Font size";
+"tabSize"="Tab size";
+"useSoftTabs"="Spaces as tab stops";
+"useWrapMode"="Wrap lines";
+"editMode"="Programming language";
+"theme"="Theme";
+
+/* Console */
+"Console"="Console";
+"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Press the enter key to evaluate the input, and use shift-enter for linebreaks.";
+"Ruby Console %0 operation %1"="Ruby Console %0 operation %1";
+"Clear"="Clear";
+"Menu"="Menu";
+"Show shortcuts"="Show shortcuts";
+
+/* Editor */
+"Editor"="Editor";
+"Run"="Run";
+"Open"="Open";
+"More files…"="More files…";
+"Open a text file to edit"="Open a text file to edit";
+"Only Ruby code can be run."="Only Ruby code can be run.";
+"If this is Ruby code, set the edit mode in the menu."="If this is Ruby code, set the language in the menu.";
+"Running the code…"="Running the code…";
+"Code was run and returned: \n %0"="Code was run and returned: \n %0";
+"Code was run successfully!"="Code was run successfully!";
+"Code failed with an error: \n %0"="Code failed with an error: \n %0";
+"Unsaved document"="Unsaved document";
+"Save changes to current file?"="Save changes to current file?";
+"Save"="Save";
+"Save the current file as…"="Save the current file as…";
+"Failed to save file"="Failed to save file";
+"New"="New";
+"Save as…"="Save as…";
+"Find…"="Find…";
+"Find and replace…"="Find and replace…";
+"Go to line…"="Go to line…";
+"The file has been changed externally.\nOverwrite external changes and save the current file?"="The file has been changed externally.\nOverwrite external changes and save the current file?";
+"The file was changed externally"="The file was changed externally";
+"Reload"="Reload";
+"Ignore"="Ignore";
+"Yes"="Yes";
+"No"="No";
+
+/* Features */
+
+/* Binding */
+"binding"="Binding";
+
+/* History */
+"Go one command back in the history."="Go one command back in the history.";
+"Go one command forward in the history."="Go one command forward in the history.";
+
+/* Reload Scripts */
+"%0 reloaded"="%0 reloaded";
+"Scripts reloaded"="Scripts reloaded";
+"Click to remove files from auto-loading"="Click to remove files from auto-loading";
+
+/* Autocomplete */
+"global_variable"="global variable";
+"instance_variable"="instance variable";
+"class_variable"="class variable";
+"local_variable"="local variable";
+"instance_method"="instance method";
+"class_method"="class method";
+"module_function"="module function";
+"constant"="constant";
+"module"="module";
+"class"="class";
+
+/* Documentation */
+"Help"="Help";
+"Show documentation for the currently focussed word in a browser window."="Show documentation for the currently focussed word in a browser window.";
+"The help function can only lookup Ruby documentation."="The help function can only lookup Ruby documentation.";
+"Documentation not found"="Documentation not found";
+"Parameters"="Parameters";
+"Return value"="Return value";
+
+/* Select entity */
+"Select"="Select";
+"Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing.";

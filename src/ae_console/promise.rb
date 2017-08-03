@@ -1,11 +1,8 @@
 module AE
 
-
-  class Console
-
+  module ConsolePlugin
 
     class Bridge
-
 
       class Promise
         # A simple promise implementation to follow the Promise specification for JavaScript (the instance methods):
@@ -19,7 +16,6 @@ module AE
         # Uses Ruby's `method_missing` to provide a nice proxy functionality to the promise's result. Unfortunately this
         # can cause exceptions when a promise is not yet resolved. Also ruby-like proxies are not realizable in JavaScript.
 
-
         # @private
         module State
           PENDING  = 0
@@ -27,7 +23,6 @@ module AE
           REJECTED = 2
         end
         private_constant(:State) if methods.include?(:private_constant)
-
 
         # A Struct that stores handlers belonging to a promise.
         # If a promise is resolved or rejected, either the `on_resolve` or `on_reject` code block tells what to do (an
@@ -38,7 +33,6 @@ module AE
         # @private
         Handler = Struct.new(:on_resolve, :on_reject, :resolve_next, :reject_next)
         private_constant(:Handler) if methods.include?(:private_constant)
-
 
         # Run an asynchronous operation and return a promise that will receive the result.
         # @overload initialize(executor)
@@ -51,9 +45,10 @@ module AE
         def initialize(executor=nil, &executor_)
           @state    = State::PENDING
           @value    = nil # result or reason
-          @results = []  # all results if multiple were given
+          @results = []   # all results if multiple were given
           @handlers = []  # @type [Array<Handler>]
-          if block_given? || executor.respond_to?(:call)
+          if executor.respond_to?(:call) && (executor.arity == 2 || executor.arity < 0) ||
+             block_given?                && (executor_.arity == 2 || executor_.arity < 0)
             executor ||= executor_
             # thread = Thread.new{
             begin
@@ -65,7 +60,6 @@ module AE
             # thread.abort_on_exception = true
           end
         end
-
 
         # Register an action to do when the promise is resolved.
         # @overload then(on_resolve, on_reject)
@@ -89,8 +83,8 @@ module AE
               on_resolve = block
             end
           end
-          raise ArgumentError("Argument must be callable") unless on_resolve.respond_to?(:call) || on_reject.respond_to?(:call)
-          next_promise = self.class.new { |resolve_next, reject_next|
+          raise ArgumentError.new("Argument must be callable") unless on_resolve.respond_to?(:call) || on_reject.respond_to?(:call)
+          next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
             @handlers << Handler.new(on_resolve, on_reject, resolve_next, reject_next)
           }
           case @state
@@ -102,7 +96,6 @@ module AE
           return next_promise
         end
 
-
         # Register an action to do when the promise is rejected.
         # @param      [#call] on_reject          A function to call when the promise is rejected.
         #                                        (defaults to the given yield block, can be a Proc or Method)
@@ -111,7 +104,7 @@ module AE
         def catch(on_reject=nil, &block)
           on_reject = block if block_given?
           return self unless on_reject.respond_to?(:call)
-          next_promise = self.class.new { |resolve_next, reject_next|
+          next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
             @handlers << Handler.new(nil, on_reject, resolve_next, reject_next)
           }
           case @state
@@ -121,7 +114,6 @@ module AE
           return next_promise
         end
 
-
         # Resolve a promise once a result has been calculated.
         # @overload resolve(*results)
         #   Resolve a promise once a result or several results have been calculated.
@@ -129,8 +121,8 @@ module AE
         # @overload resolve(promise)
         #   Resolve a promise with another promise. It will actually be resolved later as soon as the other is resolved.
         #   @param [Promise] promise
-        # @return [Promise] This promise
-        # @private For convenience. This is supposed to be called from the executor with which the promise is initialized.
+        # @return [nil]
+        # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
           raise Exception.new("A resolved promise can not be resolved again with different results") if @state == State::RESOLVED && !results.empty? && results != @results
@@ -138,7 +130,7 @@ module AE
           if @state == State::PENDING
             # If this promise is resolved with another promise, the final result is not
             # known, so we add a thenable to the second promise to resolve also this one.
-            if results.first.respond_to?(:then) # is_a?(self.class)
+            if results.first.respond_to?(:then) # is_a?(Promise)
               promise = results.first
               promise.then(Proc.new { |*results|
                              resolve(*results)
@@ -162,7 +154,7 @@ module AE
                   handler.resolve_next.call(new_result)
                 end
               rescue Exception => error
-                AE::Console.error(error)
+                AE::ConsolePlugin.error(error)
                 if handler.reject_next.respond_to?(:call)
                   handler.reject_next.call(error)
                 end
@@ -173,15 +165,17 @@ module AE
               end
             end
           end
-          return self
+          # We must return nil, otherwise if this promise is resolved inside the 
+          # block of an outer Promise, the block would implicitely return a 
+          # resolved Promise and cause complicated errors.
+          return nil
         end
         alias_method :fulfill, :resolve
 
-
         # Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
         # @param   [String,Exception]  reason
-        # @return  [Promise]           This promise
-        # @private For convenience. This is supposed to be called from the executor with which the promise is initialized.
+        # @return  [nil]
+        # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def reject(reason=nil)
           raise Exception.new("A once resolved promise can not be rejected later") if @state == State::RESOLVED
           raise Exception.new("A rejected promise can not be rejected again with different reason") if @state == State::REJECTED && reason != @value
@@ -201,7 +195,7 @@ module AE
                   handler.resolve_next.call(new_result)
                 end
               rescue Exception => error
-                AE::Console.error(error)
+                AE::ConsolePlugin.error(error)
                 if handler.reject_next.respond_to?(:call)
                   handler.reject_next.call(error)
                 end
@@ -213,12 +207,20 @@ module AE
             end
           end
           unless handler_called
-            puts "#{self.inspect} rejected with \"#{reason.to_s[0..1000]}\", " + # TODO
-                 "but no `on_reject` handler found (#{caller.join("\n")})"
+            if reason.is_a?(Exception)
+              Kernel.warn "#{self.inspect} rejected with \"#{reason.class.name}\", " +
+                  "but no `on_reject` handler found."
+              AE::ConsolePlugin.error(reason)
+            else
+              Kernel.warn "#{self.inspect} rejected with \"#{reason.to_s[0..1000]}\", " +
+                  "but no `on_reject` handler found.\n#{caller.join("\n")}"
+            end
           end
-          return self
+          # We must return nil, otherwise if this promise is rejected inside the 
+          # block of an outer Promise, the block would implicitely return a 
+          # resolved Promise and cause complicated errors.
+          return nil
         end
-
 
         # Redefine the inspect method to give shorter output.
         # @override
@@ -227,14 +229,10 @@ module AE
           return "#<#{self.class}:0x#{(self.object_id << 1).to_s(16)}>"
         end
 
-
       end # class Promise
-
 
     end # class Bridge
 
+  end # module ConsolePlugin
 
-  end
-
-
-end
+end # module AE

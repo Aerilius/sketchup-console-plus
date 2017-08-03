@@ -1,4 +1,4 @@
-ace.define("ace/theme/kuroir",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
+define("ace/theme/kuroir",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
 exports.isDark = false;
 exports.cssClass = "ace-kuroir";
@@ -23,7 +23,6 @@ background: rgba(245, 170, 0, 0.57);\
 }\
 .ace-kuroir.ace_multiselect .ace_selection.ace_start {\
 box-shadow: 0 0 3px 0px #E8E9E8;\
-border-radius: 2px;\
 }\
 .ace-kuroir .ace_marker-layer .ace_step {\
 background: rgb(198, 219, 174);\

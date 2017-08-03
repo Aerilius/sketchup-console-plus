@@ -1,137 +1,224 @@
-var AE = window.AE || {};
+define(['jquery', 'bootstrap-notify', 'bridge', 'translate'], function ($, _, Bridge, Translate) {
+    return function (aceEditor, settings) {
 
-AE.Console = AE.Console || {};
+        var editor = this,
+            currentFilepath = null,
+            currentFiletype = null,
+            statusCurrentFileUnsaved = false,
+            statusCurrentFileExternallyChanged = false,
+            modes = {
+                '.rb':   'ace/mode/ruby_sketchup',
+                '.css' : 'ace/mode/css',
+                '.html': 'ace/mode/html',
+                '.htm':  'ace/mode/html',
+                '.js':   'ace/mode/javascript',
+                '.json': 'ace/mode/json'
+            };
+        this.aceEditor = aceEditor;
 
-AE.Console.Editor = function(aceEditor, settings) {
+        function initialize () {
+            configureAce(aceEditor);
+            // Listen for changes in the document to keep the (un)saved status variable up-to-date.
+            aceEditor.on('change', function(){
+                statusCurrentFileUnsaved = true;
+            });
+        }
 
-    var editor = this,
-        currentFilepath,
-        currentFiletype,
-        statusCurrentFileUnsaved = false,// TODO: on edit: true; on open new file: false; on save: false; on undo to last step: true
-        modes = {
-            '.rb':   'ace/mode/ruby_sketchup',
-            '.css' : 'ace/mode/css',
-            '.html': 'ace/mode/html',
-            '.htm':  'ace/mode/html',
-            '.js':   'ace/mode/javascript',
-            '.json': 'ace/mode/json'
+        // Implementation of Observer/Observable
+
+        this.addListener = function (eventName, fn) {
+            $(editor).on(eventName, function (event, args) {
+                fn.apply(undefined, args);
+            });
         };
 
-    function initialize () {
-        configureAce(aceEditor);
-
-        // Listen for changes in the document to keep the (un)saved status variable up-to-date.
-        // TODO: Test!
-        aceEditor.on('change', function(){ // TODO: ? aceEditor.getSession(),  aceEditor.getSession().getDocument().on
-            statusCurrentFileUnsaved = true;
-        });
-    }
-
-    // Implementation of Observer/Observable
-
-    this.addListener = function (eventName, fn) {
-        $(editor).on(eventName, function (event, args) {
-            fn.apply(undefined, args);
-        });
-    };
-
-    function trigger (eventName, data) {
-        var args = Array.prototype.slice.call(arguments).slice(1);
-        $(editor).trigger(eventName, [args]);
-    }
-
-    function configureAce(aceEditor) {
-    }
-
-    function confirmSaveChanges() {
-        return window.confirm(AE.Translate.get('Save changes to current file?'));
-    }
-
-    this.focus = function () {
-        aceEditor.focus();
-    };
-
-    this.setContent = function (content) {
-        aceEditor.session.setValue(content);
-    };
-
-    this.getContent = function () {
-        return aceEditor.session.getValue();
-    };
-
-    this.getCurrentTokens = function () {
-        return []; // TODO
-    };
-
-    this.newDocument = function () {
-        // Ask whether to save changes if there are unsaved changes.
-        if (statusCurrentFileUnsaved && confirmSaveChanges()) {
-            return editor.save().then(function() {
-                return editor.newDocument();
-            });
-        } else {
-            editor.setContent('');
-            currentFilepath = null;
-            // Leave the current mode (or set it to plain text or ruby?)
-            // Since the file is new, it has not been saved yet.
-            statusCurrentFileUnsaved = true;
-            return new Bridge.Promise.resolve('');
+        function trigger (eventName, data) {
+            var args = Array.prototype.slice.call(arguments).slice(1);
+            $(editor).trigger(eventName, [args]);
         }
-    };
 
-    this.open = function (filepath) {
-        // Ask whether to save changes if there are unsaved changes.
-        if (statusCurrentFileUnsaved && confirmSaveChanges()) {
-            return editor.save().then(function() {
-                return editor.open(filepath);
+        this.focus = function () {
+            aceEditor.focus();
+        };
+
+        this.setContent = function (content) {
+            aceEditor.session.setValue(content);
+        };
+
+        this.getContent = function () {
+            return aceEditor.session.getValue();
+        };
+
+        this.getCurrentFilepath = function () {
+            return currentFilepath;
+        };
+
+        this.newDocument = function () {
+            // Ask whether to save changes if there are unsaved changes.
+            if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {
+                return editor.save().then(function() {
+                    return editor.newDocument();
+                });
+            } else {
+                if (currentFilepath) closeCurrentFile();
+                editor.setContent('');
+                currentFilepath = null;
+                // Set the mode to plain text or ruby or leave the current mode.
+                // aceEditor.session.setMode('ace/mode/text');
+                // Since the file is new, it has not been saved yet.
+                statusCurrentFileUnsaved = true;
+                statusCurrentFileExternallyChanged = false;
+                // Trigger an event.
+                trigger('opened', '');
+                return new Bridge.Promise.resolve(true); // Return a resolved promise
+            }
+        };
+
+        this.open = function (filepath) {
+            // Ask whether to save changes if there are unsaved changes.
+            if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {
+                return editor.save().then(function() {
+                    return editor.open(filepath);
+                });
+            } else {
+                if (currentFilepath) closeCurrentFile();
+                // Read the file and load its content into the ace editor.
+                return loadFile(filepath).then(function () {
+                    addToRecentlyOpenedFiles(filepath);
+                    // Try to determine the ace mode from the file name.
+                    var extensionMatch = filepath.match(/\.\w{1,3}$/i);
+                    if (extensionMatch && extensionMatch[0]) {
+                        currentFiletype = extensionMatch[0].toLowerCase();
+                        aceEditor.session.setMode(modes[currentFiletype] || 'ace/mode/text');
+                    } else {
+                        currentFiletype = undefined;
+                        aceEditor.session.setMode('ace/mode/text');
+                    }
+                    // Try to jump to the line number where the file was last accessed.
+                    var lineNumber = settings.get('recently_focused_lines', {})[filepath] || 1;
+                    aceEditor.gotoLine(lineNumber); // one-based
+                }, function (error) {
+                    // notification: File failed to open
+                    alert('Failed to open file "' + filepath + '": \n' + error);
+                });
+            }
+        };
+
+        this.save = function () {
+            // Ask where to save the file if no file path is associated.
+            if (typeof currentFilepath !== 'string') {
+                return editor.saveAs();
+            } else {
+                // Write the content to the file.
+                return Bridge.get('writefile', currentFilepath, editor.getContent()).then(function () {
+                    // success
+                    // The file has been saved successfully, so there are no unsaved changes anymore.
+                    statusCurrentFileUnsaved = false;
+                    statusCurrentFileExternallyChanged = false;
+                    // Trigger an event.
+                    trigger('saved', currentFilepath);
+                }, function (error) {
+                    // error notification
+                    alert(Translate.get('Failed to save file') + ' "' + currentFilepath + '": \n' + error);
+                });
+            }
+        };
+
+        this.saveAs = function () {
+            // Ask where to save the file.
+            return Bridge.get('savepanel', Translate.get('Save the current file as…'), currentFilepath).then(function (filepath) {
+                currentFilepath = filepath;
+                return editor.save();
             });
-        } else {
-            // Read the file and load its content into the ace editor.
+        };
+
+        function configureAce (aceEditor) {
+            // Set the mode to Ruby.
+            aceEditor.session.setMode('ace/mode/ruby_sketchup');
+        }
+
+        function alert (message, type) {
+            var notify = $.notify(message, {
+                type: type || 'danger',
+                element: $('#editorContentWrapper'),
+                placement: { from: 'top', align: 'center' },
+                offset: { x: 0, y: 0 },
+                allow_dismiss: true
+            });
+        }
+
+        function confirm (message, action1, action2) {
+            return new Bridge.Promise(function (resolve, reject) {
+                var notify = $.notify('', {
+                    type: 'warning',
+                    element: $('#editorContentWrapper'), // TODO: Remove binding to a specific HTML element.
+                    placement: { from: 'top', align: 'center' },
+                    offset: { x: 0, y: 0 },
+                    allow_dismiss: true,
+                    delay: 0,
+                    template: '<div data-notify="container" class="col-sm-3 alert alert-{0}" role="alert"><span data-notify="message">' +
+                        Translate.get(message) + '&nbsp;<button class="notify_button_action1">' +
+                        Translate.get(action1 || 'Yes') + '</button>&nbsp;<button type="button" class="notify_button_action2">' + 
+                        Translate.get(action2 || 'No') + '</button></span></div>'
+                });
+                $('.notify_button_action1', notify.$ele).on('click', function() {
+                    resolve();
+                    notify.close();
+                });
+                $('.notify_button_action2', notify.$ele).on('click', function() {
+                    reject();
+                    notify.close();
+                });
+            });
+        }
+
+        function confirmSaveChanges () {
+            return window.confirm('Save changes to current file?');
+        }
+
+        function confirmSaveAndIgnoreExternalChanges () {
+            return window.confirm('The file has been changed externally.\nOverwrite external changes and save the current file?');
+        }
+
+        function addToRecentlyOpenedFiles (filepath) {
+            var recentlyOpened = settings.get('recently_opened_files', []);
+            var index = recentlyOpened.indexOf(filepath);
+            if (index != -1) recentlyOpened.splice(index, 1);
+            if (index !=  0) recentlyOpened.unshift(filepath);
+            if (recentlyOpened.length > 10) recentlyOpened.length = 10;
+            settings.set('recently_opened_files', recentlyOpened);
+        }
+
+        function loadFile (filepath) {
+            if (!filepath) filepath = currentFilepath;
             return Bridge.get('readfile', filepath).then(function (content) {
                 editor.setContent(content);
-                currentFilepath = filepath;
-                // Try to determine the ace mode from the file name.
-                var extensionMatch = filepath.match(/\.\w{1,3}$/i);
-                if (extensionMatch && extensionMatch[0]) {
-                    currentFiletype = extensionMatch[0].toLowerCase();
-                    aceEditor.session.setMode(modes[currentFiletype] || 'ace/mode/text');
-                } else {
-                    currentFiletype = undefined;
-                    aceEditor.session.setMode('ace/mode/text');
-                }
                 // Since the file has just been loaded, it has no unsaved changes yet.
                 statusCurrentFileUnsaved = false;
-            }, function (error) {
-                // notification: File failed to open
-                window.alert('Failed to open file "' + filepath + '": \n' + error);
+                statusCurrentFileExternallyChanged = false;
+                currentFilepath = filepath;
+                // Notify on external changes of the just opened file.
+                Bridge.get('observe_external_file_changes', filepath).then(function (path) {
+                    if (path == filepath) {
+                        confirm('The file was changed externally.', 'Reload', 'Ignore')
+                        .then(loadFile);
+                    }
+                });
+                // Trigger an event.
+                trigger('opened', filepath);
             });
         }
-    };
 
-    this.save = function () {
-        // Ask where to save the file if no file path is associated.
-        if (typeof currentFilepath !== 'string') {
-            return editor.saveAs();
-        } else {
-            // Write the content to the file.
-            return Bridge.get('writefile', filepath, editor.getContent()).then(function () {
-                // success
-                // The file has been saved successfully, so there are no unsaved changes anymore.
-                statusCurrentFileUnsaved = false;
-            }, function (error) {
-                // error notification
-                window.alert('Failed to save file "' + currentFilepath + '": \n' + error);
-            });
+        function closeCurrentFile () {
+            if (currentFilepath) {
+                // Remember the currently focused line for this file.
+                var lineNumber = aceEditor.getCursorPosition().row; // zero-based
+                var recentlyFocusedLines = settings.get('recently_focused_lines', {});
+                recentlyFocusedLines[currentFilepath] = lineNumber+1;
+                settings.set('recently_focused_lines', recentlyFocusedLines); // Using the set function to trigger saving.
+            }
         }
-    };
 
-    this.saveAs = function () {
-        // Ask where to save the file.
-        return Bridge.get('savepanel', AE.Translate.get('Save the file as…')).then(function (filepath) {
-            currentFilepath = filepath;
-            return editor.save();
-        });
+        initialize();
     };
-
-    initialize();
-};
+});

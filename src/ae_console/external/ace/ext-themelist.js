@@ -1,4 +1,4 @@
-ace.define("ace/ext/themelist",["require","exports","module","ace/lib/fixoldbrowsers"], function(require, exports, module) {
+define("ace/ext/themelist",["require","exports","module","ace/lib/fixoldbrowsers"], function(require, exports, module) {
 "use strict";
 require("ace/lib/fixoldbrowsers");
 
@@ -22,6 +22,8 @@ var themeData = [
     ["Chaos"                ,"chaos"                   ,  "dark"],
     ["Clouds Midnight"      ,"clouds_midnight"         ,  "dark"],
     ["Cobalt"               ,"cobalt"                  ,  "dark"],
+    ["Gruvbox"              ,"gruvbox"                 ,  "dark"],
+    ["Green on Black"       ,"gob"                     ,  "dark"],
     ["idle Fingers"         ,"idle_fingers"            ,  "dark"],
     ["krTheme"              ,"kr_theme"                ,  "dark"],
     ["Merbivore"            ,"merbivore"               ,  "dark"],
@@ -55,6 +57,6 @@ exports.themes = themeData.map(function(data) {
 
 });
                 (function() {
-                    ace.require(["ace/ext/themelist"], function() {});
+                    window.require(["ace/ext/themelist"], function() {});
                 })();
             

@@ -56,7 +56,7 @@ module AE
       def self.get_documentation_html(classification)
         doc_path = (classification.is_a?(String)) ? classification : classification.doc_path
         # Lookup doc_path in API docs
-        doc_info = get_api_info(doc_path)
+        doc_info = get_info_for_doc_path(doc_path)
         raise DocNotFoundError.new("Documentation not found for #{doc_path}") if doc_info.nil?
         # Generate HTML
         return nil unless doc_info[:description] && !doc_info[:description].empty?

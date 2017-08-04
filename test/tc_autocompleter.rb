@@ -23,10 +23,10 @@ module AE
       def self.apis
         return @apis
       end
-      def self.get_api_info(doc_path)
+      def self.get_info_for_doc_path(doc_path)
         return @apis[doc_path.to_sym]
       end
-      def self.get_api_infos(doc_path)
+      def self.get_infos_for_doc_path(doc_path)
         return @apis.keys.select{ |key| key.to_s.index(doc_path) == 0 }.map{ |key| @apis[key] }
       end
     end

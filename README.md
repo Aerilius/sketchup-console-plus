@@ -12,7 +12,7 @@ It lets you open multiple independent instances of the console and remembers the
 
 ## Installation
 
-- Go to the releases page (↑) and download the latest .rbz file. Open in SketchUp _Window → Extension Manager_ and select the .rbz file.
+- Go to the [releases page](./sketchup-console-plus/releases) (↑) and download the latest .rbz file. Open in SketchUp _Window → Extension Manager_ and select the .rbz file.
 
 - Alternatively, you can install the contents of the `src` directory into your plugins folder.
 

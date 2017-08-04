@@ -1,6 +1,6 @@
 # Ruby Console+
 
-This is a powerful Ruby Console with IDE features like code highlighting, autocompletion and a code editor.
+This is a powerful Ruby Console with IDE features like code highlighting, autocompletion and a code editor.  
 It lets you open multiple independent instances of the console and remembers the command history over sessions.
 
 <p align="center"><img alt="logo" src="./src/ae_console/images/icon_128.png" /></p>
@@ -32,14 +32,15 @@ There are two modes:
 
 - **Entity inspection**: Hover an entity or point in the console output and you will see it highlighted in the model.
 
-- <img alt="Select" src="./src/ae_console/images/select.png" align="left" width="24" /> Get a **reference to an entity** in the model by picking it with the pointer. (No more selecting and doing `Sketchup.active_model.selection[0]`.)
+- <img alt="Select" src="./src/ae_console/images/select.png" align="left" width="24" /> Get a **reference to an entity** in the model by picking it with the pointer. 
+  (No more selecting and doing `Sketchup.active_model.selection[0]`.)
   By holding the ctrl key when the main window is focussed, you can select points and by holding the shift key you can turn on inferencing.
 
 - Remembers which scripts you reload and **reloads scripts** automatically whenever they are changed.
 
 - <img alt="Clear" src="./src/ae_console/images/clear.png" align="left" width="24" /> Clear the console
 
-- <img alt="Help" src="./src/ae_console/images/help.png" align="left" width="24" /> Opens online **documentation** for the currently focused word (beta)
+- <img alt="Help" src="./src/ae_console/images/help.png" align="left" width="24" /> Open online **documentation** for the currently focused word (beta)
 
 - <img alt="Menu" src="./src/ae_console/images/menu.png" align="left" width="24" /> Menu with preferences
 

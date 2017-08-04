@@ -43,7 +43,7 @@ There are two modes:
 
 - <img alt="Menu" src="./src/ae_console/images/menu.png" align="left" width="24" /> Menu with preferences
 
-- **Binding**: An advanced feature that allows to step into an object or class and call method or instance variable as if you were locally inside of that class. Try to set binding to `Math` and you can directly call math functions like `sqrt` without NameError.
+- **Binding**: An advanced feature that allows to step into an object or class and call methods or access instance variables as if you were locally inside of the class source definition. Try to set binding to `Math` and you can directly call math functions like `sqrt` without NameError.
 
 ## License
 

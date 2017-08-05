@@ -23,13 +23,13 @@ It lets you open multiple independent instances of the console and remembers the
 There are two modes:
 
 - <img alt="Console" src="./src/ae_console/images/console.png" align="left" width="24" /> The **console** is a command line interface to try out codes and inspect return values.  
-  With the <kbd>Enter</kbd> key, code will be evaluated (use shift-enter for line breaks).
+  With the <kbd>Enter ↵</kbd> key, code will be evaluated (use <kbd>⇧ Shift</kbd>+<kbd>Enter ↵</kbd> for line breaks).
 
 - <img alt="Editor" src="./src/ae_console/images/editor.png" align="left" width="24" /> The **editor** is a full-featured text editor. Here you turn code into a script and save it as a file. 
 
 ### Features
 
-- **Autocompletion** and **doc tooltips**: Intelligent live autocompletion tells you not only which methods you can call next on a reference but provides you also with detailed info on how to correctly use them.
+- **Autocompletion** and **doc tooltips**: Intelligent live autocompletion tells you not only which methods you can call next on a reference but provides you also with detailed info on how to correctly use them. Use <kbd>Tab ↹</kbd> to accept a suggestion.
 
 - **Entity inspection**: Hover an entity or point in the console output and you will see it highlighted in the model.
 
@@ -38,9 +38,9 @@ There are two modes:
 
 - Remembers which scripts you reload and **reloads scripts** automatically whenever they are changed.
 
-- <img alt="Clear" src="./src/ae_console/images/clear.png" align="left" width="24" /> Clear the console
+- <img alt="Clear" src="./src/ae_console/images/clear.png" align="left" width="24" /> Clear the console (<kbd>Ctrl</kbd>+<kbd>&nbsp;L&nbsp;</kbd>)
 
-- <img alt="Help" src="./src/ae_console/images/help.png" align="left" width="24" /> Open online **documentation** for the currently focused word (beta)
+- <img alt="Help" src="./src/ae_console/images/help.png" align="left" width="24" /> Open online **documentation** for the currently focused word (_beta_) (<kbd>Ctrl</kbd>+<kbd>&nbsp;Q&nbsp;</kbd>)
 
 - <img alt="Menu" src="./src/ae_console/images/menu.png" align="left" width="24" /> Menu with preferences
 

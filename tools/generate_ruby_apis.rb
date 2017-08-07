@@ -1,4 +1,4 @@
-#! /usr/env/ruby
+#!/usr/bin/env ruby
 # This script runs yardoc on the Ruby source installed by rvm 
 # and generates a yardoc database extract for use with ae_console.
 # See here for more info on how yardoc is able to parse ruby source:
@@ -25,7 +25,7 @@ def main(ruby_version)
   api_dir         = "../src/ae_console/apis"
   source_dir      = "~/.rvm/src/ruby-#{ruby_version}"
   # Since the Ruby source directly contains source files in the directory root besides many unrelated folders, we include only .c and .h files.
-  core_includes   = %w'*.c' #  *.h'
+  core_includes   = %w'*.c'  # *.h
   # We only include interesting stdlib and extension files.
   stdlib_includes = %w'base64 benchmark cmath csv debug delegate fileutils find forwardable getoptlong ipaddr logger mathn matrix observer open3 open-uri optionparser optparse ostruct pp prettyprint rubygems scanf set singleton tmpdir unicode_normalize uri yaml'
   ext_includes    = %w'date digest fiber fiddle io json mathn openssl pathname readline ripper socket stringio win32 win32ole zlib'
@@ -42,10 +42,15 @@ def main(ruby_version)
   # Ruby Standard lib
   yardoc_db = "./.yardoc_ruby-stdlib-#{ruby_version}"
   includes = stdlib_includes.map{ |name| File.join(source_dir, 'lib', name) }
+        .map{ |path| [path+'.rb', path] }.flatten # Take both library file and corresponding folder
         .concat(ext_includes.map{ |name| File.join(source_dir, 'ext', name) })
   api_output = File.join(api_dir, "ruby-stdlib-#{ruby_version}.json")
   generate_yardoc(includes, yardoc_db)
   generate_apis(yardoc_db, api_output)
+end
+
+if ARGV.length < 1
+  raise ArgumentError.new('Ruby version number required.')
 end
 
 main(*ARGV)

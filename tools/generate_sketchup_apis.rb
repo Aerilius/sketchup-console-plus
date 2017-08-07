@@ -1,4 +1,4 @@
-#! /usr/env/ruby
+#!/usr/bin/env ruby
 # This script runs yardoc on the SketchUp API doc source
 # and generates a yardoc database extract for use with ae_console.
 #

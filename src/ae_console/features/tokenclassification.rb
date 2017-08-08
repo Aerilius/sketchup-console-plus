@@ -245,7 +245,7 @@ module AE
 
       def get_completions(prefix)
         prefix_regexp = Regexp.new('^' + prefix)
-        completions = DocProvider.get_infos_for_docpath(@returned_namespace).select{ |doc_info|
+        completions = DocProvider.get_infos_for_docpath_prefix(@returned_namespace).select{ |doc_info|
           prefix_regexp =~ doc_info[:name]
         }.map{ |doc_info|
           TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])

@@ -102,7 +102,7 @@ module AE
       # For example if a class path is given, all methods and constants below that path are returned.
       # @param docpath [String] A prefix of a doc path
       # @return [Array<Hash>]
-      def self.get_infos_for_docpath(docpath)
+      def self.get_infos_for_docpath_prefix(docpath)
         return @apis.keys.select{ |key| key.to_s.index(docpath) == 0 }.map{ |key| @apis[key] }
       end
 

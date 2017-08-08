@@ -32,7 +32,7 @@ module AE
         end
         return completions
       rescue AutocompleterError, TokenResolver::TokenResolverError => e
-        return []
+        return (prefix.empty?) ? [] : get_completions_any_token_matches(prefix)
       end
 
       class AutocompleterError < StandardError; end
@@ -85,7 +85,16 @@ module AE
               TokenClassification.new(name, type , context_class.name)
             })
           end
+          if completions.empty?
+            return get_completions_any_token_matches(prefix)
+          end
           return completions
+        end
+
+        def get_completions_any_token_matches(prefix)
+          return DocProvider.get_infos_for_token_prefix(prefix).map{ |doc_info|
+            TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])
+          }
         end
 
       end # class << self

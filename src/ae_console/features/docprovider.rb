@@ -95,7 +95,7 @@ module AE
             return_section += '</ul>'
           end
         end
-        description = escape(doc_info[:description])
+        description = escape(rdoc_to_html(doc_info[:description]))
         html = "<h3>#{signature}</h3><hl></hl><p>#{description}</p>#{parameters_section}#{return_section}"
         return html
       end
@@ -251,9 +251,35 @@ module AE
         }
 
         def escape(text)
-          return text.gsub(/[&<>"'`=\/]/){ |match|
-             HTML_ENCODING_MAP[match]
+          return text.to_s.gsub(/&nbsp;|<\/?\w+>|<\w+\/>|[&<>"'`=\/]/){ |match|
+             match.length == 1 ? HTML_ENCODING_MAP[match] : match
           }
+        end
+
+
+        RDOC_TO_HTML_MAP ||= Hash[{
+          '+'  => 'tt',
+          '_'  => 'i',
+          '*'  => 'i',
+          '__' => 'b',
+          '**' => 'b'
+        }.map{ |markup, tagname|
+          regexp      = Regexp.new("#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}")
+          replacement = "<#{tagname}>\\1</#{tagname}>"
+          [regexp, replacement]
+        }]
+
+        def rdoc_to_html(text)
+          text = text.clone
+          RDOC_TO_HTML_MAP.each{ |regexp, replacement|
+            # Markup
+            text.gsub!(regexp, replacement)
+          }
+          # Spaces
+          text.gsub!(/  +/){ |spaces| '&nbsp;'*spaces.length }
+          # Line breaks
+          text.gsub!(/\n/, '<br/>')
+          return text
         end
 
       end # class << self

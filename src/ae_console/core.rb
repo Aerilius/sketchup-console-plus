@@ -117,7 +117,7 @@ module AE
       @@consoles ||= []
       # Observe output of STDOUT and STDERR (#<Sketchup::Console>).
       # Therefore replace the original stdout (SKETCHUP_CONSOLE) by a modified subclass.
-      @@stdout_redirecter = ObjectReplacer.new('$stdout', Class.new($stdout.class){
+      @@stdout_redirecter ||= ObjectReplacer.new('$stdout', Class.new($stdout.class){
         def write(*args)
           PRIMARY_CONSOLE.value.print(*args) unless PRIMARY_CONSOLE.value.nil?
           super

@@ -67,7 +67,7 @@ module AE
               @documentation_browser.set_url(url)
             else
               @documentation_browser.set_file(ERROR_PAGE_URL) # TODO: or base url of documentation
-              warn("Documentation not found for '#{classification.doc_path}' at url #{url}") # TODO: use notification instead
+              warn("Documentation not found for '#{classification.docpath}' at url #{url}") # TODO: use notification instead
             end
           }
         end

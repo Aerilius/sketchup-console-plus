@@ -10,6 +10,7 @@ module AE
       # The directory where Marshal dumps generated with Yard2Hash are stored.
       API_PATH = File.join(PATH, 'apis') unless defined?(self::API_PATH)
 
+      # [Hash<String,Hash>] docpath => doc_info
       @apis ||= {}
 
       # Loads API docs found in path
@@ -36,11 +37,11 @@ module AE
       end
       DocProvider.initialize()
 
-      # Generates a URL where documentation for the given doc_path can be found
+      # Generates a URL where documentation for the given docpath can be found
       # @param classification [AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
       # @return [String] a URL
       def self.get_documentation_url(classification)
-        toplevel_namespace = classification.class_path.to_s[/^[^\:]+/]
+        toplevel_namespace = classification.namespace.to_s[/^[^\:]+/]
         if ['Sketchup', 'UI', 'Geom', 'LanguageHandler', 'Length', 'SketchupExtension'].include?(toplevel_namespace)
           return get_documentation_url_sketchup(classification)
         else # if Ruby core
@@ -50,14 +51,14 @@ module AE
         end
       end
 
-      # Generates an HTML string of documentation for the given doc_path
-      # @param doc_path [String, AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
+      # Generates an HTML string of documentation for the given docpath
+      # @param docpath [String, AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
       # @return [String] an HTML string
       def self.get_documentation_html(classification)
-        doc_path = (classification.is_a?(String)) ? classification : classification.doc_path
-        # Lookup doc_path in API docs
-        doc_info = get_info_for_doc_path(doc_path)
-        raise DocNotFoundError.new("Documentation not found for #{doc_path}") if doc_info.nil?
+        docpath = (classification.is_a?(String)) ? classification : classification.docpath
+        # Lookup docpath in API docs
+        doc_info = get_info_for_docpath(docpath)
+        raise DocNotFoundError.new("Documentation not found for #{docpath}") if doc_info.nil?
         # Generate HTML
         return nil unless doc_info[:description] && !doc_info[:description].empty?
         html = nil
@@ -92,18 +93,18 @@ module AE
       end
 
       # Returns the API info for a given doc path or nil.
-      # @param doc_path [String] A string identifying a module/class/constant or method.
+      # @param docpath [String] A string identifying a module/class/constant or method.
       # @return [Hash, nil]
-      def self.get_info_for_doc_path(doc_path)
-        return @apis[doc_path.to_sym]
+      def self.get_info_for_docpath(docpath)
+        return @apis[docpath.to_sym]
       end
 
       # Given a doc path this method returns all API infos that match the beginning of the doc path.
       # For example if a class path is given, all methods and constants below that path are returned.
-      # @param doc_path [String] A prefix of a doc path
+      # @param docpath [String] A prefix of a doc path
       # @return [Array<Hash>]
-      def self.get_infos_for_doc_path(doc_path)
-        return @apis.keys.select{ |key| key.to_s.index(doc_path) == 0 }.map{ |key| @apis[key] }
+      def self.get_infos_for_docpath(docpath)
+        return @apis.keys.select{ |key| key.to_s.index(docpath) == 0 }.map{ |key| @apis[key] }
       end
 
       class << self
@@ -114,9 +115,9 @@ module AE
           host = 'http://ruby.sketchup.com/'
           # Compose URL resource path from namespace.
           if classification.type == :class || classification.type == :module
-            path = classification.class_path.to_s.split('::').push(classification.token).join('/') + '.html'
+            path = classification.namespace.to_s.split('::').push(classification.token).join('/') + '.html'
           else
-            path = classification.class_path.to_s.split('::').join('/') + '.html'
+            path = classification.namespace.to_s.split('::').join('/') + '.html'
           end
           # Lookup type of item (class/module, constant, instance method, class method)
           fragment = case classification.type
@@ -137,10 +138,10 @@ module AE
           host = "http://ruby-doc.org/core-#{RUBY_VERSION}/"
           # Compose URL resource path from namespace.
           if classification.type == :class || classification.type == :module
-            path = classification.class_path.to_s.split('::').push(classification.token).join('/') + '.html'
+            path = classification.namespace.to_s.split('::').push(classification.token).join('/') + '.html'
           else
-            # TODO: handle empty class_path (top-level methods)
-            path = classification.class_path.to_s.split('::').join('/') + '.html'
+            # TODO: handle empty namespace (top-level methods)
+            path = classification.namespace.to_s.split('::').join('/') + '.html'
           end
           # Lookup type of item (class/module, constant, instance method, class method)
           encoded_token = classification.token.to_s.split(/(\W+)/).map{ |chars|

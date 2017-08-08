@@ -68,17 +68,17 @@ module AE
             return resolve_identifier_in_scope(token, binding)
           rescue AutocompleterError => e
             # Try to lookup the first token in the documentation (likely to find only constants, module/class names)
-            doc_info = DocProvider.get_info_for_doc_path(token)
+            doc_info = DocProvider.get_info_for_docpath(token)
             if doc_info && doc_info[:path]
               returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
               returned_type = returned_types.first # TODO: consider all
               returned_is_instance = true # assume the method returns not a Class.
               return TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:path], returned_type, returned_is_instance)
             else
-              doc_info = DocProvider.get_info_for_doc_path("Object.#{token}") if doc_info.nil? || doc_info[:path].nil?
-              doc_info = DocProvider.get_info_for_doc_path("Object##{token}") if doc_info.nil? || doc_info[:path].nil?
-              doc_info = DocProvider.get_info_for_doc_path("Kernel.#{token}") if doc_info.nil? || doc_info[:path].nil?
-              doc_info = DocProvider.get_info_for_doc_path("Kernel##{token}") if doc_info.nil? || doc_info[:path].nil?
+              doc_info = DocProvider.get_info_for_docpath("Object.#{token}") if doc_info.nil? || doc_info[:path].nil?
+              doc_info = DocProvider.get_info_for_docpath("Object##{token}") if doc_info.nil? || doc_info[:path].nil?
+              doc_info = DocProvider.get_info_for_docpath("Kernel.#{token}") if doc_info.nil? || doc_info[:path].nil?
+              doc_info = DocProvider.get_info_for_docpath("Kernel##{token}") if doc_info.nil? || doc_info[:path].nil?
               raise AutocompleterError.new(("Doc info not found for `#{token}`")) if doc_info.nil? || doc_info[:path].nil?
               returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
               returned_type = returned_types.first # TODO: consider all
@@ -99,9 +99,9 @@ module AE
           when CONSTANT
             context = context.class unless context.is_a?(Module)
             object = context.const_get(token)
-            class_path = (context == ::Object) ? '' : context.name
+            namespace = (context == ::Object) ? '' : context.name
             type = (object.is_a?(Class)) ? :class : (object.is_a?(Module)) ? :module : :constant
-            return TokenClassificationByObject.new(token, type, class_path, object)
+            return TokenClassificationByObject.new(token, type, namespace, object)
           when GLOBAL_VARIABLE
             raise AutocompleterError.new("No global variable found for `#{token}`") unless Kernel.global_variables.include?(token.to_sym)
             object = TOPLEVEL_BINDING.eval(token)
@@ -109,14 +109,14 @@ module AE
           when INSTANCE_VARIABLE
             raise AutocompleterError.new("No instance variable found for `#{token}`") unless context.instance_variable_defined?(token)
             object = context.instance_variable_get(token)
-            class_path = context.class.name
-            return TokenClassificationByObject.new(token, :instance_variable, class_path, object)
+            namespace = context.class.name
+            return TokenClassificationByObject.new(token, :instance_variable, namespace, object)
           when CLASS_VARIABLE
             context = context.class unless context.is_a?(Module)
             raise AutocompleterError.new("No class variable found for `#{token}`") unless context.class_variable_defined?(token)
             object = context.class_variable_get(token)
-            class_path = (context == ::Object) ? '' : context.name
-            return TokenClassificationByObject.new(token, :class_variable, class_path, object)
+            namespace = (context == ::Object) ? '' : context.name
+            return TokenClassificationByObject.new(token, :class_variable, namespace, object)
           else # Local variable or method
             if binding.eval('local_variables').include?(token)
               object = binding.eval(token.to_s)
@@ -193,26 +193,26 @@ module AE
 
         class TokenNotResolvedError < StandardError; end
 
-        attr_reader :token, :type, :class_path, :doc_path
+        attr_reader :token, :type, :namespace, :docpath
 
-        def initialize(token, type, class_path)
+        def initialize(token, type, namespace)
           @token = token
-          @type = type             # type of the token
-          @class_path = class_path # path of object/class before the token, leading to the token
+          @type = type           # type of the token
+          @namespace = namespace # path of object/class before the token, leading to the token
         end
 
         # Returns the class path and token.
         # @return [String]
-        def doc_path
+        def docpath
           return case type
           when :constant, :module, :class
-            (class_path.empty?) ? token : "#{class_path}::#{token}"
+            (namespace.empty?) ? token : "#{namespace}::#{token}"
           when :class_method, :module_function
-            "#{class_path}.#{token}"
+            "#{namespace}.#{token}"
           when :instance_method
-            "#{class_path}##{token}"
+            "#{namespace}##{token}"
           else
-            class_path # or raise error
+            namespace # or raise error
           end
         end
 
@@ -237,8 +237,8 @@ module AE
       # The next token can be looked up by reflection.
       class TokenClassificationByObject < TokenClassification
 
-        def initialize(token, type, class_path, returned_object)
-          super(token, type, class_path)
+        def initialize(token, type, namespace, returned_object)
+          super(token, type, namespace)
           @returned_object = returned_object # object identified or returned by the token
         end
 
@@ -252,19 +252,19 @@ module AE
             return_value = @returned_object.const_get(token.to_sym)
             @token = token
             @type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-            @class_path = @returned_object.name
+            @namespace = @returned_object.name
             @returned_object = @returned_object.const_get(token)
             return self
           # Class constructor method
           elsif @returned_object.is_a?(Class) && token == 'new'
-            class_path = @returned_object.name
+            namespace = @returned_object.name
             returned_class = @returned_object
-            return TokenClassificationByClass.new(token, :class_method, class_path, returned_class, true)
+            return TokenClassificationByClass.new(token, :class_method, namespace, returned_class, true)
           # Module/Class method, instance method
           elsif @returned_object.respond_to?(token)
             returned_is_instance = !@returned_object.is_a?(Module)
-            returned_class_path = (returned_is_instance) ? @returned_object.class.name : @returned_object.name
-            return TokenClassificationByDoc.new(@token, @type, @class_path, returned_class_path, returned_is_instance).resolve(token)
+            returned_namespace = (returned_is_instance) ? @returned_object.class.name : @returned_object.name
+            return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, returned_is_instance).resolve(token)
           else
             raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for object #{@returned_object.inspect[0..100]}")
           end
@@ -298,8 +298,8 @@ module AE
       # The next token can be looked up by reflection.
       class TokenClassificationByClass < TokenClassification
 
-        def initialize(token, type, class_path, returned_class, returned_is_instance=true)
-          super(token, type, class_path)
+        def initialize(token, type, namespace, returned_class, returned_is_instance=true)
+          super(token, type, namespace)
           @returned_class = returned_class # Class of the object identified or returned by the token.
           @is_instance = returned_is_instance # Whether the object identified or returned by the token is an instance
         end
@@ -312,7 +312,7 @@ module AE
               if return_value.is_a?(Module)
                 @token = token
                 @type = return_value.is_a?(Class) ? :class : :module
-                @class_path = @returned_class.name
+                @namespace = @returned_class.name
                 @returned_class = return_value
                 return self
               else # return_value is an object
@@ -322,19 +322,19 @@ module AE
             elsif token == 'new'
               @token = token
               @type = :class_method
-              @class_path = @returned_class.name
+              @namespace = @returned_class.name
               # @returned_class stays the same
               @is_instance = true
               return self
             # Module/Class method
             else
-              returned_class_path = @returned_class.name
-              return TokenClassificationByDoc.new(@token, @type, @class_path, returned_class_path, @is_instance).resolve(token)
+              returned_namespace = @returned_class.name
+              return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, @is_instance).resolve(token)
             end
           # instance method
           elsif @returned_class.instance_methods.include?(token.to_sym)
-            returned_class_path = @returned_class.name
-            return TokenClassificationByDoc.new(@token, :instance_method, @class_path, returned_class_path, @is_instance).resolve(token)
+            returned_namespace = @returned_class.name
+            return TokenClassificationByDoc.new(@token, :instance_method, @namespace, returned_namespace, @is_instance).resolve(token)
           else
             raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_class.name}")
           end
@@ -367,51 +367,51 @@ module AE
       # The next token can only be looked up in documentation (e.g. type of return value from methods).
       class TokenClassificationByDoc < TokenClassification
 
-        def initialize(token, type, class_path, returned_class_path, returned_is_instance=true)
-          super(token, type, class_path)
-          @returned_class_path = returned_class_path # path of object identified or returned by the token
+        def initialize(token, type, namespace, returned_namespace, returned_is_instance=true)
+          super(token, type, namespace)
+          @returned_namespace = returned_namespace # path of object identified or returned by the token
           @is_instance = returned_is_instance # Whether the object identified or returned by the token is an instance
         end
 
         def resolve(token)
           # Module/Class with constant
           if @is_instance == false &&
-              ( doc_info = DocProvider.get_info_for_doc_path(doc_path + '::' + token) )
+              ( doc_info = DocProvider.get_info_for_docpath(docpath + '::' + token) )
             @token = token
             @type = doc_info[type] # :constant, :class, :module
-            @class_path = doc_info[:path] # Path including the constant
-            @returned_class_path = doc_path # TokenClassification#doc_path, new path after changing other attributes
+            @namespace = doc_info[:path] # Path including the constant
+            @returned_namespace = docpath # TokenClassification#docpath, new path after changing other attributes
             @is_instance = false # assume the constant is a Class or Module
             return self
           # Class constructor method
           elsif @is_instance == false && token == 'new'
             @token = token
             @type = :class_method
-            @class_path = @returned_class_path
-            # @returned_class_path stays the same (constructor returns an instance of the class)
+            @namespace = @returned_namespace
+            # @returned_namespace stays the same (constructor returns an instance of the class)
             @is_instance = true
             return self
           else
             # method
-            path = @returned_class_path + ((@is_instance) ? '#' : '.') + token
-            doc_info = DocProvider.get_info_for_doc_path(path)
+            path = @returned_namespace + ((@is_instance) ? '#' : '.') + token
+            doc_info = DocProvider.get_info_for_docpath(path)
             if doc_info && doc_info[:return] && doc_info[:return].first
               returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
               returned_type = returned_types.first # TODO: consider all
               @token = token
               @type = (@is_instance) ? :instance_method : :class_method
-              @class_path = @returned_class_path
-              @returned_class_path = returned_type
+              @namespace = @returned_namespace
+              @returned_namespace = returned_type
               @is_instance = true # assume the method returns not a Class
             else
               unless try_apply_common_knowledge(token)
-                raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_class_path} through documentation")
+                raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_namespace} through documentation")
               end
             end
           end
           # Try to resolve the returned type to a class in object space, which then allows introspection.
           begin
-            return TokenClassificationByClass.new(@token, @type, @class_path, Autocompleter.resolve_module_path(@returned_class_path), @is_instance)
+            return TokenClassificationByClass.new(@token, @type, @namespace, Autocompleter.resolve_module_path(@returned_namespace), @is_instance)
           rescue NameError
           end
           return self
@@ -419,7 +419,7 @@ module AE
 
         def get_completions(prefix)
           prefix_regexp = Regexp.new('^' + prefix)
-          completions = DocProvider.get_infos_for_doc_path(@returned_class_path).select{ |doc_info|
+          completions = DocProvider.get_infos_for_docpath(@returned_namespace).select{ |doc_info|
             prefix_regexp =~ doc_info[:name]
           }.map{ |doc_info|
             TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:path].sub(/[\.\#][^\.\#]$/, ''))
@@ -432,8 +432,8 @@ module AE
           if COMMON_KNOWLEDGE.include?(token)
             @token = token
             @type = :instance_method
-            @class_path = @returned_class_path
-            @returned_class_path = COMMON_KNOWLEDGE[token]
+            @namespace = @returned_namespace
+            @returned_namespace = COMMON_KNOWLEDGE[token]
             @is_instance = true # Currently in common knowledge we only have instance methods that return instances.
             return true
           end

@@ -24,9 +24,9 @@ module AE
         completions.map!{ |classification|
           {
             :value   => classification.token, # the full token insert
-            :meta    => classification.class_path, # TRANSLATE[classification.type.to_s],
-            :score   => (classification.doc_path[/Sketchup|Geom|UI/]) ? 1000 : 100,
-            :docHTML => (begin;DocProvider.get_documentation_html(classification.doc_path);rescue DocProvider::DocNotFoundError;nil;end)
+            :meta    => classification.namespace, # TRANSLATE[classification.type.to_s],
+            :score   => (classification.docpath[/Sketchup|Geom|UI/]) ? 1000 : 100,
+            :docHTML => (begin;DocProvider.get_documentation_html(classification.docpath);rescue DocProvider::DocNotFoundError;nil;end)
           }
         }
         action_context.resolve completions

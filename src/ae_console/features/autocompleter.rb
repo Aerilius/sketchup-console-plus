@@ -35,6 +35,18 @@ module AE
         return (prefix.empty?) ? [] : get_completions_any_token_matches(prefix)
       end
 
+      def self.complete_filepath(prefix)
+        return ($LOAD_PATH + ['']).map{ |base|
+          prefix_path = File.expand_path(File.join(base, prefix))
+          offset = prefix_path.length - prefix.length
+          paths = Dir.glob(prefix_path + '*')
+          paths.map{ |path|
+            path += '/' if File.directory?(path)
+            path[offset..-1]
+          }
+        }.flatten
+      end
+
       class AutocompleterError < StandardError; end
 
       class << self

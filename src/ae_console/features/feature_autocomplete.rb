@@ -15,6 +15,18 @@ module AE
             binding = console.instance_variable_get(:@binding)
             autocomplete_token_list(action_context, tokens, prefix, binding)
           }
+
+          dialog.on('autocomplete_filepath') { |action_context, prefix|
+            completions = Autocompleter.complete_filepath(prefix)
+            completions.map!{ |filepath|
+              {
+                :value   => filepath,
+                :meta    => :filepath
+              }
+            }
+            action_context.resolve completions
+          }
+
         }
       end
 

@@ -71,7 +71,7 @@ module AE
             # Try to lookup the first token in the documentation (likely to find only constants, module/class names)
             doc_info = DocProvider.get_info_for_docpath(token)
             if doc_info && doc_info[:path]
-              returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
+              returned_types = DocProvider.extract_return_types(doc_info)
               returned_type = returned_types.first # TODO: consider all
               returned_is_instance = true # assume the method returns not a Class.
               return TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:path], returned_type, returned_is_instance)
@@ -81,7 +81,7 @@ module AE
               doc_info = DocProvider.get_info_for_docpath("Kernel.#{token}") if doc_info.nil? || doc_info[:path].nil?
               doc_info = DocProvider.get_info_for_docpath("Kernel##{token}") if doc_info.nil? || doc_info[:path].nil?
               raise AutocompleterError.new(("Doc info not found for `#{token}`")) if doc_info.nil? || doc_info[:path].nil?
-              returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
+              returned_types = DocProvider.extract_return_types(doc_info)
               returned_type = returned_types.first # TODO: consider all
               returned_is_instance = true # assume the method returns not a Class.
               return TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:path], returned_type, returned_is_instance)
@@ -178,30 +178,6 @@ module AE
         end
 
       end # class << self
-
-      # @param returned_types_string [String] A string of type declarations as parsed by yardoc.
-      # @return [Array<String>]
-      # @private
-      def self.parse_return_types(return_types)
-        return [] if return_types.nil?
-        return return_types.map{ |s| parse_return_types(s) }.flatten if return_types.is_a?(Array)
-        # Parse the yardoc type string
-        # Remove nested types
-        return_types.gsub!(/^\[|\]$/, '')
-        return_types.gsub!(/<[^>]*>|\([^\)]*\)/, '')
-        # Split into array of type names.
-        return return_types.split(/,\s*/).compact.map{ |type|
-          # Resolve type naming conventions to class names.
-          case type
-          when 'nil' then 'NilClass'
-          when 'true' then 'TrueClass'
-          when 'false' then 'FalseClass'
-          when 'Boolean' then 'TrueClass' # TrueClass and FalseClass have same methods.
-          when '0' then 'Fixnum'
-          else type
-          end
-        }
-      end
 
     end # module Autocompleter
 

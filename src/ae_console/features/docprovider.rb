@@ -106,6 +106,38 @@ module AE
         return @apis.keys.select{ |key| key.to_s.index(docpath) == 0 }.map{ |key| @apis[key] }
       end
 
+      # @param doc_info [Hash] A string of type declarations as parsed by yardoc.
+      # @return [Array<String>]
+      # @private
+      def self.extract_return_types(doc_info)
+        return [] unless doc_info[:return] && doc_info[:return].first
+        return_types = doc_info[:return].first # Array
+        return parse_return_types(return_types, doc_info[:namespace])
+      end
+
+      def self.parse_return_types(return_types, self_type='NilClass')
+        return [] unless return_types
+        return return_types.map{ |s| parse_return_types(s, self_type) }.flatten if return_types.is_a?(Array)
+        # Parse the yardoc type string
+        # Remove nested types
+        return_types.gsub!(/^\[|\]$/, '')
+        return_types.gsub!(/<[^>]*>|\([^\)]*\)/, '')
+        # Split into array of type names.
+        return return_types.split(/,\s*/).compact.map{ |type|
+          # Resolve type naming conventions to class names.
+          case type
+          when 'nil' then 'NilClass'
+          when 'true' then 'TrueClass'
+          when 'false' then 'FalseClass'
+          when 'Boolean' then 'TrueClass' # TrueClass and FalseClass have same methods.
+          when '0' then 'Fixnum'
+          when 'self' then self_type
+          when 'void' then 'NilClass'
+          else type
+          end
+        }
+      end
+
       class << self
 
         private

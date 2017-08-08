@@ -222,7 +222,7 @@ module AE
           path = @returned_namespace + ((@is_instance) ? '#' : '.') + token
           doc_info = DocProvider.get_info_for_docpath(path)
           if doc_info && doc_info[:return] && doc_info[:return].first
-            returned_types = Autocompleter.parse_return_types(doc_info[:return].first)
+            returned_types = DocProvider.extract_return_types(doc_info)
             returned_type = returned_types.first # TODO: consider all
             @token = token
             @type = (@is_instance) ? :instance_method : :class_method

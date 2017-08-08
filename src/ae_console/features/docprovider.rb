@@ -14,28 +14,26 @@ module AE
       @apis ||= {}
 
       # Loads API docs found in path
-      def self.initialize()
-        return unless @apis.empty? # Abort if already loaded
-        # Iterate over all files in the directory that match the .json extension.
-        Dir.entries(API_PATH).each{ |file|
-          next if file == '.' || file == '..' || !file[/\.json$/]
-          # Open the file.
-          path = File.join(API_PATH, file)
-          File.open(path, 'r'){ |f|
+      # @param filepaths [String] one or more files to load.
+      def self.load_apis(*filepaths)
+        filepaths.flatten.each{ |filepath|
+          File.open(filepath, 'r'){ |f|
             string = f.read
             begin
-              result = JSON.parse(string, :symbolize_names => true)
-              # When successfully unmarshalled, add it to the APIs.
-              @apis.merge!(result) if result.is_a?(Hash)
+              api = JSON.parse(string, :symbolize_names => true)
+              @apis.merge!(api) if api.is_a?(Hash)
             rescue JSON::JSONError
-              $stderr.write("#{self} failed to load #{path}\n")
+              $stderr.write("#{self} failed to load #{filepath}\n")
               next
             end
           }
         }
+        # Initialize search indices.
+        initialize_hash_by_token(@apis)
+        initialize_index_by_docpath()
+        initialize_index_by_token()
         nil
       end
-      DocProvider.initialize()
 
       # Generates a URL where documentation for the given docpath can be found
       # @param classification [AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
@@ -188,6 +186,8 @@ module AE
       end # class << self
 
       class DocNotFoundError < StandardError; end
+
+      DocProvider.load_apis(Dir.glob(File.join(API_PATH, '*.json')))
 
     end
 

@@ -179,14 +179,6 @@ module AE
 
       end # class << self
 
-      # @param path [String]
-      # @raise [NameError]
-      # @private
-      def self.resolve_module_path(path)
-        tokens = path.split('::')
-        return tokens.reduce(::Object){ |modul, token| modul.const_get(token) }
-      end
-
       # @param returned_types_string [String] A string of type declarations as parsed by yardoc.
       # @return [Array<String>]
       # @private

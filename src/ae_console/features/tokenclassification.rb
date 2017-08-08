@@ -237,7 +237,7 @@ module AE
         end
         # Try to resolve the returned type to a class in object space, which then allows introspection.
         begin
-          return TokenClassificationByClass.new(@token, @type, @namespace, Autocompleter.resolve_module_path(@returned_namespace), @is_instance)
+          return TokenClassificationByClass.new(@token, @type, @namespace, resolve_module_path(@returned_namespace), @is_instance)
         rescue NameError
         end
         return self
@@ -251,6 +251,16 @@ module AE
           TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])
         }
         return completions
+      end
+
+      private
+
+      # @param path [String]
+      # @raise [NameError]
+      # @private
+      def resolve_module_path(path)
+        tokens = path.split('::')
+        return tokens.reduce(::Object){ |modul, token| modul.const_get(token) }
       end
 
       def try_apply_common_knowledge(token)

@@ -5,7 +5,7 @@ module AE
     class FeatureDocumentation
 
       require(File.join(PATH, 'features', 'docprovider.rb'))
-      require(File.join(PATH, 'features', 'autocompleter.rb'))
+      require(File.join(PATH, 'features', 'tokenresolver.rb'))
       require(File.join(PATH, 'bridge.rb'))
       require(File.join(PATH, 'translate.rb'))
 
@@ -56,7 +56,7 @@ module AE
       # @param [Array<String>] token_list
       # @param [Binding] binding
       def lookup(tokens, binding)
-        classification = Autocompleter.resolve_tokens(tokens, binding) # raises AutocompleterError
+        classification = TokenResolver.resolve_tokens(tokens, binding) # raises ResolverError
         url = DocProvider.get_documentation_url(classification)
         if !defined?(Sketchup::Http)
           @documentation_browser.set_url(url)
@@ -71,7 +71,7 @@ module AE
             end
           }
         end
-      rescue Autocompleter::AutocompleterError => error
+      rescue TokenResolver::TokenResolverError => error
         # Load an error page
         @documentation_browser.set_url(ERROR_PAGE_URL)
         warn("Documentation could not be resolved for '#{tokens.join}'") # TODO: use notification instead

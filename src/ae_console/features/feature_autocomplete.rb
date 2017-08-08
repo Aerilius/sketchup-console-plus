@@ -11,7 +11,7 @@ module AE
         app.plugin.on(:console_added){ |console|
           dialog = console.dialog
 
-          dialog.on('autocomplete_token_list') { |action_context, tokens, prefix|
+          dialog.on('autocomplete_tokens') { |action_context, tokens, prefix|
             binding = console.instance_variable_get(:@binding)
             autocomplete_token_list(action_context, tokens, prefix, binding)
           }
@@ -24,13 +24,14 @@ module AE
         completions.map!{ |classification|
           {
             :value   => classification.token, # the full token insert
-            :caption => classification.token.to_s, # the displayed text, but must match the value (?)
-            :meta    => TRANSLATE[classification.type.to_s], # or classification.class_path
-            :score   => 1000,
-            :docHTML => (DocProvider.get_documentation_html(classification.doc_path) rescue nil) # DocNotFoundError
+            :meta    => classification.class_path, # TRANSLATE[classification.type.to_s],
+            :score   => (classification.doc_path[/Sketchup|Geom|UI/]) ? 1000 : 100,
+            :docHTML => (begin;DocProvider.get_documentation_html(classification.doc_path);rescue DocProvider::DocNotFoundError;nil;end)
           }
         }
         action_context.resolve completions
+      rescue Exception => e
+        ConsolePlugin.error(e)
       end
 
       def get_javascript_path

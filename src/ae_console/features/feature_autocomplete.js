@@ -36,29 +36,26 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
     var textCompleter;
     var runtimeCompleter = {
         getCompletions: function (editor, session, pos, prefix, callback) {
+            // Use this autocompleter only when mode is ruby.
+            if (editor.session.$modeId != 'ace/mode/ruby_sketchup' && editor.session.$modeId != 'ace/mode/ruby') return [];
+            // The prefix provided by ace uses a poor splitting regexp instead of the tokenizer.
+            //   Example: leading @@ and @ are missing from the prefix.
+            // Instead, we take the prefix from the current token from the tokenizer.
+            // To get the completion correctly inserted, we must give to ace a 
+            // completion relative to the original prefix, that means subtract 
+            // any surplus in front of the prefix.
             var tokens = getCurrentTokens(editor);
-            // Ace splits tokens sometimes incorrectly. 
-            // We can pass the corrected prefix to
-            // Ruby, but ace would replace the incomplete prefix by the 
-            // corrected one and lead to duplication.
-            // We later subtract the correction from the completions.
-            var toBeSubtracted = null;
-            var last = tokens[tokens.length-1];
-            var missingPrefixes = ['@@', '@', ''];
-            for (var i = 0; i < missingPrefixes.length; i++) {
-                var prefix2 = missingPrefixes[i];
-                if (last == prefix2 + prefix) {
-                    prefix = prefix2 + prefix;
-                    toBeSubtracted = prefix2;
-                    tokens.pop();
-                    break;
-                }
-            }
+            var currentToken = tokens.pop(); // Prefix refers to this token.
+            if (currentToken == null) return [];
+            var prefixStart = currentToken.search(prefix);
+            var prefixEnd = prefixStart + prefix.length;
+            prefix = currentToken.substring(0, prefixEnd);
             // Query SketchUp for completions.
             // if (tokens.length == 0) textCompleter.getCompletions(editor, session, pos, prefix, callback);
-            Bridge.get('autocomplete_token_list', tokens, prefix).then(function (completions) {
+            Bridge.get('autocomplete_tokens', tokens, prefix).then(function (completions) {
                 for (var i = 0; i < completions.length; i++) {
-                    if (toBeSubtracted) completions[i].value = completions[i].value.substring(toBeSubtracted.length);
+                    // Restore the completion to match the prefix only, not the looked-up string.
+                    completions[i].value = completions[i].value.substring(prefixStart);
                 }
                 callback(null, completions);
             });
@@ -90,31 +87,13 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
         // Add the runtimeCompleter and remove default completers (except snippetCompleter).
         // The keyWordCompleter includes by default Ruby on Rails method names that are not available in SketchUp.
         // The textCompleter has too many irrelevant results, even worse due to the fuzzy filter.
-        language_tools.setCompleters([runtimeCompleter, language_tools.snippetCompleter]);
+        consoleAceEditor.completers = [runtimeComplete];
+        editorAceEditor.completers  = [runtimeComplete, language_tools.textCompleter, language_tools.snippetCompleter];
 
         var Autocomplete = ace.require('ace/autocomplete').Autocomplete;
         // Patch: Ace autocomplete installs shortcuts that conflict with some used by the console and editor.
         // Return is used by the console to submit and execute the code, and by the editor to insert a line break.
         Autocomplete.prototype.commands['Return'] = null;
-        /*Autocomplete.prototype.commands.Return = function (editor) {
-            // Actually we should patch only the instance of Autocomplete that is used by the console, 
-            // but we don't have access to it, so we switch depending on whether the console is focused.
-            if (consoleAceEditor.isFocused()) {
-                // If live autocompletion is on and the first autoselected completion is selected, we cancel and
-                // let the console handle enter to submit and execute the code.
-                if (editor.getOption('enableLiveAutocompletion') && editor.completer.popup.getRow() == 0) {
-                    editor.completer.detach();
-                    // Allow bubbling of the Return key event, so the default action (Console submit) is triggered.
-                    return false;
-                } else {
-                    // If a lower completion has been selected (intentionally), we allow enter to accept it.
-                    editor.completer.insertMatch();
-                }
-            } else if (editorAceEditor.isFocused()) {
-                // Default enter action.
-                editor.completer.insertMatch();
-            }
-        };*/
         // Shift-enter is used by the console to insert line breaks.
         Autocomplete.prototype.commands['Shift-Return'] = null;
     });

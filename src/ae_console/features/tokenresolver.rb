@@ -137,9 +137,20 @@ module AE
             doc_info = DocProvider.get_info_for_docpath("Kernel##{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
             raise TokenResolverError.new(("Doc info not found for `#{token}`")) unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
             returned_types = DocProvider.extract_return_types(doc_info)
-            returned_type = returned_types.first # TODO: consider all
-            returned_is_instance = true # assume the method returns not a Class.
-            return TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:path], returned_type, returned_is_instance)
+            classifications = returned_types.map{ |returned_type|
+              begin
+                # Try to resolve the returned type to a class in object space, which then allows introspection.
+                returned_class = resolve_module_path(returned_type)
+                TokenClassificationByClass.new(token, doc_info[:type], doc_info[:namespace], returned_class, true) # is_instance = true, assume the method returns not a Class
+              rescue NameError
+                TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:namespace], returned_type, true) # is_instance = true, assume the method returns not a Class
+              end
+            }
+            if classifications.length == 1
+              return classifications.first
+            else
+              return MultipleTokenClassification.new(classifications)
+            end
           end
 
         end

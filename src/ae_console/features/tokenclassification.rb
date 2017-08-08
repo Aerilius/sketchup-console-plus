@@ -287,26 +287,31 @@ module AE
           # method
           path = @returned_namespace + ((@is_instance) ? '#' : '.') + token
           doc_info = DocProvider.get_info_for_docpath(path)
-          if doc_info && doc_info[:return] && doc_info[:return].first
+          if doc_info && doc_info[:return]
             returned_types = DocProvider.extract_return_types(doc_info)
-            returned_type = returned_types.first # TODO: consider all
-            @token = token
-            @type = (@is_instance) ? :instance_method : :class_method
-            @namespace = @returned_namespace
-            @returned_namespace = returned_type
-            @is_instance = true # assume the method returns not a Class
+            classifications = returned_types.map{ |returned_type|
+              type = (@is_instance) ? :instance_method : :class_method
+              begin
+                # Try to resolve the returned type to a class in object space, which then allows introspection.
+                returned_class = resolve_module_path(returned_type)
+                TokenClassificationByClass.new(token, type, @returned_namespace, returned_class, true) # is_instance = true, assume the method returns not a Class
+              rescue NameError
+                TokenClassificationByDoc.new(token, type, @returned_namespace, returned_type, true) # is_instance = true, assume the method returns not a Class
+              end
+            }
+            if classifications.length == 1
+              return classifications.first
+            else
+              return MultipleTokenClassification.new(classifications)
+            end
           else
-            unless try_apply_common_knowledge(token)
+            if try_apply_common_knowledge(token)
+              return self
+            else
               raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_namespace} through documentation")
             end
           end
         end
-        # Try to resolve the returned type to a class in object space, which then allows introspection.
-        begin
-          return TokenClassificationByClass.new(@token, @type, @namespace, resolve_module_path(@returned_namespace), @is_instance)
-        rescue NameError
-        end
-        return self
       end
 
       def get_completions(prefix)

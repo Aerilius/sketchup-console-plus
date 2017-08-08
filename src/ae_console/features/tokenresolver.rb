@@ -23,7 +23,11 @@ module AE
       # @return [AE::ConsolePlugin::TokenClassification]
       # @raise TokenResolverError
       def self.resolve_tokens(tokens, binding=TOPLEVEL_BINDING)
-        return ForwardEvaluationResolver.resolve_tokens(tokens, binding)
+        begin
+          return ForwardEvaluationResolver.resolve_tokens(tokens, binding)
+        rescue TokenResolverError => e
+          return BacktrackingResolver.resolve_tokens(tokens)
+        end
       end
 
       # @param path [String]
@@ -141,6 +145,61 @@ module AE
         end
 
       end # module ForwardEvaluationResolver
+
+      module BacktrackingResolver
+
+        # Resolves a token list to a most likely classification using documentation and backtracking.
+        # That means all entries in the documentation matching the last token are 
+        # narrowed down to those that are valid for the return type of the 
+        # second-last token etc.
+        # @param tokens [Array<String>]
+        # @return [TokenClassification]
+        # @raise TokenResolverError
+        def self.resolve_tokens(tokens)
+          raise ArgumentError.new("At least one token required.") if tokens.empty?
+          tokens = tokens.clone # We will mutate the array.
+          consumed = []
+          consumed << first_token = tokens.pop
+          consumed << first_token = tokens.pop if first_token =~ SCOPE_OPERATOR || first_token =~ METHOD_OPERATOR
+          doc_infos = DocProvider.get_infos_for_token(first_token)
+          possibilities = doc_infos.map{ |d| [d[:namespace], d] }
+          while possibilities.length > 1 && !tokens.empty?
+            consumed << previous_token = tokens.pop
+            next if previous_token =~ SCOPE_OPERATOR || previous_token =~ METHOD_OPERATOR
+            previous_infos = DocProvider.get_infos_for_token(previous_token)
+            # Special case for the last token: It may be a variable name that we cannot lookup, we still want to keep the already found possibilities.
+            new_possibilities = (tokens.empty?) ? possibilities.clone : []
+            possibilities.each{ |namespace, doc_info|
+              previous_infos.each{ |p_info|
+                next unless p_info[:return]
+                returned_types = DocProvider.extract_return_types(p_info)
+                if returned_types.include?(namespace)
+                  new_possibilities << [p_info[:namespace], doc_info] if !new_possibilities.find{ |item| item.first == p_info[:namespace] } # Add no duplicates
+                end
+              }
+            }
+            possibilities = new_possibilities
+          end
+          # Now possibilities should be empty or 1 or multiple (if no tokens anymore, unlikely)
+          classifications = []
+          possibilities.each{ |p_info|
+            doc_info = p_info[1]
+            next unless doc_info[:return]
+            returned_types = DocProvider.extract_return_types(doc_info)
+            returned_types.each{ |returned_type|
+              classifications << TokenClassificationByDoc.new(first_token, doc_info[:type], doc_info[:namespace], returned_type, true)
+            }
+          }
+          if classifications.empty?
+            raise TokenResolverError.new("Backtracking did not find valid possibilities for tokens #{consumed.inspect}")
+          elsif classifications.length == 1
+            return classifications.first
+          else
+            return MultipleTokenClassification.new(classifications)
+          end
+        end
+
+      end # module BacktrackingResolver
 
     end # module Resolver
 

@@ -57,6 +57,72 @@ module AE
         return []
       end
 
+      # These methods needed for testing equality and uniq:
+
+      def eql?(other)
+        return other.is_a?(TokenClassification) &&
+               @token == other.token &&
+               @type == other.type &&
+               @namespace = other.namespace
+      end
+
+      def hash
+        return @token.hash + @type.hash + @namespace.hash
+      end
+
+    end
+
+    # This is a wrapper around a set of multiple classifications under 
+    # consideration for the same token.
+    class MultipleTokenClassification < TokenClassification
+
+      def initialize(classifications)
+        raise ArgumentError.new('Argument must be an array') unless classifications.is_a?(Array)
+        raise ArgumentError.new('Argument cannot be an empty array') if classifications.empty?
+        raise ArgumentError.new('All given classifications must be for the same token') unless classifications.map(&:token).uniq.length == 1
+        # If the argument contains MultipleTokenClassifications, decompose them.
+        classifications.map!{ |item|
+          (item.is_a?(MultipleTokenClassification)) ? item.classifications : item
+        }.flatten!
+        classifications.uniq!
+        # Code that only supports a unique namespace/type or type will receive only the first one!
+        super(classifications.first.token, classifications.first.type, classifications.first.namespace)
+        @classifications = classifications
+      end
+
+      attr_reader :classifications
+
+      def resolve(token)
+        results = []
+        @classifications.each{ |classification|
+          begin
+            result = classification.resolve(token)
+            if result.is_a?(MultipleTokenClassification)
+              results.concat(result.classifications)
+            else
+              results << result
+            end
+          rescue TokenNotResolvedError
+            next
+          end
+        }
+        if classifications.empty?
+          raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for multiple classications #{self.inspect[0..100]}")
+        elsif classifications.length == 1
+          return classifications.first
+        else
+          return MultipleTokenClassification.new(results) # This ensures result does not include duplicates
+        end
+      end
+
+      def get_completions(prefix)
+        results = []
+        @classifications.each{ |classification|
+          results.concat(classification.get_completions(prefix))
+        }
+        return results
+      end
+
     end
 
     # We have a reference to the actual object.

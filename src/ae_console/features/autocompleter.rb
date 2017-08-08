@@ -79,6 +79,13 @@ module AE
               TokenClassification.new(name, :local_variable, context_class.name)
             })
             # Local methods
+            # Take the method from the correct module if it comes from an included module.
+            context_class.included_modules.each{ |modul|
+              completions.concat(modul.methods.grep(prefix_regexp).map{ |method|
+                TokenClassification.new(method, :instance_method, modul.name)
+              })
+            }
+            # Methods defined in this class/module
             is_instance = !context.is_a?(Module)
             type = (is_instance) ? :instance_method : (context.is_a?(Class)) ? :class_method : :module_function
             completions.concat((context.methods.concat(context.private_methods)).grep(prefix_regexp).map{ |name|

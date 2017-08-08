@@ -155,7 +155,15 @@ module AE
         # Module/Class method, instance method
         elsif @returned_object.respond_to?(token)
           returned_is_instance = !@returned_object.is_a?(Module)
-          returned_namespace = (returned_is_instance) ? @returned_object.class.name : @returned_object.name
+          returned_class = (returned_is_instance) ? @returned_object.class : @returned_object
+          # Take the method from the correct module if it comes from an included module.
+          returned_class.included_modules.each{ |modul|
+            if modul.instance_methods.include?(token.to_sym)
+              returned_class = modul
+              break
+            end
+          }
+          returned_namespace = returned_class.name
           return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, returned_is_instance).resolve(token)
         else
           raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for object #{@returned_object.inspect[0..100]}")
@@ -165,8 +173,14 @@ module AE
       def get_completions(prefix)
         prefix_regexp = Regexp.new('^' + prefix)
         completions = []
-        is_instance = !@returned_object.is_a?(Module)
-        if is_instance
+        returned_is_instance = !@returned_object.is_a?(Module)
+        if returned_is_instance
+          # Take the method from the correct module if it comes from an included module.
+          @returned_object.class.included_modules.each{ |modul|
+            completions.concat(modul.instance_methods.grep(prefix_regexp).map{ |method|
+              TokenClassification.new(method, :instance_method, modul.name)
+            })
+          }
           completions.concat(@returned_object.methods.grep(prefix_regexp).map{ |method|
             TokenClassification.new(method, :instance_method, @returned_object.class.name)
           })
@@ -225,6 +239,13 @@ module AE
           end
         # instance method
         elsif @returned_class.instance_methods.include?(token.to_sym)
+          # Take the method from the correct module if it comes from an included module.
+          @returned_class.included_modules.each{ |modul|
+            if modul.instance_methods.include?(token.to_sym)
+              @returned_class = modul
+              break
+            end
+          }
           returned_namespace = @returned_class.name
           return TokenClassificationByDoc.new(@token, :instance_method, @namespace, returned_namespace, @is_instance).resolve(token)
         else
@@ -236,6 +257,12 @@ module AE
         prefix_regexp = Regexp.new('^' + prefix)
         completions = []
         if @is_instance
+          # Take the method from the correct module if it comes from an included module.
+          @returned_class.included_modules.each{ |modul|
+            completions.concat(modul.instance_methods.grep(prefix_regexp).map{ |method|
+              TokenClassification.new(method, :instance_method, modul.name)
+            })
+          }
           completions.concat(@returned_class.instance_methods.grep(prefix_regexp).map{ |method|
             TokenClassification.new(method, :instance_method, @returned_class.name)
           })

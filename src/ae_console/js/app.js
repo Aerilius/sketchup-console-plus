@@ -109,7 +109,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
                     placement: { from: 'top', align: 'center' },
                     offset: { x: 0, y: 0 },
                     mouse_over: 'pause',
-                    allow_dismiss: false
+                    allow_dismiss: true
                 });
                 notify.$ele.removeClass('col-xs-11'); // Hack to disable responsiveness (notification stretching over full width in narrow dialogs).
                 // Dispatch the code evaluation to allow the GUI to update (show the notification) 

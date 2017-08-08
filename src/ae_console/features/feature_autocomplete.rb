@@ -26,7 +26,7 @@ module AE
             :value   => classification.token, # the full token insert
             :meta    => classification.namespace, # TRANSLATE[classification.type.to_s],
             :score   => (classification.docpath[/Sketchup|Geom|UI/]) ? 1000 : 100,
-            :docHTML => (begin;DocProvider.get_documentation_html(classification.docpath);rescue DocProvider::DocNotFoundError;nil;end)
+            :docHTML => (begin;DocProvider.get_documentation_html(classification);rescue DocProvider::DocNotFoundError;nil;end)
           }
         }
         action_context.resolve completions

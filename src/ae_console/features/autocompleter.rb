@@ -40,7 +40,7 @@ module AE
       # Resolves a token list to a classification that wraps an token/object.
       # @param tokens [Array<String>]
       # @param binding [Binding]
-      # @return [AE::ConsolePlugin::Autocompleter::TokenClassification]
+      # @return [AE::ConsolePlugin::TokenClassification]
       # @raise AutocompleterError
       def self.resolve_tokens(tokens, binding=TOPLEVEL_BINDING)
         tokens = tokens.clone # We will mutate the array.

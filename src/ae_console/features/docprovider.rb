@@ -36,7 +36,7 @@ module AE
       end
 
       # Generates a URL where documentation for the given docpath can be found
-      # @param classification [AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
+      # @param classification [AE::ConsolePlugin::TokenClassification] Describes an object/method in Ruby
       # @return [String] a URL
       def self.get_documentation_url(classification)
         toplevel_namespace = classification.namespace.to_s[/^[^\:]+/]
@@ -50,13 +50,13 @@ module AE
       end
 
       # Generates an HTML string of documentation for the given docpath
-      # @param docpath [String, AE::ConsolePlugin::Autocompleter::TokenClassification] Describes an object/method in Ruby
+      # @param classification [AE::ConsolePlugin::TokenClassification] Describes an object/method in Ruby
       # @return [String] an HTML string
       def self.get_documentation_html(classification)
-        docpath = (classification.is_a?(String)) ? classification : classification.docpath
-        # Lookup docpath in API docs
-        doc_info = get_info_for_docpath(docpath)
-        raise DocNotFoundError.new("Documentation not found for #{docpath}") if doc_info.nil?
+        doc_info = get_info_for_docpath(classification.docpath)
+        doc_info = get_info_for_docpath(classification.namespace+'#initialize') if doc_info.nil? && classification.token == 'new'
+        doc_info = get_info_for_docpath(classification.namespace+'.new')        if doc_info.nil? && classification.token == 'initialize'
+        raise DocNotFoundError.new("Documentation not found for #{classification}") if doc_info.nil?
         # Generate HTML
         return nil unless doc_info[:description] && !doc_info[:description].empty?
         html = nil
@@ -70,14 +70,14 @@ module AE
           parameters_section += "<p><b>#{TRANSLATE['Parameters']}:</b></p><ul>"
           parameters.each{ |param|
             param_name, param_types, param_description = *param
-            param_type_expression = param_types.map{ |s| escape(s) }.join(', ')
+            param_type_expression = (param_types.is_a?(Array)) ? param_types.map{ |s| escape(s) }.join(', ') : '?'
             parameters_section += "<li><b>#{escape(param_name)}</b> (<tt>#{param_type_expression}</tt>) — #{escape(param_description)}</li>"
           }
           parameters_section += '</ul>'
         end
         if returned
           return_types, return_description = *returned
-          return_type_expression = return_types.map{ |s| escape(s) }.join(', ')
+          return_type_expression = (return_types.is_a?(Array)) ? return_types.map{ |s| escape(s) }.join(', ') : '?'
           signature += ' ⇒ ' + "<tt>#{escape(return_type_expression)}</tt>"
           if doc_info[:type].to_s != 'constant'
             return_section += "<p><b>#{TRANSLATE['Return value']}:</b></p><ul>"
@@ -86,7 +86,8 @@ module AE
             return_section += '</ul>'
           end
         end
-        html = "<h3>#{signature}</h3><hl></hl><p>#{escape(doc_info[:description])}</p>#{parameters_section}#{return_section}"
+        description = escape(doc_info[:description])
+        html = "<h3>#{signature}</h3><hl></hl><p>#{description}</p>#{parameters_section}#{return_section}"
         return html
       end
 

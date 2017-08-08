@@ -42,7 +42,7 @@ module AE
           # Instead of `object = eval(string, TOPLEVEL_BINDING)`, use Autocompleter to resolve the expression.
           tokens = string.split(/\:\:|\.|\s/)
           classification = Autocompleter.resolve_tokens(tokens, TOPLEVEL_BINDING)
-          object = (classification.is_a?(Autocompleter::TokenClassificationByObject)) ? classification.object : nil
+          object = (classification.is_a?(TokenClassificationByObject)) ? classification.object : nil
           raise StandardError('Binding object could not be found') if object.nil?
           # Get the binding of the object.
           return self.class.object_binding(object)

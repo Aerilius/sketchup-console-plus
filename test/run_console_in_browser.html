@@ -9,6 +9,7 @@
     <style type="text/css">
     html {
       height: 100%;
+      overflow: hidden;
     }
     body {
       height: inherit;
@@ -31,7 +32,7 @@ var mocks = {
         var filepaths = ['Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_advancedcameratools.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_bezier.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_dynamiccomponents.rb', 'Appdata/SketchUp/SketchUp 2017/SketchUp/Plugins/su_dynamiccomponents/css/components.css'];
         return filepaths.filter(path => path.search(pattern) != -1);
     },
-    autocomplete_token_list: function(tokens, prefix) {
+    autocomplete_tokens: function(tokens, prefix) {
         // Generate a random list of autocompletions.
         var completions = [];
         var count = 2 + Math.round(3 * Math.random());

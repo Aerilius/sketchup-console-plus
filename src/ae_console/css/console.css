@@ -64,7 +64,7 @@ form {
 
 code {
     font-family: inherit !important; /* override bootstrap code.less */
-    color: initial; /* override bootstrap code.less */
+    color: inherit; /* override bootstrap code.less without overriding inherited styles */
     font-size: inherit !important;
 }
 

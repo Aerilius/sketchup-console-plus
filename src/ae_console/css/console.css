@@ -302,19 +302,23 @@ table {
     /*border: 0;*/
 }
 
-#consoleContent {
-    /* Scrollable */
-    position: absolute;
-    width: 100%;
-    border: 0;
-    top: 0;
-    bottom: 0;
+#consoleContentWrapper {
+    /* Make content scrollable */
     overflow-x: hidden;
     overflow-y: auto;
 }
 
+#consoleContent {
+    /* Scrollable */
+    position: relative; /* Make layout so that child elements can use height:100% */
+    /* If content is smaller than parent, fill the complete parent.
+       This is important to have a consistent background color with different themes. */
+    min-height: 100%;
+}
+
 #consoleOutputFakeGutter {
     /*width: 3em; /* 1.75em */
+    position: absolute;
     height: 100%;
     z-index: 0;
 }

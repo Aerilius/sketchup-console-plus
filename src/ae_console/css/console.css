@@ -96,7 +96,7 @@ table {
 
 ﻿/*       General Styles Classes      */
 
-.unselectable::after {
+.unselectable:after {
     /* CSS pseudo-element text is never included in selection ranges.
        By adding text through a data-text attribute, we can avoid that it 
        appears inbetween console commands when selecting and copying text. */

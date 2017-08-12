@@ -1,4 +1,4 @@
-define(['jquery', 'features/history_manager', 'bridge', 'settings', 'console_api'], function ($, History, Bridge, Settings, API) {
+define(['jquery', 'features/history_manager', 'bridge', 'settings', 'console_api', 'enable_zoom'], function ($, History, Bridge, Settings, API) {
 
     var rubyVersion = '2.0.0';
     //Bridge.get('ruby_version').then(function (actual) { rubyVersion = actual; });

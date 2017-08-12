@@ -1,4 +1,4 @@
-define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterlist', './bridge', './translate', './settings', './menu', './console', './editor', './output'], function (ace, $, _, _, _, Bridge, Translate, Settings, Menu, Console, Editor, Output) {
+define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterlist', './bridge', './translate', './settings', './menu', './console', './editor', './output', './enable_zoom'], function (ace, $, _, _, _, Bridge, Translate, Settings, Menu, Console, Editor, Output) {
 
     var console, output, editor, consoleMenu, editorMenu,
         settings = new Settings();

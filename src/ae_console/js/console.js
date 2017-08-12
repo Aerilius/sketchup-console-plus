@@ -1,4 +1,4 @@
-define(['jquery', 'bridge', 'translate'], function ($, Bridge, Translate) {
+define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
     return function (aceEditor, output, settings) {
 
         var console = this,

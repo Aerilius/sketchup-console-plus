@@ -1,4 +1,4 @@
-define(['bridge'], function (Bridge) {
+define(['./bridge'], function (Bridge) {
     /**
      * Enables debugging of Bridge for browsers without skp protocol.
      * Overrides the internal message handler of Bridge.

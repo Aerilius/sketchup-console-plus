@@ -1,4 +1,4 @@
-define('translate', [], function () {
+define([], function () {
     /* Object containing all translation strings. */
     var STRINGS = {};
     var excluded = new RegExp('^(script|style)$', 'i');

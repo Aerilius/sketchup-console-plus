@@ -1,4 +1,4 @@
-define(['jquery', 'bridge'], function ($, Bridge) {
+define(['jquery', './bridge'], function ($, Bridge) {
     /**
      * @name Property
      * @typedef Property

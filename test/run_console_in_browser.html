@@ -88,22 +88,22 @@ function setupDebugging (requirejs) {
     requirejs.config({
         shim: {
             app: {
-                deps: ['bridge_debug_helper']
+                deps: ['./bridge_debug_helper']
             }
         }
     });
-    requirejs(['bridge_debug_helper'], function (BridgeDebug) {
+    requirejs(['./bridge_debug_helper'], function (BridgeDebug) {
         BridgeDebug.mockRequests(mocks);
     });
 
     requirejs(['translate'], function (Translate) { Translate.html(); });
 
     // Load extra features that would normally be loaded through ruby.
-    requirejs(['../features/feature_autocomplete']);
-    requirejs(['../features/feature_highlight_entity']);
-    requirejs(['../features/feature_history']);
-    requirejs(['../features/feature_reload_scripts']);
-    requirejs(['../features/feature_select_entity']);
+    requirejs(['features/feature_autocomplete']);
+    requirejs(['features/feature_highlight_entity']);
+    requirejs(['features/feature_history']);
+    requirejs(['features/feature_reload_scripts']);
+    requirejs(['features/feature_select_entity']);
 }
 
 function onFrameLoad(frame) {

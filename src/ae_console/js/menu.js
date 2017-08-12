@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'translate'], function ($, _, Translate) {
+define(['jquery', 'bootstrap', './translate'], function ($, _, Translate) {
     return function (element) {
 
     var $menuElement = $(element||'<ul>');

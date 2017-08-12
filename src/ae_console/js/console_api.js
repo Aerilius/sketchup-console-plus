@@ -1,5 +1,5 @@
 // The external API exposed to SketchUp.
-define(['app'], function (FeatureAPI) {
+define(['./app'], function (FeatureAPI) {
 
     /**
      * Add an error to the output.

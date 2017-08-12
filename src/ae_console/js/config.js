@@ -1,5 +1,6 @@
 // Before loading requirejs.
 var requirejs = {
+    baseUrl: '../js', /* relative to html directory */
     paths: {
         ace: '../external/ace',
         bootstrap: '../external/bootstrap/js/bootstrap',

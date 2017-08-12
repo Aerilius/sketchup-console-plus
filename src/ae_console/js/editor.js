@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap-notify', 'bridge', 'translate'], function ($, _, Bridge, Translate) {
+define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _, Bridge, Translate) {
     return function (aceEditor, settings) {
 
         var editor = this,

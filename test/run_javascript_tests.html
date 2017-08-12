@@ -10,16 +10,17 @@
 <body>
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
-<script src="../src/ae_console/external/requirejs/require.js" data-main="../src/ae_console/js/"></script>
+<script src="../src/ae_console/external/requirejs/require.js"></script>
 <script type="text/javascript">
 requirejs.config({
     paths: {
-        test: '../../../test',
-        qunit: '../../../test/external/qunit/qunit-2.4.0',
-        jquery: '../external/jquery/jquery'
+        test: './',
+        qunit: './external/qunit/qunit-2.4.0',
+        jquery: '../src/ae_console/external/jquery/jquery',
+        lib: '../src/ae_console/js/'
     }
 });
-requirejs(['bridge_debug_helper'], function (brigdeDebugHelper) {
+requirejs(['lib/bridge_debug_helper'], function (brigdeDebugHelper) {
   brigdeDebugHelper.mockRequests({
     'update_property': function () {}
   });

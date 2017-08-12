@@ -1,5 +1,5 @@
 // Main function
-requirejs(['app', 'bridge', 'console_api', 'jquery'], function (app, Bridge, API, $) {
+requirejs(['./app', './bridge', './console_api', 'jquery'], function (app, Bridge, API, $) {
     // 1. Load the app and UI (done)
     
     // 2. Publish 'Bridge' interface that the Ruby side will need to return from callbacks.

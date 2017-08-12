@@ -1,4 +1,4 @@
-requirejs(['qunit', 'jquery', 'settings'], function (QUnit, $, Settings) {
+requirejs(['qunit', 'jquery', 'lib/settings'], function (QUnit, $, Settings) {
 
   QUnit.module('settings');
 

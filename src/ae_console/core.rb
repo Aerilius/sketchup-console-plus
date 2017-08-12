@@ -119,7 +119,7 @@ module AE
       # Therefore replace the original stdout (SKETCHUP_CONSOLE) by a modified subclass.
       @@stdout_redirecter ||= ObjectReplacer.new('$stdout', Class.new($stdout.class){
         def write(*args)
-          PRIMARY_CONSOLE.value.print(*args) unless PRIMARY_CONSOLE.value.nil?
+          PRIMARY_CONSOLE.value.print(*args, :backtrace => [caller.first]) unless PRIMARY_CONSOLE.value.nil?
           super
         end
       }.new)
@@ -127,9 +127,9 @@ module AE
         def write(*args)
           unless PRIMARY_CONSOLE.value.nil?
             if args.first && args.first[/warning/i]
-              PRIMARY_CONSOLE.value.warn(*args)
+              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
             else
-              PRIMARY_CONSOLE.value.error(*args)
+              PRIMARY_CONSOLE.value.error(*args, :backtrace => caller)
             end
           end
           super

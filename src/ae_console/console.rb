@@ -54,30 +54,30 @@ module AE
 
       # Sends messages over the stdout/puts channel to the webdialog.
       # @param args [Object] Objects that can be turned into a string.
-      def puts(*args)
+      def puts(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.puts', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!})
+          @dialog.call('AE.Console.puts', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end
 
       # Sends messages over the stdout/print channel to the webdialog.
       # @param args [Object] Objects that can be turned into a string.
-      def print(*args)
+      def print(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.print', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!})
+          @dialog.call('AE.Console.print', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end
 
       # Sends messages over the warn channel to the webdialog.
       # @param args [Object] Objects that can be turned into a string.
-      def warn(*args)
+      def warn(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.warn', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!})
+          @dialog.call('AE.Console.warn', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end

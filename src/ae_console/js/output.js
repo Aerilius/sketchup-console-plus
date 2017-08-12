@@ -217,13 +217,17 @@ define(['jquery', 'bootstrap'], function ($, _) {
 
                 // Collapse long backtrace.
                 $.each(data.backtrace, function (index, trace) {
-                    // TODO: make file paths links that open in editor with line number; if file exists (open successful)
-                    var fullpath = trace.replace(/\:\d+(?:\:.+)?$/, ''); // Removes the line number suffix from the trace.
-                    if (data.backtrace_short) trace = data.backtrace_short[index];
-
-                    var $trace = $('<div>')
-                    .attr('title', fullpath)
-                    .text(trace)
+                    var $trace = $('<div>');
+                    var match = trace.match(/^(.+[\/\\].+)\:(\d+)(?:\:.+)?$/);
+                    if (match) {
+                        var fullpath = match[1];
+                        var lineNumber = parseInt(match[2]);
+                        $trace.attr('title', fullpath)
+                        .data('path', fullpath)
+                        .data('line-number', lineNumber);
+                        if (data.backtrace_short) trace = data.backtrace_short[index];
+                    }
+                    $trace.text(trace)
                     .appendTo($content);
                 });
             }

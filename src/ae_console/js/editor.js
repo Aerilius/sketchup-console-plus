@@ -74,7 +74,12 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
             }
         };
 
-        this.open = function (filepath) {
+        this.open = function (filepath, lineNumber) {
+            // Do not load the file again if it is already opened.
+            if (filepath == currentFilepath) {
+                if (lineNumber) aceEditor.gotoLine(lineNumber);
+                return;
+            }
             // Ask whether to save changes if there are unsaved changes.
             if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {
                 return editor.save().then(function() {
@@ -95,7 +100,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                         aceEditor.session.setMode('ace/mode/text');
                     }
                     // Try to jump to the line number where the file was last accessed.
-                    var lineNumber = settings.get('recently_focused_lines', {})[filepath] || 1;
+                    if (!lineNumber) lineNumber = settings.get('recently_focused_lines', {})[filepath] || 1;
                     aceEditor.gotoLine(lineNumber); // one-based
                 }, function (error) {
                     // notification: File failed to open

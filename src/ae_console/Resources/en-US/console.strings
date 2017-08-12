@@ -41,7 +41,7 @@
 "Find and replace…"="Find and replace…";
 "Go to line…"="Go to line…";
 "The file has been changed externally.\nOverwrite external changes and save the current file?"="The file has been changed externally.\nOverwrite external changes and save the current file?";
-"The file was changed externally"="The file was changed externally";
+"The file was changed externally."="The file was changed externally.";
 "Reload"="Reload";
 "Ignore"="Ignore";
 "Yes"="Yes";
@@ -80,6 +80,10 @@
 "Documentation not found"="Documentation not found";
 "Parameters"="Parameters";
 "Return value"="Return value";
+"Documentation"="Documentation";
+"Back"="Back";
+"Forward"="Forward";
+"Search Engine"="Search Engine";
 
 /* Select entity */
 "Select"="Select";

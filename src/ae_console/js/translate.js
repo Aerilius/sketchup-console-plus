@@ -21,7 +21,7 @@ define([], function () {
             } else {
                 var key2 = key.replace(/[\.\:]$/, '');
                 if (key2 in STRINGS) {
-                    value = STRINGS[key];
+                    value = STRINGS[key2];
                 }
             }
             // Substitution of additional strings.

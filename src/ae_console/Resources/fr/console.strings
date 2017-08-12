@@ -41,7 +41,7 @@
 "Find and replace…"="Rechercher et remplacer…";
 "Go to line…"="Go to line…";
 "The file has been changed externally.\nOverwrite external changes and save the current file?"="Le fichier a été modifié à l'extérieur. Remplacer les modifications externes et enregistrer le fichier en cours?";
-"The file was changed externally"="Le fichier a été modifié en externe";
+"The file was changed externally."="Le fichier a été modifié en externe.";
 "Reload"="Recharger";
 "Ignore"="Ignorer";
 "Yes"="Oui";
@@ -81,6 +81,10 @@
 "Documentation not found"="Documentation pas trouvée";
 "Parameters"="Paramètres";
 "Return value"="Valeur de retour";
+"Documentation"="Documentation";
+"Back"="Précédente";
+"Forward"="Suivante";
+"Search Engine"="Moteur de Recherche";
 
 /* Select entity */
 "Select"="Sélectionner";

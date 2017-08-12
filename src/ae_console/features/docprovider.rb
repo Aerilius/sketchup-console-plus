@@ -52,7 +52,7 @@ module AE
         if ['Sketchup', 'UI', 'Geom', 'LanguageHandler', 'Length', 'SketchupExtension'].include?(toplevel_namespace)
           return get_documentation_url_sketchup(classification)
         else # if Ruby core
-          return get_documentation_url_ruby_core(classification)
+          return get_documentation_url_core_rubydoc_info(classification)
         # else if Ruby stdlib
         # TODO: How to detect and handle standard library? "http://ruby-doc.org/stdlib-#{RUBY_VERSION}/libdoc/#{library_name}/rdoc/"
         end
@@ -205,7 +205,30 @@ module AE
           return host + path + fragment
         end
 
-        def get_documentation_url_ruby_core(classification)
+        def get_documentation_url_core_rubydoc_info(classification)
+          host = 'http://www.rubydoc.info/stdlib/core/'
+          # Compose URL resource path from namespace.
+          if classification.type == :class || classification.type == :module
+            path = classification.namespace.to_s.split('::').push(classification.token).join('/') + '.html'
+          else
+            path = classification.namespace.to_s.split('::').join('/') + '.html'
+          end
+          # Lookup type of item (class/module, constant, instance method, class method)
+          fragment = case classification.type
+          when :instance_method
+            "##{classification.token}-instance_method"
+          when :class_method, :module_function
+            "##{classification.token}-class_method"
+          when :constant
+            "##{classification.token}-constant"
+          else
+            ''
+          end
+          # Compose URL fragment from type if item.
+          return host + path + fragment
+        end
+
+        def get_documentation_url_core_ruby_doc_org(classification)
           host = "http://ruby-doc.org/core-#{RUBY_VERSION}/"
           # Compose URL resource path from namespace.
           if classification.type == :class || classification.type == :module

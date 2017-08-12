@@ -1,10 +1,57 @@
-/**
- * @name Settings
- * @typedef Settings
- * @class
- */
-define('settings', ['jquery', 'property', 'bridge'], function ($, Property, Bridge) {
-    return function () {
+define(['jquery', 'bridge'], function ($, Bridge) {
+    /**
+     * @name Property
+     * @typedef Property
+     * @class
+     */
+    function Property (_name, _value) {
+        var property = this,
+            name = _name,
+            value = _value;
+
+        this.addListener = function (eventName, fn) {
+            $(property).on(eventName, function (event, args) {
+                fn.apply(undefined, args);
+            });
+            return property;
+        };
+
+        /**
+         * Adds an event listener and ensures the action is initially executed with the current property value.
+         */
+        this.bindAction = function (eventName, fn) {
+            fn.apply(undefined, [value]);
+            $(property).on(eventName, function (event, args) {
+                fn.apply(undefined, args);
+            });
+            return property;
+        };
+
+        function trigger (eventName, data) {
+            var args = Array.prototype.slice.call(arguments).slice(1);
+            $(property).trigger(eventName, [args]);
+        }
+
+        this.getName = function () {
+            return name;
+        };
+
+        this.setValue = function (newValue) {
+            value = newValue;
+            trigger('change', newValue);
+        };
+
+        this.getValue = function (defaultValue) {
+            return value || defaultValue;
+        };
+    }
+
+    /**
+     * @name Settings
+     * @typedef Settings
+     * @class
+     */
+    function Settings () {
         var settings = this,
             properties = {};
 
@@ -90,53 +137,8 @@ define('settings', ['jquery', 'property', 'bridge'], function ($, Property, Brid
             return property;
         }
     };
-});
 
-/**
- * @name Property
- * @typedef Property
- * @class
- */
-define('property', ['jquery'], function ($) {
-    return function (_name, _value) {
-        var property = this,
-            name = _name,
-            value = _value;
+    Settings.Property = Property;
 
-        this.addListener = function (eventName, fn) {
-            $(property).on(eventName, function (event, args) {
-                fn.apply(undefined, args);
-            });
-            return property;
-        };
-
-        /**
-         * Adds an event listener and ensures the action is initially executed with the current property value.
-         */
-        this.bindAction = function (eventName, fn) {
-            fn.apply(undefined, [value]);
-            $(property).on(eventName, function (event, args) {
-                fn.apply(undefined, args);
-            });
-            return property;
-        };
-
-        function trigger (eventName, data) {
-            var args = Array.prototype.slice.call(arguments).slice(1);
-            $(property).trigger(eventName, [args]);
-        }
-
-        this.getName = function () {
-            return name;
-        };
-
-        this.setValue = function (newValue) {
-            value = newValue;
-            trigger('change', newValue);
-        };
-
-        this.getValue = function (defaultValue) {
-            return value || defaultValue;
-        };
-    };
+    return Settings;
 });

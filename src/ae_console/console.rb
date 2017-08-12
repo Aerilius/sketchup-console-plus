@@ -240,7 +240,7 @@ module AE
       def remove_eval_internals_from_backtrace(backtrace)
         regexp = /^\(eval\)/
         line_number = backtrace.length
-        until regexp =~ backtrace[line_number-1]
+        until regexp =~ backtrace[line_number-1] || line_number == 0
           line_number -= 1
         end
         backtrace.slice!(line_number..-1)
@@ -251,7 +251,7 @@ module AE
       def remove_this_file_from_backtrace(backtrace)
         regexp = %r"#{Regexp.quote(__FILE__)}"o
         line_number = 0
-        until regexp =~ backtrace[line_number]
+        until regexp =~ backtrace[line_number] || line_number == 0
           line_number += 1
         end
         backtrace.slice!(line_number..-1)

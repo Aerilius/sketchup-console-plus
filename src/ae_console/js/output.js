@@ -207,7 +207,7 @@ define(['jquery', 'bootstrap'], function ($, _) {
             .addClass('header')
             .appendTo($panel);
 
-            if (data.backtrace) {
+            if (data.backtrace && data.backtrace.length > 0) {
                 var $content = $('<div>')
                 .addClass('backtrace')
                 .addClass('collapse')

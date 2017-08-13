@@ -440,7 +440,12 @@ table {
     opacity: 0.5;
 }
 
-#consoleOutput .message.error .header:not(:only-child) { /* is followed by .backtrace */
+#consoleOutput .message.error .header {
+    color: #ca0000;
+}
+
+#consoleOutput .message.error .header:not(:only-child),
+#consoleOutput .message.warn .header:not(:only-child) { /* only .header if followed by .backtrace */
     cursor: pointer;
 }
 

@@ -112,7 +112,7 @@ module AE
       end
 
       def get_javascript_string
-<<JAVASCRIPT
+<<-'JAVASCRIPT'
 requirejs(['app', 'bridge', 'translate', 'window_geometry', 'get_current_tokens', 'bootstrap-notify'], function (app, Bridge, Translate, WindowGeometry, getCurrentTokens, _) {
 
     // Publish window_geometry to allow Bridge to call it. TODO: not very elegant.
@@ -127,7 +127,7 @@ requirejs(['app', 'bridge', 'translate', 'window_geometry', 'get_current_tokens'
             var tokens = getCurrentTokens(app.editor.aceEditor);
             Bridge.call('open_help', tokens);
         } else {
-            $.notify(Translate.get('The help function can only lookup Ruby documentation.' + ' \\n' +
+            $.notify(Translate.get('The help function can only lookup Ruby documentation.' + ' \n' +
                     Translate.get('If this is Ruby code, set the edit mode in the menu.')), {
                 type: 'warning',
                 element: $('#editorContentWrapper'),

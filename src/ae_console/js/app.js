@@ -29,8 +29,6 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         initializeEditorUI(editor, settings);
         configureAce(editorAceEditor);
 
-        //switchToConsole(true); // default
-
         settings.getProperty('console_active').addListener('change', function (isActive) {
             if (isActive) {
                 switchToConsole();

@@ -261,10 +261,19 @@ table {
     color: inherit;
 }
 
+.menu li > label:only-child {
+    display: block;
+}
+
 .menu label input,
 .menu label select {
     float: right;
     max-width: 100%;
+}
+.menu label input[type=radio],
+.menu label input[type=checkbox] {
+    float: left;
+    margin-right: 0.5em;
 }
 .menu label:after { /* clear fix */
     clear: both;

@@ -260,8 +260,6 @@ module AE
         # SketchUp does not release procs of WebDialogs. Because of that, we need to
         # make sure that the proc contains no reference to this instance. The proc
         # receives a reference to this dialog, so it can call the follow-up method #action_callback.
-        $dialog = @dialog
-        $bridge = self
         @dialog.add_action_callback(URL_RECEIVE) { |action_context, request|
           begin
             unless request.is_a?(Hash) &&

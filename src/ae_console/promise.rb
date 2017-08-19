@@ -36,12 +36,12 @@ module AE
 
         # Run an asynchronous operation and return a promise that will receive the result.
         # @overload initialize(executor)
-        #   @param [#call(#call(Object),#call(Exception))] executor
+        #   @param executor     [#call(#call(Object),#call(Exception))]
         #     A Proc or Method that executes some function and reports back success or failure by calling the parameter
         #     `resolve` with a result or `reject` with the error. The executor must call one of these.
         # @overload initialize {|resolve, reject|}
-        #   @yieldparam [#call(*Object)]    resolve  A function to call to fulfill the promise with a result.
-        #   @yieldparam [#call(Exception)]  reject   A function to call to reject the promise.
+        #   @yieldparam resolve [#call(*Object)]   A function to call to fulfill the promise with a result.
+        #   @yieldparam reject  [#call(Exception)] A function to call to reject the promise.
         def initialize(executor=nil, &executor_)
           @state    = State::PENDING
           @value    = nil # result or reason
@@ -62,16 +62,20 @@ module AE
         end
 
         # Register an action to do when the promise is resolved.
+        #
         # @overload then(on_resolve, on_reject)
-        #   @param [#call(*Object)]           on_resolve  A function to call when the promise is resolved.
-        #   @param [#call(String,Exception)]  on_reject   A function to call when the promise is rejected.
+        #   @param on_resolve   [#call(*Object)]          A function to call when the promise is resolved.
+        #   @param on_reject    [#call(String,Exception)] A function to call when the promise is rejected.
+        #
         # @overload then {|*results|}
         #   @yield                                        A function to call when the promise is resolved.
-        #   @yieldparam [Array<Object>]       results     The promised result (or results).
+        #   @yieldparam results [Array<Object>]           The promised result (or results).
+        #
         # @overload then(on_resolve) {|reason|}
-        #   @param      [#call(*Object)]      on_resolve  A function to call when the promise is resolved.
+        #   @param on_resolve   [#call(*Object)]          A function to call when the promise is resolved.
         #   @yield                                        A function to call when the promise is rejected.
-        #   @yieldparam [String,Exception]    reason      The reason why the promise was rejected.
+        #   @yieldparam reason  [String,Exception]        The reason why the promise was rejected.
+        #
         # @return [Promise] A new promise for that the on_resolve or on_reject block has been executed successfully.
         def then(on_resolve=nil, on_reject=nil, &block)
           if block_given?
@@ -97,10 +101,10 @@ module AE
         end
 
         # Register an action to do when the promise is rejected.
-        # @param      [#call] on_reject          A function to call when the promise is rejected.
-        #                                        (defaults to the given yield block, can be a Proc or Method)
-        # @yieldparam [String,Exception] reason  The reason why the promise was rejected
-        # @return     [Promise] A new promise that the on_reject block has been executed successfully.
+        # @param on_reject   [#call]            A function to call when the promise is rejected.
+        #                                       (defaults to the given yield block, can be a Proc or Method)
+        # @yieldparam reason [String,Exception] The reason why the promise was rejected
+        # @return            [Promise]          A new promise that the on_reject block has been executed successfully.
         def catch(on_reject=nil, &block)
           on_reject = block if block_given?
           return self unless on_reject.respond_to?(:call)
@@ -115,13 +119,16 @@ module AE
         end
 
         # Resolve a promise once a result has been calculated.
+        #
         # @overload resolve(*results)
         #   Resolve a promise once a result or several results have been calculated.
-        #   @param [Array<Object>] results
+        #   @param results [Array<Object>]
+        #
         # @overload resolve(promise)
         #   Resolve a promise with another promise. It will actually be resolved later as soon as the other is resolved.
-        #   @param [Promise] promise
-        # @return [nil]
+        #   @param promise [Promise]
+        #
+        # @return          [nil]
         # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
@@ -154,7 +161,7 @@ module AE
                   handler.resolve_next.call(new_result)
                 end
               rescue Exception => error
-                AE::ConsolePlugin.error(error)
+                ConsolePlugin.error(error)
                 if handler.reject_next.respond_to?(:call)
                   handler.reject_next.call(error)
                 end
@@ -173,8 +180,8 @@ module AE
         alias_method :fulfill, :resolve
 
         # Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
-        # @param   [String,Exception]  reason
-        # @return  [nil]
+        # @param  reason [String,Exception]
+        # @return        [nil]
         # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def reject(reason=nil)
           raise Exception.new("A once resolved promise can not be rejected later") if @state == State::RESOLVED
@@ -195,7 +202,7 @@ module AE
                   handler.resolve_next.call(new_result)
                 end
               rescue Exception => error
-                AE::ConsolePlugin.error(error)
+                ConsolePlugin.error(error)
                 if handler.reject_next.respond_to?(:call)
                   handler.reject_next.call(error)
                 end
@@ -208,12 +215,12 @@ module AE
           end
           unless handler_called
             if reason.is_a?(Exception)
-              Kernel.warn "#{self.inspect} rejected with \"#{reason.class.name}\", " +
-                  "but no `on_reject` handler found."
-              AE::ConsolePlugin.error(reason)
+              Kernel.warn("#{self.inspect} rejected with \"#{reason.class.name}\", " +
+                  "but no `on_reject` handler found.")
+              ConsolePlugin.error(reason)
             else
-              Kernel.warn "#{self.inspect} rejected with \"#{reason.to_s[0..1000]}\", " +
-                  "but no `on_reject` handler found.\n#{caller.join("\n")}"
+              Kernel.warn("#{self.inspect} rejected with \"#{reason.to_s[0..1000]}\", " +
+                  "but no `on_reject` handler found.\n#{caller.join("\n")}")
             end
           end
           # We must return nil, otherwise if this promise is rejected inside the 

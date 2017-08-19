@@ -76,7 +76,7 @@ module AE
       # Add the bridge to an existing UI::WebDialog/UI::HtmlDialog.
       # This can be used for convenience and will define the bridge's methods
       # on the dialog and delegate them to the bridge.
-      # @param  [UI::WebDialog, UI::HtmlDialog] dialog
+      # @param dialog [UI::WebDialog, UI::HtmlDialog]
       # @return [UI::WebDialog, UI::HtmlDialog] The decorated dialog
       def self.decorate(dialog)
         bridge = self.new(dialog)
@@ -132,13 +132,13 @@ module AE
 
 
       # Add a callback handler. Overwrites an existing callback handler of the same name.
-      # @param  [String]              name      The name under which the callback can be called from the dialog.
-      # @param  [Proc,UnboundMethod]  callback  A method or proc for the callback, if no yield block given.
+      # @param name           [String]             The name under which the callback can be called from the dialog.
+      # @param callback       [Proc,UnboundMethod] A method or proc for the callback, if no yield block given.
       # @yield  A callback to be called from the dialog to execute Ruby code.
-      # @yieldparam [ActionContext]         dialog    An object referencing the dialog, enhanced with methods
-      #                                         {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
-      # @yieldparam [Array<Object>]   arguments The JSON-compatible arguments passed from the dialog.
-      # @return [self]
+      # @yieldparam dialog    [ActionContext]      An object referencing the dialog, enhanced with methods
+      #                                            {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
+      # @yieldparam arguments [Array<Object>]      The JSON-compatible arguments passed from the dialog.
+      # @return               [self]
       def on(name, callback=nil, &callback_)
         raise(ArgumentError, 'Argument `name` must be a String.') unless name.is_a?(String)
         raise(ArgumentError, "Argument `name` can not be `#{name}`.") if RESERVED_NAMES.include?(name)
@@ -150,13 +150,13 @@ module AE
 
 
       # Add a callback handler to be called only once. Overwrites an existing callback handler of the same name.
-      # @param  [String]              name      The name under which the callback can be called from the dialog.
-      # @param  [Proc,UnboundMethod]  callback  A method or proc for the callback, if no yield block given.
+      # @param name           [String]             The name under which the callback can be called from the dialog.
+      # @param callback       [Proc,UnboundMethod] A method or proc for the callback, if no yield block given.
       # @yield  A callback to be called from the dialog to execute Ruby code.
-      # @yieldparam [ActionContext]         dialog    An object referencing the dialog, enhanced with methods
-      #                                         {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
-      # @yieldparam [Array<Object>]   arguments The JSON-compatible arguments passed from the dialog.
-      # @return [self]
+      # @yieldparam dialog    [ActionContext]      An object referencing the dialog, enhanced with methods
+      #                                            {ActionContext#resolve} and {ActionContext#resolve} to return results to the dialog.
+      # @yieldparam arguments [Array<Object>]      The JSON-compatible arguments passed from the dialog.
+      # @return               [self]
       # TODO: Maybe allow many handlers for the same name?
       def once(name, callback=nil, &callback_)
         raise(ArgumentError, 'Argument `name` must be a String.') unless name.is_a?(String)
@@ -172,8 +172,8 @@ module AE
 
 
       # Remove a callback handler.
-      # @param  [String] name
-      # @return [self]
+      # @param  name [String]
+      # @return      [self]
       def off(name)
         raise(ArgumentError, 'Argument `name` must be a String.') unless name.is_a?(String)
         @handlers.delete(name)
@@ -182,8 +182,8 @@ module AE
 
 
       # Call a JavaScript function with JSON arguments in the webdialog.
-      # @param [String] name       name of a public JavaScript function
-      # @param [Object] arguments  array of JSON-compatible objects or Callables (Proc, UnboundMethod)
+      # @param name      [String]        The name of a public JavaScript function
+      # @param arguments [Array<Object>] An array of JSON-compatible objects or Callables (Proc, UnboundMethod)
       # TODO: Catch JavaScript errors!
       def call(name, *arguments)
         raise(ArgumentError, 'Argument `name` must be a valid method identifier string.') unless name.is_a?(String) && name[/^[\w\.]+$/]
@@ -195,9 +195,9 @@ module AE
 
       # Call a JavaScript function with JSON arguments in the webdialog and get the
       # return value in a promise.
-      # @param  [String] name       name of a public JavaScript function
-      # @param  [Object] arguments  array of JSON-compatible objects
-      # @return [Promise]
+      # @param  name      [String]  The name of a public JavaScript function
+      # @param  arguments [Object]  An array of JSON-compatible objects
+      # @return           [Promise]
       # This does the same as writing the function's return value to an input field
       # and reading the value (using the old UI::WebDialog).
       def get(name, *arguments)
@@ -249,7 +249,7 @@ module AE
 
 
       # Create an instance of the Bridge and associate it with a dialog.
-      # @param [UI::WebDialog, UI::HtmlDialog] dialog
+      # @param dialog [UI::WebDialog, UI::HtmlDialog]
       def initialize(dialog)
         raise(ArgumentError, 'Argument `dialog` must be a UI::WebDialog.') unless dialog.is_a?(UI::WebDialog) || defined?(UI::HtmlDialog) && dialog.is_a?(UI::HtmlDialog)
         @dialog         = dialog
@@ -295,7 +295,7 @@ module AE
             end
 
           rescue Exception => e
-            AE::ConsolePlugin.error(e)
+            ConsolePlugin.error(e)
           end
         }
 
@@ -313,15 +313,15 @@ module AE
 
         # Error channel (for debugging)
         @handlers["#{NAMESPACE}.error"] = Proc.new { |dialog, type, message, backtrace|
-          AE::ConsolePlugin.error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
+          ConsolePlugin.error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
         }
         RESERVED_NAMES << "#{NAMESPACE}.error"
       end
 
 
       # Create a string which has not yet been registered as callback handler, to avoid collisions.
-      # @param  [String] string
-      # @return [String]
+      # @param  string [String]
+      # @return        [String]
       def create_unique_handler_name(string)
         begin
           int = (10000*rand).round
@@ -340,8 +340,8 @@ module AE
       class ActionContext < Promise
 
 
-        # @param   [UI::WebDialog, UI::HtmlDialog] dialog
-        # @param   [Fixnum] id
+        # @param dialog [UI::WebDialog, UI::HtmlDialog]
+        # @param id     [Fixnum]
         # @private
         def initialize(dialog, id)
           super()
@@ -415,8 +415,8 @@ module AE
 
 
           # Serializes an object.
-          # @param [Object] object
-          # @return [String]
+          # @param  object [Object]
+          # @return        [String]
           # @private
           def self.serialize(object)
             # quirk_mode generates JSON from objects other than Hash and Array.
@@ -427,8 +427,8 @@ module AE
 
 
           # Unserializes the string representation of a serilized object.
-          # @param [String] string
-          # @return [Object]
+          # @param  string [String]
+          # @return        [Object]
           # @private
           def self.unserialize(string)
             # Attention! JSON in SketchUp's Ruby 2.0 standard lib does not fully implement quirk_mode.

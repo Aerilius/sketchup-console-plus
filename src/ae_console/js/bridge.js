@@ -472,7 +472,6 @@
         /**
          * Resolves a promise.
          * @param   {(Promise,object)} result
-         * @returns {Promise}          This promise
          */
         var resolve = this.resolve = function (result) {
             if (state == STATE_PENDING) {
@@ -512,7 +511,6 @@
                     handler.resolveNext.apply(undefined, results);
                 }
             }
-            return self;
         };
         this.fulfill = this.resolve;
 
@@ -520,7 +518,6 @@
         /**
          * Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
          * @param   {(string,Error)} reason
-         * @returns {Promise}        This promise
          */
         var reject = this.reject = function (reason) {
             if (state == STATE_PENDING) {
@@ -546,7 +543,6 @@
                     handler.rejectNext(reason);
                 }
             }
-            return self;
         };
 
 

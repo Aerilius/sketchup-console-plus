@@ -46,7 +46,10 @@ There are two modes:
 
 - **Binding**: An advanced feature that allows to step into an object or class and call methods or access instance variables as if you were locally inside of the class source definition. Try to set binding to `Math` and you can directly call math functions like `sqrt` without NameError.
 
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/Aerilius/sketchup-console-plus/issues.
+
 ## License
 
-MIT License (MIT)
-
+This extension is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

@@ -222,7 +222,7 @@ module AE
               @returned_class = return_value
               return self
             else # return_value is an object
-              return TokenClassificationByObject(token, :constant, @returned_class.name, return_value)
+              return TokenClassificationByObject.new(token, :constant, @returned_class.name, return_value)
             end
           # Class constructor method
           elsif token == 'new'

@@ -1,17 +1,10 @@
+require_relative 'test_helper'
+
 module AE
 
   module ConsolePlugin
 
-    require '../src/ae_console/object_replacer.rb'
-
-    if defined?(Sketchup)
-      require 'testup/testcase'
-      TestCase = TestUp::TestCase
-    else
-      require 'minitest'
-      TestCase = Minitest::Test
-      require 'minitest/autorun'
-    end
+    require 'ae_console/object_replacer.rb'
 
     class TC_ObjectReplacer < TestCase
 
@@ -86,8 +79,8 @@ module AE
         assert_equal(old_value, a.mv)
       end
 
-    end
+    end # class TC_ObjectReplacer
 
-  end # class ConsolePlugin
+  end
 
-end # module AE
+end

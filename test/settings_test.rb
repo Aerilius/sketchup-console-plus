@@ -1,22 +1,20 @@
+require_relative 'test_helper'
+
 module AE
 
   module ConsolePlugin
 
-    PATH ||= File.expand_path(File.join(__FILE__), '../src/ae_console/')
-    require(File.join(PATH, 'settings.rb'))
+    require 'ae_console/settings.rb'
 
     if defined?(Sketchup)
-      require 'testup/testcase'
-      TestCase = TestUp::TestCase
       NATIVE = true
     else
-      require 'minitest'
-      TestCase = Minitest::Test
       NATIVE = false
-      require 'minitest/autorun'
+
       # Create a Mock for read_defaults/write_defaults.
       module Sketchup
         @defaults = {}
+
         def self.read_default(section, key, value)
           @defaults[section] ||= {}
           value = @defaults[section].include?(key.to_s) ? @defaults[section][key.to_s] : value
@@ -24,11 +22,13 @@ module AE
           value = value.gsub(/\\\"/, '"').gsub(/\\\\/, '\\') if value.is_a?(String)
           return value
         end
+
         def self.write_default(section, key, value)
           @defaults[section] ||= {}
           @defaults[section][key.to_s] = value
           return true
         end
+
         def self.clear_defaults
           @defaults.clear
         end
@@ -142,20 +142,28 @@ module AE
         # Assign new values to trigger writing to registry.
         data.each{ |key, value|
           settings1[key] = value
-          assert_equal(value, settings1[key], "Failed to accept #{value.class}")
+          if value.nil?
+            assert_nil(settings1[key], "Failed to accept #{value.class}")
+          else
+            assert_equal(value, settings1[key], "Failed to accept #{value.class}")
+          end
         }
         # The registry should now contain values from `data`.
         # Test whether data was written to the registry and whether it was read correctly.
         settings2 = Settings.new('test')
         # Load initial data with default values. If keys have corresponding values in registry, they will be loaded instead.
         settings2.load(data0)
-        data.each{ |key, value|
-          assert_equal(value, settings1[key], "Failed to write or read #{value.class}")
+        data.each{ |key, expected_value|
+          if expected_value.nil?
+            assert_nil(settings1[key], "Failed to write or read #{expected_value.class}")
+          else
+            assert_equal(expected_value, settings1[key], "Failed to write or read #{expected_value.class}")
+          end
         }
       end
 
-    end
+    end # class TC_Settings
 
-  end # class ConsolePlugin
+  end
 
-end # module AE
+end

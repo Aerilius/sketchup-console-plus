@@ -18,12 +18,12 @@ module AE
 
       # @!method get_javascript_string()
       # Return a string of JavaScript to be loaded into the html dialog.
-      # This method can be used for short scripts, but take care of escaping backslashes.
+      # This method can be used for short scripts.
       # @return [String]
       #
       # @example
       #   def get_javascript_string
-      #   <<JAVASCRIPT
+      #   <<-'JAVASCRIPT'
       #     require(['app'], function (app) {
       #       alert('Hello!');
       #     }

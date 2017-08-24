@@ -143,11 +143,8 @@ module AE
         # Module/Class with constant
         if @returned_object.is_a?(Module) && @returned_object.constants.include?(token.to_sym)
           return_value = @returned_object.const_get(token.to_sym)
-          @token = token
-          @type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-          @namespace = @returned_object.name
-          @returned_object = @returned_object.const_get(token)
-          return self
+          type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
+          return TokenClassificationByObject.new(token, type, @returned_object.name, return_value)
         # Class constructor method
         elsif @returned_object.is_a?(Class) && token == 'new'
           namespace = @returned_object.name
@@ -217,22 +214,15 @@ module AE
           if @returned_class.constants.include?(token.to_sym)
             return_value = @returned_class.const_get(token)
             if return_value.is_a?(Module)
-              @token = token
-              @type = return_value.is_a?(Class) ? :class : :module
-              @namespace = @returned_class.name
-              @returned_class = return_value
-              return self
+              type = (return_value.is_a?(Class)) ? :class : :module
+              return TokenClassificationByClass.new(token, type, @returned_class.name, return_value)
             else # return_value is an object
               return TokenClassificationByObject.new(token, :constant, @returned_class.name, return_value)
             end
           # Class constructor method
           elsif token == 'new'
-            @token = token
-            @type = :class_method
-            @namespace = @returned_class.name
-            # @returned_class stays the same
-            @is_instance = true
-            return self
+            # @returned_class stays the same, @is_instance = true
+            return TokenClassificationByClass.new(token, :class_method, @returned_class.name, @returned_class, true)
           # Module/Class method
           else
             returned_namespace = @returned_class.name
@@ -297,20 +287,14 @@ module AE
         # Module/Class with constant
         if @is_instance == false &&
             ( doc_info = DocProvider.get_info_for_docpath(docpath + '::' + token) )
-          @token = token
-          @type = doc_info[type] # :constant, :class, :module
-          @namespace = doc_info[:path] # Path including the constant, same as `doc_info[:namespace]+'::'+doc_info[:name]
-          @returned_namespace = docpath # TokenClassification#docpath, new path after changing other attributes
-          @is_instance = false # assume the constant is a Class or Module
-          return self
+          type = doc_info[:type] # :constant, :class, :module
+          returned_namespace = @returned_namespace + '::' + token #returned_namespace = doc_info[:path]
+          is_instance = false # assume the constant is a Class or Module
+          return TokenClassificationByDoc.new(token, type, @returned_namespace, returned_namespace, is_instance)
         # Class constructor method
         elsif @is_instance == false && token == 'new'
-          @token = token
-          @type = :class_method
-          @namespace = @returned_namespace
-          # @returned_namespace stays the same (constructor returns an instance of the class)
-          @is_instance = true
-          return self
+          # @returned_namespace stays the same, @is_instance = true
+          return TokenClassificationByDoc.new(token, :class_method, @returned_namespace, @returned_namespace, true)
         else
           # method
           path = @returned_namespace + ((@is_instance) ? '#' : '.') + token

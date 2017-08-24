@@ -288,9 +288,14 @@ module AE
         if @is_instance == false &&
             ( doc_info = DocProvider.get_info_for_docpath(docpath + '::' + token) )
           type = doc_info[:type] # :constant, :class, :module
-          returned_namespace = @returned_namespace + '::' + token #returned_namespace = doc_info[:path]
-          is_instance = false # assume the constant is a Class or Module
-          return TokenClassificationByDoc.new(token, type, @returned_namespace, returned_namespace, is_instance)
+          returned_namespace = @returned_namespace + '::' + token
+          begin
+            returned_class = resolve_module_path(returned_namespace)
+            TokenClassificationByClass.new(token, type, @returned_namespace, returned_class, false)
+          rescue NameError
+            is_instance = false # assume the constant is a Class or Module
+            return TokenClassificationByDoc.new(token, type, @returned_namespace, returned_namespace, is_instance)
+          end
         # Class constructor method
         elsif @is_instance == false && token == 'new'
           # @returned_namespace stays the same, @is_instance = true

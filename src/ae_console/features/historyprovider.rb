@@ -98,4 +98,4 @@ module AE
 
   end # module ConsolePlugin
 
-end # AE
+end # module AE

@@ -2,7 +2,7 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
     return function (aceEditor, output, settings) {
 
         var console = this,
-            message_id = 0
+            message_id = 0,
             lineNumber = 1;
         this.aceEditor = aceEditor;
 
@@ -92,7 +92,7 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
             var inputMetadata = {
                 type: 'input',
                 line_number: lineNumber,
-                id:     message_id++,
+                id:     message_id++
             };
             trigger('input', text, inputMetadata);
             output.add(text, inputMetadata);

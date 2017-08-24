@@ -185,7 +185,9 @@ module AE
                 next unless p_info[:return]
                 returned_types = DocProvider.extract_return_types(p_info)
                 if returned_types.include?(namespace)
-                  new_possibilities << [p_info[:namespace], doc_info] if !new_possibilities.find{ |item| item.first == p_info[:namespace] } # Add no duplicates
+                  if !new_possibilities.find{ |item| item.first == p_info[:namespace] } # Add no duplicates
+                    new_possibilities << [p_info[:namespace], doc_info]
+                  end
                 end
               }
             }

@@ -16,10 +16,23 @@ define(['./bridge'], function (Bridge) {
                 var result;
                 if (typeof mockedCallbacks[message.name] !== 'function') {
                     result = mockedCallbacks[message.name];
-                    if (typeof resolve === 'function') resolve(result);
-                    window.console.log('>> ' + JSON.stringify(result));
+                    if (typeof result.then === 'function') {
+                        // Promise for return value
+                        result.then(function (result) {
+                            window.console.log('[' + message.name + '] >> ' + JSON.stringify(result));
+                            resolve(result);
+                        }, function (reason) {
+                            window.console.log('[' + message.name + '] >> (rejected)' + JSON.stringify(reason));
+                            reject(reason);
+                        });
+                    } else {
+                        // Return value
+                        if (typeof resolve === 'function') resolve(result);
+                        window.console.log('>> ' + JSON.stringify(result));
+                    }
                 } else {
                     try {
+                        // Resolver function that returns return value.
                         result = mockedCallbacks[message.name].apply(undefined, message.arguments);
                         if (typeof resolve === 'function') resolve(result);
                         window.console.log('>> ' + JSON.stringify(result));

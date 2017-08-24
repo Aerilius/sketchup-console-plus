@@ -17,14 +17,22 @@ requirejs.config({
         test: './',
         qunit: './external/qunit/qunit-2.4.0',
         jquery: '../src/ae_console/external/jquery/jquery',
+        ace: '../src/ae_console/external/ace',
+        'bootstrap-notify': '../src/ae_console/external/bootstrap-notify/bootstrap-notify',
         lib: '../src/ae_console/js/'
+    },
+    shim: {
+        'bootstrap-notify': {
+            deps: ['jquery'],
+            exports: 'jQuery.notify'
+        }
     }
 });
 requirejs(['lib/bridge_debug_helper'], function (brigdeDebugHelper) {
   brigdeDebugHelper.mockRequests({
     'update_property': function () {}
   });
-  requirejs(['qunit', 'test/tc_settings'], function (QUnit) {
+  requirejs(['qunit', 'test/settings_test', 'test/editor_test'], function (QUnit) {
       QUnit.start();
   });
 });

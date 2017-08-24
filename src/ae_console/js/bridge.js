@@ -40,12 +40,12 @@
  *
  * @example Usage with promises
  *   // On the Ruby side:
- *   bridge.on("do_calculation") { |promise, length, width|
+ *   bridge.on("do_calculation") { |action_context, length, width|
  *     if validate(length) && validate(width)
  *       result = calculate(length)
- *       promise.resolve(result)
+ *       action_context.resolve(result)
  *     else
- *       promise.reject("The input is not valid.")
+ *       action_context.reject("The input is not valid.")
  *     end
  *   }
  *   // On the JavaScript side:
@@ -447,7 +447,6 @@
             return nextPromise;
         };
 
-
         /**
          * Register an action to do when the promise is rejected.
          * @param   {function(Error)} onReject  A function to call when the promise is rejected.
@@ -469,7 +468,6 @@
             }
             return nextPromise;
         };
-
 
         /**
          * Resolves a promise.
@@ -559,7 +557,6 @@
                 reject(error);
             }
         }
-
 
     };
     self.Promise.resolve = function(value) {

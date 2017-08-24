@@ -39,10 +39,10 @@ Promises which allow easy asynchronous and delayed callback paths for both succe
 
 @example Usage with promises
 # On the Ruby side:
-  @bridge.on("do_calculation") { |promise, length, width|
+  @bridge.on("do_calculation") { |action_context, length, width|
     if validate(length) && validate(width)
       result = calculate(length)
-      promise.resolve(result)
+      action_context.resolve(result)
     else
       promise.reject("The input is not valid.")
     end
@@ -63,15 +63,11 @@ require(File.join(File.dirname(__FILE__), 'promise.rb'))
 # Optionally requires 'json.rb'
 # Requires modules Sketchup, UI
 
-
 module AE
-
 
   module ConsolePlugin
 
-
     class Bridge
-
 
       # Add the bridge to an existing UI::WebDialog/UI::HtmlDialog.
       # This can be used for convenience and will define the bridge's methods
@@ -127,9 +123,7 @@ module AE
       # Names that are used internally and not allowed to be used as callback handler names.
       RESERVED_NAMES = []
 
-
       attr_reader :dialog
-
 
       # Add a callback handler. Overwrites an existing callback handler of the same name.
       # @param name           [String]             The name under which the callback can be called from the dialog.
@@ -147,7 +141,6 @@ module AE
         @handlers[name] = callback
         return self
       end
-
 
       # Add a callback handler to be called only once. Overwrites an existing callback handler of the same name.
       # @param name           [String]             The name under which the callback can be called from the dialog.
@@ -170,7 +163,6 @@ module AE
         return self
       end
 
-
       # Remove a callback handler.
       # @param  name [String]
       # @return      [self]
@@ -179,7 +171,6 @@ module AE
         @handlers.delete(name)
         return self
       end
-
 
       # Call a JavaScript function with JSON arguments in the webdialog.
       # @param name      [String]        The name of a public JavaScript function
@@ -191,7 +182,6 @@ module AE
         arguments = 'undefined' if arguments.nil? || arguments.empty?
         @dialog.execute_script("#{name}.apply(undefined, #{arguments})")
       end
-
 
       # Call a JavaScript function with JSON arguments in the webdialog and get the
       # return value in a promise.
@@ -244,9 +234,7 @@ module AE
         return result
       end
 
-
       private
-
 
       # Create an instance of the Bridge and associate it with a dialog.
       # @param dialog [UI::WebDialog, UI::HtmlDialog]
@@ -300,7 +288,6 @@ module AE
         add_default_handlers
       end
 
-
       # Add additional optional handlers for calls from JavaScript to Ruby.
       def add_default_handlers
         # Puts (for debugging)
@@ -316,7 +303,6 @@ module AE
         RESERVED_NAMES << "#{NAMESPACE}.error"
       end
 
-
       # Create a string which has not yet been registered as callback handler, to avoid collisions.
       # @param  string [String]
       # @return        [String]
@@ -327,7 +313,6 @@ module AE
         end while @handlers.include?(handler_name)
         return handler_name
       end
-
 
       # Class for message properties, combining the behavior of WebDialog and Promise.
       # SketchUp's WebDialog action callback procs receive as first argument a reference to the dialog.
@@ -399,9 +384,7 @@ module AE
           return @dialog.__send__(method_name, *arguments, &block)
         end
 
-      
       end # class ActionContext
-
 
       # For serializing objects, we choose JSON.
       # If available and compatible, we prefer JSON from the standard libraries.
@@ -410,7 +393,6 @@ module AE
           # `Sketchup::require "json"` raises no error, but displays in the load errors popup.
           load 'json.rb' unless defined?(JSON)
           raise unless JSON::VERSION_MAJOR >= 1 && JSON::VERSION_MINOR >= 6 # support of option :quirks_mode
-
 
           # Serializes an object.
           # @param  object [Object]
@@ -423,7 +405,6 @@ module AE
             return JSON.generate([object])[1...-1]
           end
 
-
           # Unserializes the string representation of a serilized object.
           # @param  string [String]
           # @return        [Object]
@@ -434,10 +415,8 @@ module AE
             return JSON.parse("[#{string}]")[0]
           end
 
-
         rescue LoadError
           # Fallback JSON implementation.
-
 
           # @private
           def self.serialize(object)
@@ -453,7 +432,6 @@ module AE
                 join('')
             return json_string
           end
-
 
           # @private
           def self.unserialize(string)
@@ -483,15 +461,12 @@ module AE
             return result
           end
 
-
         end
-      end
 
+      end
 
     end # class Bridge
 
-
   end # module ConsolePlugin
-
 
 end # module AE

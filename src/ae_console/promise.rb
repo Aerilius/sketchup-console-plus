@@ -5,16 +5,18 @@ module AE
     class Bridge
 
       class Promise
-        # A simple promise implementation to follow the Promise specification for JavaScript (the instance methods):
+        # A simple promise implementation to follow the ES6 (JavaScript) Promise specification:
         # {#link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise }
-
-        # Existing Ruby promise implementations didn't satisfy either in simplicity or similarity to the JavaScript spec.
+        #
+        # Existing Ruby promise implementations did not satisfy either in simplicity or compliance to the ES6 spec.
+        #
         # https://github.com/tobiashm/a-ruby-promise/
-        # Uses instance eval to provide `return`-keyword-like `resolve` and `reject`, but exposes implementation internals
-        # that can have side effects if a same-named instance variable is used in the code block.
+        #     Uses instance eval to provide `return`-keyword-like `resolve` and `reject`, but exposes implementation
+        #     internals that can have side effects if a same-named instance variable is used in the code block.
+        #
         # https://github.com/bachue/ruby-promises/
-        # Uses Ruby's `method_missing` to provide a nice proxy functionality to the promise's result. Unfortunately this
-        # can cause exceptions when a promise is not yet resolved. Also ruby-like proxies are not realizable in JavaScript.
+        #     Uses Ruby's `method_missing` to provide a nice proxy to the promise's result. Unfortunately this can cause
+        #     exceptions when a promise is not yet resolved. Also ruby-like proxies can not be realised in JavaScript.
 
         # @private
         module State
@@ -35,21 +37,17 @@ module AE
         private_constant(:Handler) if methods.include?(:private_constant)
 
         # Run an asynchronous operation and return a promise that will receive the result.
-        # @overload initialize(executor)
-        #   @param executor     [#call(#call(Object),#call(Exception))]
-        #     A Proc or Method that executes some function and reports back success or failure by calling the parameter
-        #     `resolve` with a result or `reject` with the error. The executor must call one of these.
-        # @overload initialize {|resolve, reject|}
-        #   @yieldparam resolve [#call(*Object)]   A function to call to fulfill the promise with a result.
-        #   @yieldparam reject  [#call(Exception)] A function to call to reject the promise.
-        def initialize(executor=nil, &executor_)
+        # @param executor     [#call(#call(Object),#call(Exception))]
+        #   An executor receives a callable to resolve the promise with a result and
+        #   a callable to reject the promise in case of an error. The executor must call one of both.
+        # @yieldparam resolve [#call(*Object)]   A function to call to fulfill the promise with a result.
+        # @yieldparam reject  [#call(Exception)] A function to call to reject the promise.
+        def initialize(&executor)
           @state    = State::PENDING
           @value    = nil # result or reason
           @results = []   # all results if multiple were given
           @handlers = []  # @type [Array<Handler>]
-          if executor.respond_to?(:call) && (executor.arity == 2 || executor.arity < 0) ||
-             block_given?                && (executor_.arity == 2 || executor_.arity < 0)
-            executor ||= executor_
+          if block_given? && (executor.arity == 2 || executor.arity < 0)
             # thread = Thread.new{
             begin
               executor.call(method(:resolve), method(:reject))
@@ -67,11 +65,11 @@ module AE
         #   @param on_resolve   [#call(*Object)]          A function to call when the promise is resolved.
         #   @param on_reject    [#call(String,Exception)] A function to call when the promise is rejected.
         #
-        # @overload then {|*results|}
+        # @overload then{|*results|}
         #   @yield                                        A function to call when the promise is resolved.
         #   @yieldparam results [Array<Object>]           The promised result (or results).
         #
-        # @overload then(on_resolve) {|reason|}
+        # @overload then(on_resolve){|reason|}
         #   @param on_resolve   [#call(*Object)]          A function to call when the promise is resolved.
         #   @yield                                        A function to call when the promise is rejected.
         #   @yieldparam reason  [String,Exception]        The reason why the promise was rejected.
@@ -118,17 +116,17 @@ module AE
           return next_promise
         end
 
-        # Resolve a promise once a result has been calculated.
+        # Resolve a promise once a result has been computed.
         #
         # @overload resolve(*results)
-        #   Resolve a promise once a result or several results have been calculated.
-        #   @param results [Array<Object>]
+        #   Resolve a promise once a result or several results have been computed.
+        #   @param *results [Array<Object>]
         #
         # @overload resolve(promise)
         #   Resolve a promise with another promise. It will actually be resolved later as soon as the other is resolved.
-        #   @param promise [Promise]
+        #   @param promise  [Promise]
         #
-        # @return          [nil]
+        # @return           [nil]
         # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
@@ -240,6 +238,6 @@ module AE
 
     end # class Bridge
 
-  end # module ConsolePlugin
+  end
 
-end # module AE
+end

@@ -320,8 +320,7 @@ module AE
       # remember the message id. We retain SketchUp's default behavior by delegating to the webdialog, while adding
       # the functionality of a promise.
       # @!parse include UI::WebDialog
-      class ActionContext < Promise
-
+      class ActionContext < Promise::Deferred
 
         # @param dialog [UI::WebDialog, UI::HtmlDialog]
         # @param id     [Fixnum]
@@ -371,7 +370,7 @@ module AE
             nil
           }
           # Register these two handlers.
-          @handlers << Handler.new(on_resolve, on_reject, nil, nil)
+          self.promise.then(on_resolve, on_reject)
           @dialog = dialog
           @id     = id
         end

@@ -174,6 +174,8 @@ module AE
           }
         end
 
+        private
+
         # Resolve a promise once a result has been computed.
         #
         # @overload resolve(*results)
@@ -185,7 +187,6 @@ module AE
         #   @param promise  [Promise]
         #
         # @return           [nil]
-        # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
           raise Exception.new("A resolved promise can not be resolved again with different results") if @state == State::RESOLVED && !results.empty? && results != @results
@@ -233,12 +234,10 @@ module AE
           # resolved Promise and cause complicated errors.
           return nil
         end
-        alias_method :fulfill, :resolve
 
         # Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
         # @param  reason [String,Exception]
         # @return        [nil]
-        # @private For convenience not really private. This is supposed to be called from the executor with which the promise is initialized.
         def reject(reason=nil)
           raise Exception.new("A once resolved promise can not be rejected later") if @state == State::RESOLVED
           raise Exception.new("A rejected promise can not be rejected again with different reason") if @state == State::REJECTED && reason != @value
@@ -291,6 +290,28 @@ module AE
         def inspect
           return "#<#{self.class}:0x#{(self.object_id << 1).to_s(16)}>"
         end
+
+        class Deferred
+
+          def initialize
+            @resolve = nil
+            @reject = nil
+            @promise = Promise.new{ |resolve, reject|
+              @resolve = resolve
+              @reject = reject
+            }
+          end
+          attr_reader :promise
+
+          def resolve(*results)
+            @resolve.call(*results)
+          end
+
+          def reject(*reasons)
+            @reject.call(*reasons)
+          end
+
+        end # class Deferred
 
       end # class Promise
 

@@ -93,11 +93,10 @@ module AE
         end
 
         def self.select_tool()
-          promise = AE::ConsolePlugin::Bridge::Promise.new{ |resolver, rejector|
-            instance = self.new(resolver, rejector)
-            Sketchup.active_model.tools.push_tool(instance)
-          }
-          return promise
+          deferred = ConsolePlugin::Bridge::Promise::Deferred.new
+          instance = self.new(deferred)
+          Sketchup.active_model.tools.push_tool(instance)
+          return deferred.promise
         end
 
         def self.deselect_tool
@@ -110,9 +109,8 @@ module AE
           attr_accessor :mode_use_inferencing, :mode_pick_entity_instead_of_point
         end
 
-        def initialize(resolver=nil, rejector=nil)
-          @resolver = resolver
-          @rejector = rejector
+        def initialize(deferred)
+          @deferred = deferred
           @highlighter = EntityHighlightTool.new
           @model = Sketchup.active_model
           @cursor = UI::create_cursor(IMG_CURSOR_SELECT_ENTITY, 10, 10)
@@ -128,7 +126,7 @@ module AE
           view.invalidate
           # Reject promise if not yet resolved
           begin
-            @rejector.call('Tool deactivated') if @rejector
+            @deferred.reject('Tool deactivated') if @deferred
           rescue Exception => e # It may have been already resolved.
           end
         end
@@ -160,7 +158,7 @@ module AE
             selected = pick_point(view, x, y)
           end
           if !selected.nil?
-            @resolver.call(selected) if @resolver
+            @deferred.resolve(selected) if @deferred
             # Deselect this tool.
             deselect_tool
           end

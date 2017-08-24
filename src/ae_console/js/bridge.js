@@ -393,7 +393,6 @@
         return capture;
     })();
 
-
     /**
      * Simple Promise implementation
      *
@@ -473,7 +472,7 @@
          * Resolves a promise.
          * @param   {(Promise,object)} result
          */
-        var resolve = this.resolve = function (result) {
+        function resolve (result) {
             if (state == STATE_PENDING) {
                 // If this promise is resolved with another promise, the final result is not
                 // known, so we add a thenable to the second promise to finish resolving this one.
@@ -511,15 +510,13 @@
                     handler.resolveNext.apply(undefined, results);
                 }
             }
-        };
-        this.fulfill = this.resolve;
-
+        }
 
         /**
          * Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
          * @param   {(string,Error)} reason
          */
-        var reject = this.reject = function (reason) {
+        function reject (reason) {
             if (state == STATE_PENDING) {
                 value = reason;
                 state = STATE_REJECTED;
@@ -543,8 +540,7 @@
                     handler.rejectNext(reason);
                 }
             }
-        };
-
+        }
 
         if (typeof executor === 'function') {
             try {
@@ -598,6 +594,25 @@
                 }
             }
         });
+    };
+
+    /**
+     * @class Deferred
+     */
+    var Deferred = self.Deferred = self.Promise.Deferred = function () {
+        var resolver, rejecter;
+        this.promise = new Promise(function (_resolver, _rejecter) {
+            resolver = _resolver;
+            rejecter = _rejecter;
+        });
+
+        this.resolve = function () {
+            resolver.apply(undefined, arguments);
+        };
+
+        this.reject = function () {
+            rejecter.apply(undefined, arguments);
+        };
     };
 
     return self;

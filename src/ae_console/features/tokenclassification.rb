@@ -57,17 +57,18 @@ module AE
         return []
       end
 
-      # These methods needed for testing equality and uniq:
+      # These methods are needed for testing equality and uniq:
 
       def eql?(other)
-        return other.is_a?(TokenClassification) &&
-               @token == other.token &&
-               @type == other.type &&
-               @namespace = other.namespace
+        return self.instance_variables.all?{ |v|
+          self.instance_variable_get(v).hash == other.instance_variable_get(v).hash
+        }
       end
 
       def hash
-        return @token.hash + @type.hash + @namespace.hash
+        return self.instance_variables.map{ |v|
+          self.instance_variable_get(v).hash
+        }.reduce(0){ |sum, elem| sum + elem }
       end
 
     end

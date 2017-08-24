@@ -44,18 +44,14 @@ module AE
         # @yieldparam reject  [#call(Exception)] A function to call to reject the promise.
         def initialize(&executor)
           @state    = State::PENDING
-          @value    = nil # result or reason
-          @results = []   # all results if multiple were given
+          @values   = []  # all results or rejection reasons if multiple were given
           @handlers = []  # @type [Array<Handler>]
           if block_given? && (executor.arity == 2 || executor.arity < 0)
-            # thread = Thread.new{
             begin
               executor.call(method(:resolve), method(:reject))
             rescue Exception => error
               reject(error)
             end
-            # }
-            # thread.abort_on_exception = true
           end
         end
 
@@ -86,14 +82,16 @@ module AE
             end
           end
           raise ArgumentError.new("Argument must be callable") unless on_resolve.respond_to?(:call) || on_reject.respond_to?(:call)
+          (unhandled_rejection(*@values); return self) if @state == State::REJECTED && !on_reject.respond_to?(:call)
+
           next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
             @handlers << Handler.new(on_resolve, on_reject, resolve_next, reject_next)
           }
           case @state
             when State::RESOLVED
-              resolve(*@results)
+              handle(on_resolve, resolve_next, reject_next)
             when State::REJECTED
-              reject(@value)
+              handle(on_reject, resolve_next, reject_next)
           end
           return next_promise
         end
@@ -105,15 +103,7 @@ module AE
         # @return            [Promise]          A new promise that the on_reject block has been executed successfully.
         def catch(on_reject=nil, &block)
           on_reject = block if block_given?
-          return self unless on_reject.respond_to?(:call)
-          next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
-            @handlers << Handler.new(nil, on_reject, resolve_next, reject_next)
-          }
-          case @state
-            when State::REJECTED
-              reject(@value)
-          end
-          return next_promise
+          return self.then(nil, on_reject)
         end
 
         # Creates a promise that is resolved from the start with the given value.
@@ -189,43 +179,31 @@ module AE
         # @return           [nil]
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
-          raise Exception.new("A resolved promise can not be resolved again with different results") if @state == State::RESOLVED && !results.empty? && results != @results
-          #return self unless @state == State::PENDING
-          if @state == State::PENDING
-            # If this promise is resolved with another promise, the final result is not
-            # known, so we add a thenable to the second promise to resolve also this one.
-            if results.first.respond_to?(:then) # is_a?(Promise)
-              promise = results.first
-              promise.then(Proc.new { |*results|
-                             resolve(*results)
-                           }, Proc.new { |reason|
-                              reject(reason)
-                            })
-              return self
-            end
-            @results = results
-            @value   = results.first
-            @state   = State::RESOLVED
+          raise Exception.new("A resolved promise can not be resolved again with different results") if @state == State::RESOLVED && !results.empty? && results != @values
+          return self unless @state == State::PENDING
+
+          # If this promise is resolved with another promise, the final results are not yet
+          # known, so we we register this promise to be resolved once all results are resolved.
+          raise TypeError.new('A promise cannot be resolved with itself.') if results.include?(self)
+          if results.find{ |r| r.respond_to?(:then) }
+            self.class.all(results).then(Proc.new{ |results| resolve(*results) }, method(:reject))
+            return nil
           end
+
+          # Update the state.
+          @values  = results
+          @state   = State::RESOLVED
+
+          # Trigger the queued handlers.
           until @handlers.empty?
             handler = @handlers.shift
             if handler.on_resolve.respond_to?(:call)
-              begin
-                new_result = handler.on_resolve.call(*@results)
-                if new_result.respond_to?(:then)
-                  new_result.then(handler.resolve_next, handler.reject_next)
-                elsif handler.resolve_next.respond_to?(:call)
-                  handler.resolve_next.call(new_result)
-                end
-              rescue Exception => error
-                ConsolePlugin.error(error)
-                if handler.reject_next.respond_to?(:call)
-                  handler.reject_next.call(error)
-                end
-              end
-            else # No on_resolve registered.
+              handle(handler.on_resolve, handler.resolve_next, handler.reject_next)
+            else
+              # No on_resolve handler given: equivalent to identity { |*results| *results }, so we call resolve_next
+              # See: https://www.promisejs.org/api/#Promise_prototype_then
               if handler.resolve_next.respond_to?(:call)
-                handler.resolve_next.call(*@results)
+                handler.resolve_next.call(*@values)
               end
             end
           end
@@ -236,30 +214,42 @@ module AE
         end
 
         # Reject a promise once it cannot be resolved anymore or an error occured when calculating its result.
-        # @param  reason [String,Exception]
-        # @return        [nil]
-        def reject(reason=nil)
+        # @param  *reasons [Array<String,Exception,Promise>]
+        # @return          [nil]
+        def reject(*reasons)
           raise Exception.new("A once resolved promise can not be rejected later") if @state == State::RESOLVED
-          raise Exception.new("A rejected promise can not be rejected again with different reason") if @state == State::REJECTED && reason != @value
-          #return self unless @state == State::PENDING
-          if @state == State::PENDING
-            @value = reason
-            @state = State::REJECTED
-          end
-          handler_called = false
-          until @handlers.empty?
-            handler = @handlers.shift
-            if handler.on_reject.respond_to?(:call)
-              begin
-                new_result     = handler.on_reject.call(@value)
-                handler_called = true
-                if handler.resolve_next.respond_to?(:call)
-                  handler.resolve_next.call(new_result)
-                end
-              rescue Exception => error
-                ConsolePlugin.error(error)
+          raise Exception.new("A rejected promise can not be rejected again with different reason") if @state == State::REJECTED && reasons != @values
+          return nil unless @state == State::PENDING
+
+          # If this promise is rejected with another promise, the final reasons are not yet
+          # known, so we we register this promise to be rejected once all reasons are resolved.
+          raise(TypeError, 'A promise cannot be rejected with itself.') if reasons.include?(self)
+          # TODO: reject should not do unwrapping according to https://github.com/getify/You-Dont-Know-JS/blob/master/async%20%26%20performance/ch3.md
+          #if reasons.find{ |r| r.respond_to?(:then) }
+          #  self.class.all(reasons).then(Proc.new{ |reasons| reject(*reasons) }, method(:reject))
+          #  return
+          #end
+
+          # Update the state.
+          @values = reasons
+          @state  = State::REJECTED
+
+          # Trigger the queued handlers.
+          if @handlers.empty?
+            # No "then"/"catch" handlers have been added to the promise.
+            unhandled_rejection(*@values)
+          else
+            # Otherwise: Potentially handlers are awaiting results.
+            # If no catch handler is called, the rejection might get unnoticed, so we emit a warning.
+            until @handlers.empty?
+              handler = @handlers.shift
+              if handler.on_reject.respond_to?(:call)
+                handle(handler.on_reject, handler.resolve_next, handler.reject_next)
+              else
+                # No on_reject handler given: equivalent to identity { |reason| raise(reason) }, so we call reject_next
+                # See: https://www.promisejs.org/api/#Promise_prototype_then
                 if handler.reject_next.respond_to?(:call)
-                  handler.reject_next.call(error)
+                  handler.reject_next.call(*@values)
                 end
               end
             else # No on_reject registered.
@@ -268,20 +258,54 @@ module AE
               end
             end
           end
-          unless handler_called
-            if reason.is_a?(Exception)
-              Kernel.warn("#{self.inspect} rejected with \"#{reason.class.name}\", " +
-                  "but no `on_reject` handler found.")
-              ConsolePlugin.error(reason)
-            else
-              Kernel.warn("#{self.inspect} rejected with \"#{reason.to_s[0..1000]}\", " +
-                  "but no `on_reject` handler found.\n#{caller.join("\n")}")
-            end
-          end
           # We must return nil, otherwise if this promise is rejected inside the 
           # block of an outer Promise, the block would implicitely return a 
           # resolved Promise and cause complicated errors.
           return nil
+        end
+
+        # Executes a handler and passes on its results or error.
+        # @param reaction   [Proc]
+        # @param on_success [Proc]
+        # @param on_failure [Proc]
+        # @note  Precondition: Status is already set to State::RESOLVED or State::REJECTED
+        def handle(reaction, on_success, on_failure)
+          defer{
+            begin
+              new_results = *reaction.call(*@values)
+              if new_results.find{ |r| r.respond_to?(:then) }
+                self.class.all(new_results).then(Proc.new{ |results| on_success.call(*results) }, on_failure)
+              elsif on_success.respond_to?(:call)
+                on_success.call(*new_results)
+              end
+            rescue StandardError => error
+              if on_failure.respond_to?(:call)
+                on_failure.call(error)
+              end
+              ConsolePlugin.error(error)
+            end
+          }
+        end
+
+        def unhandled_rejection(*reasons)
+          reason = reasons.first
+          warn("Uncaught promise rejection with reason [#{reason.class}]: \"#{reason}\"")
+          if reason.is_a?(Exception) && reason.backtrace
+            # Make use of the backtrace to point at the location of the uncaught rejection.
+            filtered_backtrace = reason.backtrace.inject([]){ |lines, line|
+              break lines if line.match(__FILE__)
+              lines << line
+            }
+            location = filtered_backtrace.last[/[^\:]+\:\d+/] # /path/filename.rb:linenumber
+          else
+            filtered_backtrace = caller.inject([]){ |lines, line|
+              next lines if line.match(__FILE__)
+              lines << line
+            }
+            location = filtered_backtrace.first[/[^\:]+\:\d+/] # /path/filename.rb:linenumber
+          end
+          Kernel.warn(filtered_backtrace.join($/))
+          Kernel.warn("Tip: Add a Promise#catch block to the promise after the block in #{location}")
         end
 
         # Redefine the inspect method to give shorter output.
@@ -289,6 +313,11 @@ module AE
         # @return [String]
         def inspect
           return "#<#{self.class}:0x#{(self.object_id << 1).to_s(16)}>"
+        end
+
+        def defer(&callback)
+          UI.start_timer(0.0, false, &callback)
+          return nil
         end
 
         class Deferred

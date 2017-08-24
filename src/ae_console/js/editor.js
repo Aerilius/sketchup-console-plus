@@ -129,12 +129,17 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
             }
         };
 
-        this.saveAs = function () {
-            // Ask where to save the file.
-            return Bridge.get('savepanel', Translate.get('Save the current file as…'), currentFilepath).then(function (filepath) {
+        this.saveAs = function (filepath) {
+            if (typeof filepath !== 'string') {
+                // Ask where to save the file.
+                return Bridge.get('savepanel', Translate.get('Save the current file as…'), currentFilepath).then(function (filepath) {
+                    currentFilepath = filepath;
+                    return editor.save();
+                });
+            } else {
                 currentFilepath = filepath;
                 return editor.save();
-            });
+            }
         };
 
         function configureAce (aceEditor) {

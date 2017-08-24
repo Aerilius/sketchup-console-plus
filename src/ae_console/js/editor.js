@@ -53,13 +53,44 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
             return currentFilepath;
         };
 
-        this.newDocument = function () {
+        /**
+         * Checks whether there are unsaved changes and asks the user whether to save.
+         * Ensures that afterwards the document can be savely closed/changed/replaced.
+         * The promise will be resolved if:
+         *   - There are no unsaved changes.
+         *   - The user wants to disgard changes.
+         *   - The user wants to save changes and saving has succeeded.
+         * It will be rejected if:
+         *   - Saving failed, e.g. the user changed his opinion and cancelled the save dialog.
+         * @returns {Promise}
+         */
+        /*
+        if ((statusCurrentFileUnsaved && confirmSaveChanges()) && (!statusCurrentFileExternallyChanged || confirmSaveAndIgnoreExternalChanges())) {
+            return editor.save();
+        } else {
+            return Bridge.Promise.resolve(true);
+        }
+         */
+        this.checkUnsavedChanges = function () {
             // Ask whether to save changes if there are unsaved changes.
-            if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {
-                return editor.save().then(function() {
-                    return editor.newDocument();
+            if (statusCurrentFileUnsaved) {
+                return confirmSaveChanges().then(function checkExternalChangeAndConfirm () {
+                    if (!statusCurrentFileExternallyChanged) {
+                        return editor.save();
+                    } else {
+                        return confirmSaveAndIgnoreExternalChanges().then(editor.save, /*else*/ editor.saveAs);
+                    }
+                }, /*else*/ function () {
+                    return Bridge.Promise.resolve(true);
                 });
             } else {
+                return Bridge.Promise.resolve(true); // Return a resolved promise
+            }
+        };
+
+        this.newDocument = function () {
+            // Ask whether to save changes if there are unsaved changes.
+            return this.checkUnsavedChanges().then(function doNewDocument () {
                 if (currentFilepath) closeCurrentFile();
                 editor.setContent('');
                 currentFilepath = null;
@@ -70,8 +101,8 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 statusCurrentFileExternallyChanged = false;
                 // Trigger an event.
                 trigger('opened', '');
-                return new Bridge.Promise.resolve(true); // Return a resolved promise
-            }
+                return true;
+            });
         };
 
         this.open = function (filepath, lineNumber) {
@@ -81,11 +112,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 return Bridge.Promise.resolve(true); // Return a resolved promise
             }
             // Ask whether to save changes if there are unsaved changes.
-            if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {
-                return editor.save().then(function() {
-                    return editor.open(filepath);
-                });
-            } else {
+            return this.checkUnsavedChanges().then(function doOpen () {
                 if (currentFilepath) closeCurrentFile();
                 // Read the file and load its content into the ace editor.
                 return loadFile(filepath).then(function () {
@@ -105,8 +132,9 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 }, function (error) {
                     // notification: File failed to open
                     alert('Failed to open file "' + filepath + '": \n' + error);
+                    throw error;
                 });
-            }
+            });
         };
 
         this.save = function () {
@@ -167,27 +195,27 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                     allow_dismiss: true,
                     delay: 0,
                     template: '<div data-notify="container" class="col-sm-3 alert alert-{0}" role="alert"><span data-notify="message">' +
-                        Translate.get(message) + '&nbsp;<button class="notify_button_action1">' +
-                        Translate.get(action1 || 'Yes') + '</button>&nbsp;<button type="button" class="notify_button_action2">' + 
+                        Translate.get(message) + '&nbsp;<button class="notify_button_action1" style="min-width: 4em">' +
+                        Translate.get(action1 || 'Yes') + '</button>&nbsp;<button type="button" class="notify_button_action2" style="min-width: 4em">' +
                         Translate.get(action2 || 'No') + '</button></span></div>'
                 });
                 $('.notify_button_action1', notify.$ele).on('click', function() {
-                    resolve();
                     notify.close();
+                    resolve();
                 });
                 $('.notify_button_action2', notify.$ele).on('click', function() {
-                    reject();
                     notify.close();
+                    reject();
                 });
             });
         }
 
         function confirmSaveChanges () {
-            return window.confirm('Save changes to current file?');
+            return confirm('Save changes to current file?');
         }
 
         function confirmSaveAndIgnoreExternalChanges () {
-            return window.confirm('The file has been changed externally.\nOverwrite external changes and save the current file?');
+            return confirm('The file has been changed externally.\nOverwrite external changes and save the current file?');
         }
 
         function addToRecentlyOpenedFiles (filepath) {
@@ -210,6 +238,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 // Notify on external changes of the just opened file.
                 Bridge.get('observe_external_file_changes', filepath).then(function (path) {
                     if (path == filepath) {
+                        statusCurrentFileExternallyChanged = true;
                         confirm('The file was changed externally.', 'Reload', 'Ignore')
                         .then(loadFile);
                     }

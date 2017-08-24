@@ -48,13 +48,12 @@ module AE
       # @param classification [AE::ConsolePlugin::TokenClassification] Describes an object/method in Ruby
       # @return [String] a URL
       def self.get_documentation_url(classification)
-        toplevel_namespace = classification.namespace.to_s[/^[^\:]+/]
-        if ['Sketchup', 'UI', 'Geom', 'LanguageHandler', 'Length', 'SketchupExtension'].include?(toplevel_namespace)
+        toplevel_namespace = classification.namespace.to_s[/^[^\:]+/] || classification.token
+        sketchup_keywords = ['Sketchup', 'UI', 'Geom', 'LanguageHandler', 'Length', 'SketchupExtension']
+        if sketchup_keywords.include?(toplevel_namespace)
           return get_documentation_url_sketchup(classification)
-        else # if Ruby core
-          return get_documentation_url_core_rubydoc_info(classification)
-        # else if Ruby stdlib
-        # TODO: How to detect and handle standard library? "http://ruby-doc.org/stdlib-#{RUBY_VERSION}/libdoc/#{library_name}/rdoc/"
+        else # if Ruby core and stdlib
+          return get_documentation_url_rubydoc_info(classification)
         end
       end
 
@@ -205,7 +204,7 @@ module AE
           return host + path + fragment
         end
 
-        def get_documentation_url_core_rubydoc_info(classification)
+        def get_documentation_url_rubydoc_info(classification)
           host = 'http://www.rubydoc.info/stdlib/core/'
           # Compose URL resource path from namespace.
           if classification.type == :class || classification.type == :module
@@ -228,7 +227,7 @@ module AE
           return host + path + fragment
         end
 
-        def get_documentation_url_core_ruby_doc_org(classification)
+        def get_documentation_url_ruby_doc_org(classification)
           host = "http://ruby-doc.org/core-#{RUBY_VERSION}/"
           # Compose URL resource path from namespace.
           if classification.type == :class || classification.type == :module

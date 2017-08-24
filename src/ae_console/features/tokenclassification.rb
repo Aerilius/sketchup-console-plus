@@ -106,10 +106,10 @@ module AE
             next
           end
         }
-        if classifications.empty?
+        if results.empty?
           raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for multiple classications #{self.inspect[0..100]}")
-        elsif classifications.length == 1
-          return classifications.first
+        elsif results.length == 1
+          return results.first
         else
           return MultipleTokenClassification.new(results) # This ensures result does not include duplicates
         end

@@ -38,6 +38,7 @@ module AE
        settings.rb
        object_replacer.rb
        console.rb
+       version.rb
     ).each{ |file| require(File.join(PATH, file)) }
 
     # Constants

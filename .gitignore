@@ -1,2 +1,22 @@
-test/tmp
-tools/.yardoc_*
+/coverage/
+/doc/
+/tmp/
+/.yardoc
+
+# Gem files / folders
+/Gemfile.lock
+/pkg/
+/spec/reports/
+/.bundle/
+
+# Platform-specific files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary files
+/test/tmp/
+/tools/.yardoc_*
+
+# IDE files
+/.idea/

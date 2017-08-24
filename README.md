@@ -50,6 +50,16 @@ There are two modes:
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/Aerilius/sketchup-console-plus/issues.
 
+## Development
+
+You can a technical overview about this extension in the design folder.
+
+Run `rake test` to run the tests.
+
+To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version and push git commits and tags.
+
+`bundle exec rake --tasks build`
+
 ## License
 
 This extension is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

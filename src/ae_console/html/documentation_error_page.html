@@ -1,6 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-        "http://www.w3.org/TR/html4/strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<!DOCTYPE html>
+<html>
 <head>
     <title>Documentation Browser</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
@@ -10,6 +9,7 @@
         html {
             height: 100%;
         }
+
         body {
             position: relative;
             height: 100%;
@@ -21,16 +21,68 @@
             overflow: hidden;
             margin: 0;
         }
+
         .verticallyCentered {
             position: absolute;
             top: 0;
             bottom: 0;
             height: 240px;
+            padding-bottom: 3.5em;
             margin: auto;
             left: 0;
             right: 0;
             width: 100%;
             text-align: center;
+        }
+
+        #search_combobox {
+            max-width: 30em;
+            margin: auto; /* centering */
+        }
+
+        .search_combobox {
+            display: table;
+        }
+
+        .search_combobox > *:first-child {
+            display: table-row;
+        }
+
+        .search_combobox > *:first-child > * {
+            display: table-cell;
+        }
+
+        .search_combobox > *:first-child > *:first-child {
+            width: 100%;
+        }
+
+        .search_combobox > *:first-child > *:first-child > input {
+            width: 100%;
+        }
+
+        .search_combobox input, .search_combobox select {
+            height: 2em;
+            line-height: 2em;
+        }
+
+        #search_combobox, #bookmarks {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        #bookmarks .bookmark {
+            padding: 0 1em;
+            height: 2em;
+        }
+
+        #search_engine {
+            width: 2.5em;
+            overflow: hidden;
+            letter-spacing: 10em; /* Abbreviate the value by showing only first character */
+        }
+
+        #search_engine option {
+            letter-spacing: initial;
         }
     </style>
     <script type="text/javascript" src="../js/config.js"></script>
@@ -40,9 +92,68 @@
 <div class="verticallyCentered">
 <image src="../images/documentation_not_found.svg">
 <h3>Documentation not found</h3>
+    <p id="reason"></p>
+    <div id="search_combobox" class="search_combobox">
+        <div>
+            <span class="search_combobox_expanded">
+                <input id="navigation_address" type="search" placeholder="Search…"/>
+            </span>
+            <select class="search_combobox_right" id="search_engine" title="Search Engine">
+                <option value="https://duckduckgo.com/?q=QUERY" >DuckDuckGo</option>
+                <option value="https://www.bing.com/search?q=QUERY" >Bing</option>
+                <option value="https://encrypted.google.com/search?q=QUERY" >Google</option>
+            </select>
+        </div>
+    </div>
+    <div id="bookmarks">
+        <button class="bookmark" data-href="http://ruby.sketchup.com">SketchUp Ruby</button>
+        <button class="bookmark" data-href="http://ruby-doc.org/">Official Ruby Doc</button>
+        <button class="bookmark" data-href="http://www.rubydoc.info/">YARD Doc Server</button>
+    </div>
 </div>
 <script type="text/javascript">
 requirejs(['bridge', 'translate'], function (Bridge, Translate) { Bridge.call('translate'); });
+
+requirejs(['jquery', 'bridge', 'settings'], function ($, Bridge, Settings) {
+
+    var rubyVersion = '2.0.0';
+    //Bridge.get('ruby_version').then(function (actual) { rubyVersion = actual; });
+    var settings = new Settings();
+
+    function navigateTo (address) {
+        window.location.href = address;
+    }
+
+    $(function () { // on DOMContentLoaded
+
+        $('#navigation_address').on('keyup', function (event) {
+            if (event.which == 13) { /* enter */
+                var input, address;
+                input = $(this).val();
+                if (/^https?\:\/\/[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}/.test(input)) {
+                    address = input;
+                } else if (/^[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}/.test(input)) {
+                    address = 'http://' + input;
+                } else {
+                    address = $('#search_engine').val().replace(/QUERY/, encodeURIComponent(input));
+                }
+                navigateTo(address);
+            }
+        });
+
+        $('#bookmarks .bookmark').each(function (index, button) {
+            $(button).on('click', function () {
+                navigateTo($(this).attr('data-href'));
+            });
+        });
+
+        Bridge.get('get_settings').then(settings.load);
+        settings.getProperty('search_engine', null).addListener('change', function (newValue) {
+            searchEngineProperty.setValue($(this).val());
+        });
+
+    });
+});
 </script>
 </body>
 </html>

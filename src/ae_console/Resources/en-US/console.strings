@@ -78,12 +78,14 @@
 "Show documentation for the currently focussed word in a browser window."="Show documentation for the currently focussed word in a browser window.";
 "The help function can only lookup Ruby documentation."="The help function can only lookup Ruby documentation.";
 "Documentation not found"="Documentation not found";
+"Documentation for %0 not found at url %1"="Documentation for %0 not found at url %1";
 "Parameters"="Parameters";
 "Return value"="Return value";
 "Documentation"="Documentation";
 "Back"="Back";
 "Forward"="Forward";
 "Search Engine"="Search Engine";
+"Search…"="Search…";
 
 /* Select entity */
 "Select"="Select";

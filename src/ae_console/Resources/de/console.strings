@@ -79,12 +79,14 @@
 "Show documentation for the currently focussed word in a browser window."="Zeige Dokumentation für das aktuell ausgewählte Wort in einem Browser-Fenster.";
 "The help function can only lookup Ruby documentation."="Die Hilfe-Funktion kann nur Ruby-Dokumentation nachschlagen.";
 "Documentation not found"="Dokumentation nicht gefunden";
+"Documentation for %0 not found at url %1"="Die Dokumentation für %0 wurde nicht unter %1 gefunden.";
 "Parameters"="Parameter";
 "Return value"="Rückgabewert";
 "Documentation"="Dokumentation";
 "Back"="Zurück";
 "Forward"="Vorwärts";
 "Search Engine"="Suchmaschine";
+"Search…"="Suchen…";
 
 /* Select entity */
 "Select"="Auswählen";

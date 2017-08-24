@@ -9,25 +9,24 @@ module AE
       require(File.join(PATH, 'bridge.rb'))
       require(File.join(PATH, 'translate.rb'))
 
-      DOCUMENTATION_BROWSER_HTML ||= File.join(PATH, 'html', 'documentation.html')
-      ERROR_PAGE_URL ||= File.join(PATH, 'html', 'docbrowser_error_page.html')
+      ERROR_PAGE_HTML ||= File.join(PATH, 'html', 'documentation_error_page.html')
 
       def initialize(app)
         @documentation_browser = nil
+        @error_message = nil
         @settings = app.settings
         app.plugin.on(:console_added, &method(:initialize_console))
       end
 
       def initialize_console(console)
         dialog = console.dialog
-        dialog.on('open_help') { |action_context, token_list|
+        dialog.on('open_help') { |action_context, tokens|
           # Show the documentation browser.
           show_documentation_browser(dialog).then{
             # Open the help page.
             binding = console.instance_variable_get(:@binding)
-            lookup(token_list, binding)
+            lookup(tokens, binding)
           }
-          # TODO: maybe action_context.reject on failure and show a JS notification
         }
       end
 
@@ -40,16 +39,9 @@ module AE
           # Initialize the documentation browser and return a promise that is resolved once the html is loaded.
           if @documentation_browser.nil?
             initialize_documentation_browser
-            promise = Bridge::Promise.new
-            @documentation_browser.on('loaded'){ |action_context|
-              promise.resolve(true)
-            }
-            @documentation_browser.set_position(left, y)
-            @documentation_browser.set_size(width, h)
-            @documentation_browser.show
-            next promise
+          end
           # Otherwise just show the documentation browser.
-          elsif !@documentation_browser.visible?
+          if !@documentation_browser.visible?
             @documentation_browser.set_position(left, y)
             @documentation_browser.set_size(width, h)
             @documentation_browser.show
@@ -67,13 +59,11 @@ module AE
             :resizable       => true,
             :style => UI::HtmlDialog::STYLE_DIALOG
         })
-        @documentation_browser.set_file(DOCUMENTATION_BROWSER_HTML)
 
         # Add a Bridge to handle JavaScript-Ruby communication.
         @documentation_browser = Bridge.decorate(@documentation_browser)
 
         @documentation_browser.on('translate') { |action_context|
-          # Translate.
           TRANSLATE.webdialog(@documentation_browser)
         }
 
@@ -84,31 +74,35 @@ module AE
         @documentation_browser.on('update_property') { |action_context, key, value|
           @settings[key] = value
         }
+
+        @documentation_browser.on('get_error_message') { |action_context|
+          action_context.resolve @error_message unless @error_message.nil?
+        }
       end
 
       # Looks up a url for a given list of tokens and opens the url.
-      # @param [Array<String>] token_list
+      # @param [Array<String>] tokens
       # @param [Binding] binding
       def lookup(tokens, binding)
         classification = TokenResolver.resolve_tokens(tokens, binding) # raises ResolverError
         url = DocProvider.get_documentation_url(classification)
         if !defined?(Sketchup::Http)
-          @documentation_browser.execute_script("requirejs('features/documentation_browser').navigateTo(#{JSON.generate([url])[1...-1]});")
+          @documentation_browser.set_url(url)
         else
           # Test whether url exists (Sketchup 2017+)
           Sketchup::Http::Request.new(url, Sketchup::Http::HEAD).start{ |request, response|
             if response.status_code == 200
-              @documentation_browser.execute_script("requirejs('features/documentation_browser').navigateTo(#{JSON.generate([url])[1...-1]});")
+              @documentation_browser.set_url(url)
             else
-              error_message = "Documentation not found for #{classification.docpath} at url #{url}"
-              @documentation_browser.execute_script("requirejs('features/documentation_browser').showErrorPage('#{error_message}');")
+              @error_message = TRANSLATE["Documentation for %0 not found at url %1", classification.docpath, url]
+              @documentation_browser.set_url(ERROR_PAGE_HTML)
             end
           }
         end
       rescue TokenResolver::TokenResolverError => error
         # Load an error page
-        error_message = "Documentation could not be resolved for #{JSON.generate([tokens.join])[1...-1]}"
-        @documentation_browser.execute_script("requirejs('features/documentation_browser').showErrorPage('#{error_message}');")
+        @error_message = error.message
+        @documentation_browser.set_url(ERROR_PAGE_HTML)
       end
 
       def get_javascript_string

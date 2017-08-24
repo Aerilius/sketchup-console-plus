@@ -17,7 +17,7 @@ module AE
           dialog.on('openpanel') { |action_context, title, directory=nil, filename=nil|
             filepath = UI.openpanel(title, directory, filename)
             if filepath.nil?
-              action_context.reject
+              action_context.reject('cancelled')
             else
               action_context.resolve(File.expand_path(filepath))
             end

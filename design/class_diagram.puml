@@ -1,0 +1,100 @@
+@startuml
+set namespaceSeparator ::
+hide empty members
+!pragma horizontalLineBetweenDifferentPackageAllowed
+
+package Ruby {
+    object ConsolePlugin {
+        + Settings @@settings
+        ..
+        open()
+        close()
+        ..
+        register_feature(Feature)
+    }
+
+    class Ruby::Console {
+        + Bridge @bridge
+        + UI::HtmlDialog @dialog
+        ..
+        show()
+        close()
+        ..
+        puts(*args)
+        print(*args)
+        warn(*args)
+        error(exception)
+    }
+
+    interface Feature {
+        initialize(FeatureAccess)
+        String get_javascript_string()
+        String get_javascript_path()
+    }
+
+    object FeatureAccess {
+        Array<Console> consoles
+        Settings settings
+        ConsolePlugin plugin
+    }
+
+    class Ruby::Bridge {
+        HtmlDialog @dialog
+        ..
+        on(eventname, handler)
+        once(eventname, handler)
+        off(eventname)
+        ..
+        call(name, *args, handler)
+        Promise get(name, *args)
+    }
+
+    ConsolePlugin *-down- Ruby::Console: @@consoles
+    ConsolePlugin *-- Feature: @@registered_features
+    ConsolePlugin -left-> FeatureAccess: @@feature_access
+
+    Ruby::Console --> Ruby::Bridge: @bridge
+
+    'some hidden links for better layout
+    FeatureAccess -[hidden]down->  Feature
+    Feature       -[hidden]right-> Ruby::Console
+    Ruby::Console -[hidden]right-> Ruby::Bridge
+}
+
+package JS {
+    object app
+    class Editor
+    class JS::Console
+    class Output
+    class JS::Settings
+
+    object Bridge {
+        call(name, *args, handler)
+        Promise get(name, *args)
+        puts(string)
+        error(errorObject)
+    }
+
+    app --> Editor: editor
+    app --> JS::Console: console
+    app --> Output: output
+    app --> JS::Settings: settings
+    app --> Bridge
+
+    JS::Console -right-> Output
+    'JS::Console --> JS::Settings
+
+    'Editor --> JS::Settings
+
+    'Output --> JS::Settings
+
+    'some hidden links for better layout
+    app    -[hidden]right-> JS::Settings
+    Editor -[hidden]left->  Bridge
+    Editor -[hidden]right-> JS::Console
+    Output -up->            JS::Settings
+}
+
+Ruby::Bridge <-right-> Bridge
+
+@enduml

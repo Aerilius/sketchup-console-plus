@@ -2,10 +2,12 @@
 
 This third version of the Ruby Console+ makes use of the observer pattern, asynchronous communication and promises.
 
+<img alt="Class diagram" src="./class_diagram.svg">
+
 ## Ace Editor
 
 The [ace editor](https://ace.c9.io/) is an IDE based on web technologies.
-To update to a new version, download from the [prepackaged versions](https://github.com/ajaxorg/ace-builds/). For the old Internet-Explorer-based webdialogs in older SketchUp versions, I had to heavily patch ace to circumvent errors caused by limited web standard support. This is no necessary anymore since this version does at the moment not aim for backward compatibility. Remaining patches can be found in the `patches` directory. 
+To update to a new version, download from the [prepackaged versions](https://github.com/ajaxorg/ace-builds/). For the old Internet-Explorer-based webdialogs in older SketchUp versions, I had to heavily patch ace to circumvent errors caused by limited web standard support. This is not necessary anymore since this version does at the moment not aim for backward compatibility. Remaining patches can be found in the `patches` directory. 
 
 ## Bridge
 

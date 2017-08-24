@@ -1,0 +1,22 @@
+@startuml
+' Forward evaluatation
+
+state "TokenClassification\nBy Object" as ByObject
+state "TokenClassification\nBy Class" as ByClass
+ByClass : is instance ?
+state "TokenClassification\nBy Doc" as ByDoc
+ByDoc : is instance ?
+state "Multiple\nTokenClassification" as Multiple
+
+[*] -right-> ByObject: find object \n for identifier
+ByObject -->     ByObject : class, \n module, \n constant
+ByObject -up->   ByClass : new
+ByObject -down-> ByDoc : method
+ByClass  -->     ByClass : class, \n module, \n new
+ByClass  -down-> ByObject : constant
+ByClass  -down-> ByDoc : method
+ByDoc    -->     ByDoc : class, \n module, \n constant, \n method
+ByDoc    -up->   ByClass : class, \n module \n if found in \n object space
+ByDoc    -left-> Multiple : if method \n can return \n multiple types
+
+@enduml

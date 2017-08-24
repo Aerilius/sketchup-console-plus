@@ -322,8 +322,8 @@ module AE
               return MultipleTokenClassification.new(classifications)
             end
           else
-            if try_apply_common_knowledge(token)
-              return self
+            if COMMON_KNOWLEDGE.include?(token)
+              return TokenClassificationByDoc.new(token, :instance_method, @returned_namespace, COMMON_KNOWLEDGE[token], true)
             else
               raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_namespace} through documentation")
             end
@@ -351,20 +351,8 @@ module AE
         return tokens.reduce(::Object){ |modul, token| modul.const_get(token) }
       end
 
-      def try_apply_common_knowledge(token)
-        token = token.to_s
-        if COMMON_KNOWLEDGE.include?(token)
-          @token = token
-          @type = :instance_method
-          @namespace = @returned_namespace
-          @returned_namespace = COMMON_KNOWLEDGE[token]
-          @is_instance = true # Currently in common knowledge we only have instance methods that return instances.
-          return true
-        end
-        return false
-      end
-
       COMMON_KNOWLEDGE ||= {
+        '[]' => 'Object', # yardoc Hash#[] documentation misses return type.
         'class' => 'Class',
         'count' => 'Integer',
         'inspect' => 'String',

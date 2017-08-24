@@ -2,6 +2,12 @@ define(['ace/ace'], function (ace) {
 
     var TokenIterator = ace.require('ace/token_iterator').TokenIterator;
 
+    var space = /^\s+$/,
+        bracketOpen = /^[\(\[\{]$/,
+        bracketClose = /^[\)\]\}]$/,
+        bracketMatching = {'(': ')', ')': '(',  '[': ']', ']': '[', '{': '}', '}': '{'},
+        indexAccessor = /^[\[\]]$/;
+
     /**
      * Get a list of continuous tokens preceding the given position in the editor.
      * The token list includes – if possible – all tokens needed for a valid object/class/module or chained methods.
@@ -11,30 +17,29 @@ define(['ace/ace'], function (ace) {
         var position = aceEditor.getCursorPosition();
         var tokenIterator = new TokenIterator(aceEditor.getSession(), position.row, position.column);
         var tokens = [];
+        var bracketStack = [];
         var currentToken = tokenIterator.getCurrentToken(); // An object {type: string, value: string, index: number, start: number}
         if (currentToken == null) return tokens;
         // Ace's Ruby tokenizer incorrectly splits some tokens. 
         // Check the next token to make sure we have the complete current token.
         // Detecting setter methods however is ambiguous to distinguish from local variable assignments.
+        var token = currentToken.value;
         var nextToken = tokenIterator.stepForward();
         if (nextToken != null) {
             switch (nextToken.value) {
-                case '?':  currentToken.value += '?'; break;
-                case '?.': currentToken.value += '?'; break;
-                case '!':  currentToken.value += '!'; break;
-                case '!.': currentToken.value += '!'; break;
+                case '?':  token += '?'; break;
+                case '?.': token += '?'; break;
+                case '!':  token += '!'; break;
+                case '!.': token += '!'; break;
                 default: break; // null or non-matching
             }
         }
         tokenIterator.stepBackward(); // again the old currentToken
-        tokens.unshift(currentToken.value);
+        tokens.unshift(token);
+        if (bracketClose.test(token)) {
+            bracketStack.push(token);
+        }
         // Walk from the caret position backwards and collect tokens. Skip everything within brackets.
-        var space = /^\s+$/,
-            bracketOpen = /^[\(\[\{]$/,
-            bracketClose = /^[\)\]\}]$/,
-            bracketStack = [],
-            bracketMatching = {'(': ')', '[': ']', '{': '}'},
-            indexAccessor = /^[\[\]]$/;
         while (true) {
             currentToken = tokenIterator.stepBackward();
             if (currentToken == null) break;
@@ -49,11 +54,13 @@ define(['ace/ace'], function (ace) {
                 if (last == bracketMatching[token]) {
                     bracketStack.pop();
                     if (indexAccessor.test(token) && bracketStack.length == 0) {
-                        token = '[]';
-                        if (tokens[0] == '=') {
-                            tokens[0] = token + '=';
-                        } else {
-                            tokens.unshift(token);
+                        if (tokens[0] == ']') {
+                            if (tokens[1] == '=') {
+                                tokens.shift();
+                                tokens[0] = '[]=';
+                            } else {
+                                tokens[0] = '[]';
+                            }
                         }
                     }
                 } else {

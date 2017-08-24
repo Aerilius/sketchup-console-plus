@@ -37,7 +37,7 @@ module AE
 
       def self.complete_filepath(prefix)
         return ($LOAD_PATH + ['']).map{ |base|
-          prefix_path = File.expand_path(File.join(base, prefix))
+          prefix_path = File.expand_path(prefix, base) # joins (base, prefix)
           offset = prefix_path.length - prefix.length
           paths = Dir.glob(prefix_path + '*')
           paths.map{ |path|

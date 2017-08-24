@@ -30,7 +30,7 @@ module AE
   module ConsolePlugin
 
     # Constants
-    self::PATH ||= File.dirname(File.expand_path(__FILE__))
+    self::PATH ||= File.expand_path('..', __FILE__)
 
     # Requirements
     %w(translate.rb

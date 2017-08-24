@@ -19,7 +19,7 @@ module AE
             if filepath.nil?
               action_context.reject
             else
-              action_context.resolve(filepath)
+              action_context.resolve(File.expand_path(filepath))
             end
           }
 
@@ -50,7 +50,7 @@ module AE
             if filepath.nil?
               action_context.reject('cancelled')
             else
-              action_context.resolve(filepath)
+              action_context.resolve(File.expand_path(filepath))
             end
           }
 

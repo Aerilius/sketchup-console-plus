@@ -57,7 +57,7 @@ module AE
       def puts(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.puts', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          @dialog.call('Console.puts', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end
@@ -67,7 +67,7 @@ module AE
       def print(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.print', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          @dialog.call('Console.print', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end
@@ -77,7 +77,7 @@ module AE
       def warn(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('AE.Console.warn', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          @dialog.call('Console.warn', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
         }
         nil
       end
@@ -99,7 +99,7 @@ module AE
         metadata[:language] ||= :ruby
         metadata[:time] ||= Time.now.to_f # seconds
         metadata[:id] = @message_id.next!
-        @dialog.call('AE.Console.error', message, metadata)
+        @dialog.call('Console.error', message, metadata)
         nil
       end
 

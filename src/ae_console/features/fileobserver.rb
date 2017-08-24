@@ -83,7 +83,7 @@ module AE
               hash[:deleted].call(path) if hash[:exists] && hash[:deleted]
             end
           rescue Exception => e
-            AE::ConsolePlugin.error(e)
+            ConsolePlugin.error(e)
           ensure
             hash[:exists] = exists
             hash[:ctime]  = ctime unless ctime.nil?

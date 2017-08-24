@@ -5,9 +5,8 @@ requirejs(['./app', './bridge', './console_api', 'jquery'], function (app, Bridg
     // 2. Publish 'Bridge' interface that the Ruby side will need to return from callbacks.
     // window.Bridge = Bridge; // This is now done with requirejs('bridge')
 
-    // 3. Publish 'AE.Console' API interface on which the consoles on the Ruby side will call functions.
-    window.AE = window.AE || {};
-    window.AE.Console = API;
+    // 3. Publish 'Console' API interface on which the consoles on the Ruby side will call functions.
+    window.Console = API;
 
     // 4. Fallback for svg-resources to png images (this was for old Internet Explorer versions).
     $('img').on('error', function () {

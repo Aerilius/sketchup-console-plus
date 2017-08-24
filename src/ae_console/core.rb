@@ -209,7 +209,7 @@ module AE
     def self.initialize_ui
       # Command
       command = UI::Command.new(TRANSLATE['Ruby Console+']) {
-        AE::ConsolePlugin.open
+        ConsolePlugin.open
       }
       if Sketchup.version.to_i >= 16
         if RUBY_PLATFORM =~ /darwin/

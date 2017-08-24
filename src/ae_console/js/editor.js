@@ -78,7 +78,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
             // Do not load the file again if it is already opened.
             if (filepath == currentFilepath) {
                 if (lineNumber) aceEditor.gotoLine(lineNumber);
-                return;
+                return Bridge.Promise.resolve(true); // Return a resolved promise
             }
             // Ask whether to save changes if there are unsaved changes.
             if ((statusCurrentFileUnsaved && confirmSaveChanges()) || (statusCurrentFileExternallyChanged && confirmSaveAndIgnoreExternalChanges())) {

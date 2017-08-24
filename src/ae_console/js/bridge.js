@@ -559,13 +559,50 @@
         }
 
     };
-    self.Promise.resolve = function(value) {
+
+    self.Promise.resolve = function (value) {
         return new self.Promise(function(resolve, reject){ resolve(value) });
     };
-    self.Promise.resolve = function(value) {
+
+    self.Promise.reject = function (value) {
         return new self.Promise(function(resolve, reject){ reject(value) });
     };
 
+    self.Promise.all = function(promises) {
+        if (Object.prototype.toString.call(promises) === '[object Array]') return Promise.reject(new TypeError('Argument must be iterable'));
+        return new Promise(function (resolve, reject) {
+            if (promises.length == 0) {
+                resolve([]);
+            } else {
+                var pendingCounter = promises.length;
+                var results = new Array(promises.length);
+                for (var i = 0; i < promises.length; i++) {
+                    if (typeof promises[i].then === 'function') {
+                        promise.then(function (result) {
+                            results[i] = result;
+                            pendingCounter -= 1;
+                            if (pendingCounter == 0) resolve(results);
+                        }, reject); // reject will only run once
+                    } else {
+                        results[i] = promise; // if it is an arbitrary object, not a promise
+                        pendingCounter -= 1;
+                        if (pendingCounter == 0) resolve(results);
+                    }
+                }
+            }
+        });
+    };
+
+    self.Promise.race = function (promises) {
+        if (Object.prototype.toString.call(promises) === '[object Array]') return Promise.reject(new TypeError('Argument must be iterable'));
+        return new Promise(function (resolve, reject) {
+            for (var i = 0; i < promises.length; i++) {
+                if (typeof promises[i].then === 'function') {
+                    promise.then(resolve, reject);
+                }
+            }
+        });
+    };
 
     return self;
 }));

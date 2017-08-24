@@ -116,6 +116,64 @@ module AE
           return next_promise
         end
 
+        # Creates a promise that is resolved from the start with the given value.
+        # @param  [Array<Object>]  *results  The result with which to initialize the resolved promise.
+        # @return [Promise]                  A new promise that is resolved to the given value.
+        def self.resolve(*results)
+          return self.new{ |on_resolve, on_reject| on_resolve.call(*results) }
+        end
+
+        # Creates a promise that is rejected from the start with the given reason.
+        # @param  [Array<Object>]  *reasons  The reason with which to initialize the rejected promise.
+        # @return [Promise]                  A new promise that is rejected to the given reason.
+        def self.reject(*reasons)
+          return self.new{ |on_resolve, on_reject| on_reject.call(*reasons) }
+        end
+
+        # Creates a promise that resolves as soon as all of a list of promises have been resolved.
+        # When all promises are resolved, the new promise is resolved with a list of the individual promises' results.
+        # If instead any of the promises is rejected, it rejects the new promise with the first rejection reason.
+        # @param  [Array<Promise>] promises  An array of promises.
+        # @return [Promise]                  A new promise about the successful completion of all input promises.
+        def self.all(promises)
+          return Promise.reject(ArgumentError.new('Argument must be iterable')) unless promises.is_a?(Enumerable)
+          return Promise.new{ |resolve, reject|
+            if promises.empty?
+              resolve.call([])
+            else
+              pending_counter = promises.length
+              results = Array.new(promises.length)
+              promises.each_with_index{ |promise, i|
+                if promise.respond_to?(:then)
+                  promise.then(Proc.new{ |result|
+                    results[i] = result
+                    pending_counter -= 1
+                    resolve.call(results) if pending_counter == 0
+                  }, reject) # reject will only run once
+                else
+                  results[i] = promise # if it is an arbitrary object, not a promise
+                  pending_counter -= 1
+                  resolve.call(results) if pending_counter == 0
+                end
+              }
+            end
+          }
+        end
+
+        # Creates a promise that resolves or rejects as soon as the first of a list of promises is resolved or rejected.
+        # @param  [Array<Promise>] promises  An array of promises.
+        # @return [Promise]                  A new promise about the first completion of the any of the input promises.
+        def self.race(promises)
+          return Promise.reject(ArgumentError.new('Argument must be iterable')) unless promises.is_a?(Enumerable)
+          return Promise.new{ |resolve, reject|
+            promises.each{ |promise|
+              if promise.respond_to?(:then)
+                promise.then(resolve, reject)
+              end
+            }
+          }
+        end
+
         # Resolve a promise once a result has been computed.
         #
         # @overload resolve(*results)

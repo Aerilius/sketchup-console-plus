@@ -317,7 +317,7 @@ module AE
           if doc_info && doc_info[:return]
             returned_types = DocProvider.extract_return_types(doc_info)
             classifications = returned_types.map{ |returned_type|
-              type = (@is_instance) ? :instance_method : :class_method
+              type = (@type == :module) ? :module_function : (@is_instance) ? :instance_method : :class_method
               begin
                 # Try to resolve the returned type to a class in object space, which then allows introspection.
                 returned_class = resolve_module_path(returned_type)

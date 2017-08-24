@@ -155,12 +155,9 @@ module AE
           returned_is_instance = !@returned_object.is_a?(Module)
           returned_class = (returned_is_instance) ? @returned_object.class : @returned_object
           # Take the method from the correct module if it comes from an included module.
-          returned_class.included_modules.each{ |modul|
-            if modul.instance_methods.include?(token.to_sym)
-              returned_class = modul
-              break
-            end
-          }
+          returned_class = returned_class.included_modules.find{ |modul|
+            modul.instance_methods.include?(token.to_sym)
+          } || returned_class
           returned_namespace = returned_class.name
           return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, returned_is_instance).resolve(token)
         else
@@ -173,14 +170,12 @@ module AE
         completions = []
         returned_is_instance = !@returned_object.is_a?(Module)
         if returned_is_instance
-          # Take the method from the correct module if it comes from an included module.
-          @returned_object.class.included_modules.each{ |modul|
-            completions.concat(modul.instance_methods.grep(prefix_regexp).map{ |method|
-              TokenClassification.new(method, :instance_method, modul.name)
-            })
-          }
           completions.concat(@returned_object.methods.grep(prefix_regexp).map{ |method|
-            TokenClassification.new(method, :instance_method, @returned_object.class.name)
+            # Take the method from the correct module if it comes from an included module.
+            returned_class = @returned_object.class.included_modules.find{ |modul|
+              modul.instance_methods.include?(method)
+            } || @returned_object.class
+            TokenClassification.new(method, :instance_method, returned_class.name)
           })
         else
           completions.concat(@returned_object.constants.grep(prefix_regexp).map{ |constant|
@@ -231,13 +226,10 @@ module AE
         # instance method
         elsif @returned_class.instance_methods.include?(token.to_sym)
           # Take the method from the correct module if it comes from an included module.
-          @returned_class.included_modules.each{ |modul|
-            if modul.instance_methods.include?(token.to_sym)
-              @returned_class = modul
-              break
-            end
-          }
-          returned_namespace = @returned_class.name
+          returned_class = @returned_class.included_modules.find{ |modul|
+            modul.instance_methods.include?(token.to_sym)
+          } || @returned_class
+          returned_namespace = returned_class.name
           return TokenClassificationByDoc.new(@token, :instance_method, @namespace, returned_namespace, @is_instance).resolve(token)
         else
           raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_class.name}")
@@ -248,14 +240,12 @@ module AE
         prefix_regexp = Regexp.new('^' + prefix)
         completions = []
         if @is_instance
-          # Take the method from the correct module if it comes from an included module.
-          @returned_class.included_modules.each{ |modul|
-            completions.concat(modul.instance_methods.grep(prefix_regexp).map{ |method|
-              TokenClassification.new(method, :instance_method, modul.name)
-            })
-          }
           completions.concat(@returned_class.instance_methods.grep(prefix_regexp).map{ |method|
-            TokenClassification.new(method, :instance_method, @returned_class.name)
+            # Take the method from the correct module if it comes from an included module.
+            returned_class = @returned_class.included_modules.find{ |modul|
+              modul.instance_methods.include?(method)
+            } || @returned_class
+            TokenClassification.new(method, :instance_method, returned_class.name)
           })
         else
           completions.concat(@returned_class.constants.grep(prefix_regexp).map{ |constant|

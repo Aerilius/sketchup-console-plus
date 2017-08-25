@@ -63,7 +63,7 @@ package Ruby {
 
 package JS {
     object app
-    class Editor
+    class JS::Editor
     class JS::Console
     class Output
     class JS::Settings
@@ -75,7 +75,7 @@ package JS {
         error(errorObject)
     }
 
-    app --> Editor: editor
+    app --> JS::Editor: editor
     app --> JS::Console: console
     app --> Output: output
     app --> JS::Settings: settings
@@ -84,15 +84,20 @@ package JS {
     JS::Console -right-> Output
     'JS::Console --> JS::Settings
 
-    'Editor --> JS::Settings
+    'JS::Editor --> JS::Settings
 
     'Output --> JS::Settings
 
+    package ace {
+       JS::Editor --> ace::Editor: aceEditor
+       JS::Console --> ace::Editor: aceEditor
+    }
+
     'some hidden links for better layout
     app    -[hidden]right-> JS::Settings
-    Editor -[hidden]left->  Bridge
-    Editor -[hidden]right-> JS::Console
-    Output -up->            JS::Settings
+    JS::Editor -[hidden]left->  Bridge
+    JS::Editor -[hidden]right-> JS::Console
+    Output -[hidden]up->        JS::Settings
 }
 
 Ruby::Bridge <-right-> Bridge

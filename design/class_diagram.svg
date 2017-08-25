@@ -1,1 +1,1235 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="625.6px" style="width:1923px;height:625px;" version="1.1" viewBox="0 0 1923 625" width="1923.2px"><defs><filter height="300%" id="f1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="3.200000047683716"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="6.400000095367432" dy="6.400000095367432" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><polygon fill="#FFFFFF" filter="url(#f1)" points="35.2,38.4,108.8,38.4,120,71.5266,1073.6,71.5266,1073.6,614.4,35.2,614.4,35.2,38.4" style="stroke: #000000; stroke-width: 3.200000047683716;"/><line style="stroke: #000000; stroke-width: 3.200000047683716;" x1="35.2" x2="120" y1="71.5266" y2="71.5266"/><text fill="#000000" font-family="sans-serif" font-size="22.4" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="62.4" x="41.6" y="60.9922">Ruby</text><polygon fill="#FFFFFF" filter="url(#f1)" points="1112,82.4,1145.6,82.4,1156.8,115.5266,1912,115.5266,1912,549.6,1112,549.6,1112,82.4" style="stroke: #000000; stroke-width: 3.200000047683716;"/><line style="stroke: #000000; stroke-width: 3.200000047683716;" x1="1112" x2="1156.8" y1="115.5266" y2="115.5266"/><text fill="#000000" font-family="sans-serif" font-size="22.4" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="22.4" x="1118.4" y="104.9922">JS</text><rect fill="#FEFECE" filter="url(#f1)" height="140.1938" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="240" x="541.6" y="91.2"/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="140.8" x="595.2" y="111.0219">ConsolePlugin</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="543.2" x2="780" y1="117.7656" y2="117.7656"/><ellipse cx="559.2" cy="135.3656" fill="none" rx="4.8" ry="4.8" style="stroke: #038048; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="164.8" x="573.6" y="138.4148">Settings @@settings</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="9.6" x="573.6" y="155.6172">..</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="51.2" x="573.6" y="172.4219">open()</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="51.2" x="573.6" y="189.2266">close()</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="9.6" x="573.6" y="206.0313">..</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="198.4" x="573.6" y="222.8359">register_feature(Feature)</text><rect fill="#FEFECE" filter="url(#f1)" height="237.4813" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="249.6" x="396" y="352"/><ellipse cx="477.2" cy="377.6" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M482,385.6 Q481.025,386.4 479.975,386.8 Q478.925,387.2 477.75,387.2 Q473.575,387.2 471.3875,384.7375 Q469.2,382.275 469.2,377.6 Q469.2,372.925 471.3875,370.4625 Q473.575,368 477.75,368 Q478.925,368 480,368.4 Q481.075,368.8 482,369.6 L482,374.4 Q481.025,372.75 480.1,371.975 Q479.175,371.2 478.2,371.2 Q476.125,371.2 475.0625,372.8125 Q474,374.425 474,377.6 Q474,380.775 475.0625,382.3875 Q476.125,384 478.2,384 Q479.175,384 480.1,383.225 Q481.025,382.45 482,380.8 L482,385.6 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="80" x="510" y="384.1391">Console</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="397.6" x2="644" y1="403.2" y2="403.2"/><ellipse cx="413.6" cy="421.2426" fill="none" rx="4.8" ry="4.8" style="stroke: #038048; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="142.4" x="428" y="424.8367">Bridge @bridge</text><ellipse cx="413.6" cy="439.7277" fill="none" rx="4.8" ry="4.8" style="stroke: #038048; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="208" x="428" y="443.3219">UI::HtmlDialog @dialog</text><line style="stroke: #A80036; stroke-width: 1.600000023841858; stroke-dasharray: 1.0,2.0;" x1="397.6" x2="644" y1="452.9703" y2="452.9703"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="60.8" x="405.6" y="474.607">show()</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="60.8" x="405.6" y="493.0922">close()</text><line style="stroke: #A80036; stroke-width: 1.600000023841858; stroke-dasharray: 1.0,2.0;" x1="397.6" x2="644" y1="502.7406" y2="502.7406"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="104" x="405.6" y="524.3774">puts(*args)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="105.6" x="405.6" y="542.8625">print(*args)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="108.8" x="405.6" y="561.3477">warn(*args)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="145.6" x="405.6" y="579.8328">error(exception)</text><rect fill="#FEFECE" filter="url(#f1)" height="132.2555" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="281.6" x="60.8" y="404"/><ellipse cx="158" cy="429.6" fill="#B4A7E5" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M152.4,423.2 L152.4,420 L163.6,420 L163.6,423.2 L160.4,423.2 L160.4,436 L163.6,436 L163.6,439.2 L152.4,439.2 L152.4,436 L155.6,436 L155.6,423.2 L152.4,423.2 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="78.4" x="190.8" y="436.1391">Feature</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="62.4" x2="340.8" y1="455.2" y2="455.2"/><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="62.4" x2="340.8" y1="468" y2="468"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="217.6" x="70.4" y="489.6367">initialize(FeatureAccess)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="262.4" x="70.4" y="508.1219">String get_javascript_string()</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="249.6" x="70.4" y="526.607">String get_javascript_path()</text><rect fill="#FEFECE" filter="url(#f1)" height="89.7797" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="220.8" x="60.8" y="116.8"/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="148.8" x="101.6" y="136.6219">FeatureAccess</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="62.4" x2="280" y1="143.3656" y2="143.3656"/><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="201.6" x="70.4" y="163.6172">Array&lt;Console&gt; consoles</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="129.6" x="70.4" y="180.4219">Settings settings</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="158.4" x="70.4" y="197.2266">ConsolePlugin plugin</text><rect fill="#FEFECE" filter="url(#f1)" height="200.5109" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="259.2" x="788.8" y="370.4"/><ellipse cx="880.4" cy="396" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M885.2,404 Q884.225,404.8 883.175,405.2 Q882.125,405.6 880.95,405.6 Q876.775,405.6 874.5875,403.1375 Q872.4,400.675 872.4,396 Q872.4,391.325 874.5875,388.8625 Q876.775,386.4 880.95,386.4 Q882.125,386.4 883.2,386.8 Q884.275,387.2 885.2,388 L885.2,392.8 Q884.225,391.15 883.3,390.375 Q882.375,389.6 881.4,389.6 Q879.325,389.6 878.2625,391.2125 Q877.2,392.825 877.2,396 Q877.2,399.175 878.2625,400.7875 Q879.325,402.4 881.4,402.4 Q882.375,402.4 883.3,401.625 Q884.225,400.85 885.2,399.2 L885.2,404 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="64" x="913.2" y="402.5391">Bridge</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="790.4" x2="1046.4" y1="421.6" y2="421.6"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="177.6" x="798.4" y="443.2367">HtmlDialog @dialog</text><line style="stroke: #A80036; stroke-width: 1.600000023841858; stroke-dasharray: 1.0,2.0;" x1="790.4" x2="1046.4" y1="452.8852" y2="452.8852"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="217.6" x="798.4" y="474.5219">on(eventname, handler)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="238.4" x="798.4" y="493.007">once(eventname, handler)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="137.6" x="798.4" y="511.4922">off(eventname)</text><line style="stroke: #A80036; stroke-width: 1.600000023841858; stroke-dasharray: 1.0,2.0;" x1="790.4" x2="1046.4" y1="521.1406" y2="521.1406"/><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="240" x="798.4" y="542.7774">call(name, *args, handler)</text><text fill="#000000" font-family="sans-serif" font-size="17.6" lengthAdjust="spacingAndGlyphs" textLength="238.4" x="798.4" y="561.2625">Promise get(name, *args)</text><rect fill="#FEFECE" filter="url(#f1)" height="52.1656" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="59.2" x="1554.4" y="135.2"/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="38.4" x="1565.6" y="155.0219">app</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="1556" x2="1612" y1="161.7656" y2="161.7656"/><rect fill="#FEFECE" filter="url(#f1)" height="51.2" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="108.8" x="1420.8" y="444.8"/><ellipse cx="1444.8" cy="470.4" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1449.6,478.4 Q1448.625,479.2 1447.575,479.6 Q1446.525,480 1445.35,480 Q1441.175,480 1438.9875,477.5375 Q1436.8,475.075 1436.8,470.4 Q1436.8,465.725 1438.9875,463.2625 Q1441.175,460.8 1445.35,460.8 Q1446.525,460.8 1447.6,461.2 Q1448.675,461.6 1449.6,462.4 L1449.6,467.2 Q1448.625,465.55 1447.7,464.775 Q1446.775,464 1445.8,464 Q1443.725,464 1442.6625,465.6125 Q1441.6,467.225 1441.6,470.4 Q1441.6,473.575 1442.6625,475.1875 Q1443.725,476.8 1445.8,476.8 Q1446.775,476.8 1447.7,476.025 Q1448.625,475.25 1449.6,473.6 L1449.6,478.4 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="59.2" x="1467.2" y="476.9391">Editor</text><rect fill="#FEFECE" filter="url(#f1)" height="51.2" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="124.8" x="1585.6" y="444.8"/><ellipse cx="1609.6" cy="470.4" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1614.4,478.4 Q1613.425,479.2 1612.375,479.6 Q1611.325,480 1610.15,480 Q1605.975,480 1603.7875,477.5375 Q1601.6,475.075 1601.6,470.4 Q1601.6,465.725 1603.7875,463.2625 Q1605.975,460.8 1610.15,460.8 Q1611.325,460.8 1612.4,461.2 Q1613.475,461.6 1614.4,462.4 L1614.4,467.2 Q1613.425,465.55 1612.5,464.775 Q1611.575,464 1610.6,464 Q1608.525,464 1607.4625,465.6125 Q1606.4,467.225 1606.4,470.4 Q1606.4,473.575 1607.4625,475.1875 Q1608.525,476.8 1610.6,476.8 Q1611.575,476.8 1612.5,476.025 Q1613.425,475.25 1614.4,473.6 L1614.4,478.4 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="80" x="1632" y="476.9391">Console</text><rect fill="#FEFECE" filter="url(#f1)" height="51.2" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="120" x="1767.2" y="444.8"/><ellipse cx="1791.2" cy="470.4" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1796,478.4 Q1795.025,479.2 1793.975,479.6 Q1792.925,480 1791.75,480 Q1787.575,480 1785.3875,477.5375 Q1783.2,475.075 1783.2,470.4 Q1783.2,465.725 1785.3875,463.2625 Q1787.575,460.8 1791.75,460.8 Q1792.925,460.8 1794,461.2 Q1795.075,461.6 1796,462.4 L1796,467.2 Q1795.025,465.55 1794.1,464.775 Q1793.175,464 1792.2,464 Q1790.125,464 1789.0625,465.6125 Q1788,467.225 1788,470.4 Q1788,473.575 1789.0625,475.1875 Q1790.125,476.8 1792.2,476.8 Q1793.175,476.8 1794.1,476.025 Q1795.025,475.25 1796,473.6 L1796,478.4 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="68.8" x="1813.6" y="476.9391">Output</text><rect fill="#FEFECE" filter="url(#f1)" height="51.2" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="131.2" x="1755.2" y="136"/><ellipse cx="1779.2" cy="161.6" fill="#ADD1B2" rx="17.6" ry="17.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1784,169.6 Q1783.025,170.4 1781.975,170.8 Q1780.925,171.2 1779.75,171.2 Q1775.575,171.2 1773.3875,168.7375 Q1771.2,166.275 1771.2,161.6 Q1771.2,156.925 1773.3875,154.4625 Q1775.575,152 1779.75,152 Q1780.925,152 1782,152.4 Q1783.075,152.8 1784,153.6 L1784,158.4 Q1783.025,156.75 1782.1,155.975 Q1781.175,155.2 1780.2,155.2 Q1778.125,155.2 1777.0625,156.8125 Q1776,158.425 1776,161.6 Q1776,164.775 1777.0625,166.3875 Q1778.125,168 1780.2,168 Q1781.175,168 1782.1,167.225 Q1783.025,166.45 1784,164.8 L1784,169.6 Z "/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="83.2" x="1801.6" y="168.1391">Settings</text><rect fill="#FEFECE" filter="url(#f1)" height="106.5844" style="stroke: #A80036; stroke-width: 2.400000035762787;" width="222.4" x="1138.4" y="416.8"/><text fill="#000000" font-family="sans-serif" font-size="19.2" lengthAdjust="spacingAndGlyphs" textLength="64" x="1218.4" y="436.6219">Bridge</text><line style="stroke: #A80036; stroke-width: 2.400000035762787;" x1="1140" x2="1359.2" y1="443.3656" y2="443.3656"/><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="200" x="1148" y="463.6172">call(name, *args, handler)</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="203.2" x="1148" y="480.4219">Promise get(name, *args)</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="89.6" x="1148" y="497.2266">puts(string)</text><text fill="#000000" font-family="sans-serif" font-size="16" lengthAdjust="spacingAndGlyphs" textLength="139.2" x="1148" y="514.0313">error(errorObject)</text><path d="M621.3008,251.4016 C606.7152,282.7024 590.064,318.4368 574.5344,351.7664 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="630.088,232.5456,620.2326,238.5449,621.9799,249.9496,631.8353,243.9503,630.088,232.5456" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="131.2" x="606.4" y="299.607">@@consoles</text><path d="M521.2576,194.6256 C461.1328,212.752 392.6832,240.0848 339.2,280 C295.304,312.76 259.1088,363.2112 234.64,403.7232 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="541.296,188.8272,530.2952,185.3483,522.8528,194.1648,533.8536,197.6437,541.296,188.8272" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="241.6" x="340.8" y="299.607">@@registered_features</text><path d="M293.2832,161.6 C368.72,161.6 465.5984,161.6 541.176,161.6 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="285.1248,161.6,299.5248,168,293.1248,161.6,299.5248,155.2,285.1248,161.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="196.8" x="314" y="152.407">@@feature_access</text><path d="M644.4176,470.4 C687.6192,470.4 736.3104,470.4 780.5328,470.4 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="788.736,470.4,774.336,464,780.736,470.4,774.336,476.8,788.736,470.4" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="84.8" x="673.2" y="461.207">@bridge</text><path d="M1565.8816,188.408 C1550.2672,211.272 1528.24,246.4368 1515.2,280 C1494.7824,332.5536 1483.9248,397.5936 1478.88,435.9968 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1477.8336,444.2368,1485.9971,430.758,1478.8417,436.3006,1473.2991,429.1452,1477.8336,444.2368" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="59.2" x="1516.8" y="299.607">editor</text><path d="M1584.6928,188.352 C1585.84,216.6976 1588.8672,264.0352 1596.8,304 C1606.1568,351.1376 1623.888,403.9072 1635.824,436.7424 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1638.736,444.6448,1639.7848,428.9216,1635.9806,437.1343,1627.7679,433.3302,1638.736,444.6448" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="78.4" x="1598.4" y="299.607">console</text><path d="M1606.9632,188.2224 C1628.112,211.5424 1660.112,247.5056 1686.4,280 C1730.224,334.1632 1778.096,399.8672 1805.2,437.7536 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1810.016,444.4944,1806.8567,429.0562,1805.3672,437.9838,1796.4396,436.4943,1810.016,444.4944" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="67.2" x="1702.4" y="299.607">output</text><path d="M1613.984,161.6 C1647.152,161.6 1701.792,161.6 1746.592,161.6 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1754.832,161.6,1740.432,155.2,1746.832,161.6,1740.432,168,1754.832,161.6" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><text fill="#000000" font-family="sans-serif" font-size="20.8" lengthAdjust="spacingAndGlyphs" textLength="81.6" x="1642.8" y="152.407">settings</text><path d="M1556.7648,188.208 C1504.0688,236.5984 1386.9296,344.1632 1313.9632,411.1664 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1307.9168,416.7184,1322.8514,411.6906,1313.8085,411.3066,1314.1925,402.2638,1307.9168,416.7184" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1711.008,470.4 C1726.848,470.4 1742.688,470.4 1758.544,470.4 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1766.832,470.4,1752.432,464,1758.832,470.4,1752.432,476.8,1766.832,470.4" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1821.488,196.3024 C1822.784,258.2272 1825.552,390.2336 1826.688,444.616 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1821.312,187.6912,1815.2146,202.2219,1821.4793,195.6895,1828.0118,201.9542,1821.312,187.6912" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><path d="M1056.712,543.263 C1093.2288,548.8195 1129.7456,543.5402 1166.2624,527.4251 " fill="none" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1173.5664,524.0576,1157.8098,524.2772,1166.3019,527.4083,1163.1708,535.9004,1173.5664,524.0576" style="stroke: #A80036; stroke-width: 1.600000023841858;"/><polygon fill="#A80036" points="1048.4,541.8112,1061.4821,550.5963,1056.2804,543.1894,1063.6873,537.9877,1048.4,541.8112" style="stroke: #A80036; stroke-width: 1.600000023841858;"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   contentScriptType="application/ecmascript"
+   contentStyleType="text/css"
+   height="548px"
+   preserveAspectRatio="none"
+   style="width:1222px;height:548px;"
+   version="1.1"
+   viewBox="0 0 1222 548"
+   width="1222px"
+   zoomAndPan="magnify"
+   id="svg254"
+   sodipodi:docname="class_diagram.svg"
+   inkscape:version="0.92+devel (unknown)">
+  <metadata
+     id="metadata258">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     inkscape:document-rotation="0"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview256"
+     showgrid="false"
+     inkscape:zoom="4.2782324"
+     inkscape:cx="400.53162"
+     inkscape:cy="428.04666"
+     inkscape:current-layer="g252" />
+  <defs
+     id="defs11">
+    <filter
+       height="300%"
+       id="f2hnuygxbuaqs"
+       width="300%"
+       x="-1"
+       y="-1">
+      <feGaussianBlur
+         result="blurOut"
+         stdDeviation="2.0"
+         id="feGaussianBlur2" />
+      <feColorMatrix
+         in="blurOut"
+         result="blurOut2"
+         type="matrix"
+         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"
+         id="feColorMatrix4" />
+      <feOffset
+         dx="4.0"
+         dy="4.0"
+         in="blurOut2"
+         result="blurOut3"
+         id="feOffset6" />
+      <feBlend
+         in="SourceGraphic"
+         in2="blurOut3"
+         mode="normal"
+         id="feBlend8" />
+    </filter>
+  </defs>
+  <g
+     id="g252">
+    <!--cluster Ruby-->
+    <polygon
+       fill="#FFFFFF"
+       points="67,24 74,44.7041 673,44.7041 673,384 22,384 22,24 "
+       style="stroke:#000000;stroke-width:2"
+       id="polygon13"
+       transform="matrix(1,0,0,1.0979475,0,-4.392156)" />
+    <line
+       style="stroke: #000000; stroke-width: 2.0;"
+       x1="22"
+       x2="74"
+       y1="44.7041"
+       y2="44.7041"
+       id="line15" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14"
+       font-weight="bold"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="39"
+       x="26"
+       y="38.1201"
+       id="text17">Ruby</text>
+    <!--cluster JS-->
+    <polygon
+       fill="#FFFFFF"
+       points="697,51.5 717,51.5 724,72.2041 1200,72.2041 1200,536 697,536 "
+       style="stroke:#000000;stroke-width:2"
+       id="polygon19"
+       transform="matrix(1,0,0,0.805396,0,-14.653358)" />
+    <line
+       style="stroke:#000000;stroke-width:2"
+       x1="697"
+       x2="724"
+       y1="43.204102"
+       y2="43.204102"
+       id="line21" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14"
+       font-weight="bold"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="14"
+       x="701"
+       y="65.620102"
+       id="text23"
+       transform="translate(0,-25)">JS</text>
+    <!--cluster ace-->
+    <polygon
+       fill="#FFFFFF"
+       filter="url(#f2hnuygxbuaqs)"
+       points="924,431 958,431 965,451.7041 1026,451.7041 1026,512 924,512 "
+       style="stroke:#000000;stroke-width:2"
+       id="polygon25"
+       transform="translate(0,-109)" />
+    <line
+       style="stroke:#000000;stroke-width:2"
+       x1="924"
+       x2="965"
+       y1="342.7041"
+       y2="342.7041"
+       id="line27" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="14"
+       font-weight="bold"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="28"
+       x="928"
+       y="445.12009"
+       id="text29"
+       transform="translate(0,-109)">ace</text>
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="87.6211"
+       style="stroke: #A80036; stroke-width: 1.5;"
+       width="150"
+       x="336"
+       y="57"
+       id="rect31" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="88"
+       x="367"
+       y="69.3887"
+       id="text33">ConsolePlugin</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.5;"
+       x1="337"
+       x2="485"
+       y1="73.6035"
+       y2="73.6035"
+       id="line35" />
+    <circle
+       cx="347"
+       cy="84.6035"
+       fill="none"
+       style="stroke: #038048; stroke-width: 1.0;"
+       id="ellipse37"
+       r="3" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="103"
+       x="356"
+       y="86.5093"
+       id="text39">Settings @@settings</text>
+    <line
+       style="stroke:#a80036;stroke-width:0.98320937;stroke-dasharray:0.98320936, 1.96641872"
+       x1="337.27084"
+       x2="486.14273"
+       y1="96.346596"
+       y2="96.346596"
+       id="line68-7" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="32"
+       x="356"
+       y="107.7637"
+       id="text43">open()</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="32"
+       x="356"
+       y="118.2666"
+       id="text45">close()</text>
+    <line
+       style="stroke:#a80036;stroke-width:0.98320937;stroke-dasharray:0.98320936, 1.96641872"
+       x1="337.27084"
+       x2="486.14273"
+       y1="127.3466"
+       y2="127.3466"
+       id="line68-7-5" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="124"
+       x="356"
+       y="139.2725"
+       id="text49">register_feature(Feature)</text>
+    <!--class Ruby::Console-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="148.4258"
+       id="Ruby::Console"
+       style="stroke: #A80036; stroke-width: 1.5;"
+       width="156"
+       x="249"
+       y="220" />
+    <circle
+       cx="297.75"
+       cy="236"
+       fill="#ADD1B2"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="ellipse52"
+       r="11" />
+    <path
+       d="M300.75,241 Q300.1406,241.5 299.4844,241.75 Q298.8281,242 298.0938,242 Q295.4844,242 294.1172,240.4609 Q292.75,238.9219 292.75,236 Q292.75,233.0781 294.1172,231.5391 Q295.4844,230 298.0938,230 Q298.8281,230 299.5,230.25 Q300.1719,230.5 300.75,231 L300.75,234 Q300.1406,232.9688 299.5625,232.4844 Q298.9844,232 298.375,232 Q297.0781,232 296.4141,233.0078 Q295.75,234.0156 295.75,236 Q295.75,237.9844 296.4141,238.9922 Q297.0781,240 298.375,240 Q298.9844,240 299.5625,239.5156 Q300.1406,239.0313 300.75,238 L300.75,241 Z "
+       id="path54" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="50"
+       x="318.25"
+       y="240.0869"
+       id="text56">Console</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.5;"
+       x1="250"
+       x2="404"
+       y1="252"
+       y2="252"
+       id="line58" />
+    <circle
+       cx="260"
+       cy="263.2766"
+       fill="none"
+       style="stroke: #038048; stroke-width: 1.0;"
+       id="ellipse60"
+       r="3" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="89"
+       x="269"
+       y="265.5229"
+       id="text62">Bridge @bridge</text>
+    <circle
+       cx="260"
+       cy="274.8298"
+       fill="none"
+       style="stroke: #038048; stroke-width: 1.0;"
+       id="ellipse64"
+       r="3" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="130"
+       x="269"
+       y="277.0762"
+       id="text66">UI::HtmlDialog @dialog</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 1.0,2.0;"
+       x1="250"
+       x2="404"
+       y1="283.1064"
+       y2="283.1064"
+       id="line68" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="38"
+       x="255"
+       y="296.6294"
+       id="text70">show()</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="38"
+       x="255"
+       y="308.1826"
+       id="text72">close()</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 1.0,2.0;"
+       x1="250"
+       x2="404"
+       y1="314.2129"
+       y2="314.2129"
+       id="line74" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="65"
+       x="255"
+       y="327.7358"
+       id="text76">puts(*args)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="66"
+       x="255"
+       y="339.2891"
+       id="text78">print(*args)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="68"
+       x="255"
+       y="350.8423"
+       id="text80">warn(*args)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="91"
+       x="255"
+       y="362.3955"
+       id="text82">error(exception)</text>
+    <!--class Feature-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="74.6597"
+       id="Feature"
+       style="stroke: #A80036; stroke-width: 1.5;"
+       width="176"
+       x="38"
+       y="256.5" />
+    <circle
+       cx="97.042473"
+       cy="272.72781"
+       fill="#B4A7E5"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse85"
+       r="11" />
+    <path
+       d="M93.75,268.5 L93.75,266.5 L100.75,266.5 L100.75,268.5 L98.75,268.5 L98.75,276.5 L100.75,276.5 L100.75,278.5 L93.75,278.5 L93.75,276.5 L95.75,276.5 L95.75,268.5 L93.75,268.5 Z "
+       id="path87" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       font-style="italic"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="49"
+       x="117.75"
+       y="276.5869"
+       id="text89">Feature</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.5;"
+       x1="39"
+       x2="213"
+       y1="288.5"
+       y2="288.5"
+       id="line91" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="136"
+       x="44"
+       y="302.0229"
+       id="text93">initialize(FeatureAccess)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="164"
+       x="44"
+       y="313.5762"
+       id="text95">String get_javascript_string()</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="156"
+       x="44"
+       y="325.1294"
+       id="text97">String get_javascript_path()</text>
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="56.1123"
+       style="stroke: #A80036; stroke-width: 1.5;"
+       width="138"
+       x="38"
+       y="73"
+       id="rect99" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="93"
+       x="60.5"
+       y="85.3887"
+       id="text101">FeatureAccess</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.5;"
+       x1="39"
+       x2="175"
+       y1="89.6035"
+       y2="89.6035"
+       id="line103" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="126"
+       x="44"
+       y="102.2607"
+       id="text105">Array&lt;Console&gt; consoles</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="81"
+       x="44"
+       y="112.7637"
+       id="text107">Settings settings</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="99"
+       x="44"
+       y="123.2666"
+       id="text109">ConsolePlugin plugin</text>
+    <!--class Ruby::Bridge-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="125.3193"
+       id="Ruby::Bridge"
+       style="stroke: #A80036; stroke-width: 1.5;"
+       width="162"
+       x="495"
+       y="231.5" />
+    <circle
+       cx="551.75"
+       cy="247.5"
+       fill="#ADD1B2"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="ellipse112"
+       r="11" />
+    <path
+       d="M554.75,252.5 Q554.1406,253 553.4844,253.25 Q552.8281,253.5 552.0938,253.5 Q549.4844,253.5 548.1172,251.9609 Q546.75,250.4219 546.75,247.5 Q546.75,244.5781 548.1172,243.0391 Q549.4844,241.5 552.0938,241.5 Q552.8281,241.5 553.5,241.75 Q554.1719,242 554.75,242.5 L554.75,245.5 Q554.1406,244.4688 553.5625,243.9844 Q552.9844,243.5 552.375,243.5 Q551.0781,243.5 550.4141,244.5078 Q549.75,245.5156 549.75,247.5 Q549.75,249.4844 550.4141,250.4922 Q551.0781,251.5 552.375,251.5 Q552.9844,251.5 553.5625,251.0156 Q554.1406,250.5313 554.75,249.5 L554.75,252.5 Z "
+       id="path114" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="40"
+       x="572.25"
+       y="251.5869"
+       id="text116">Bridge</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.5;"
+       x1="496"
+       x2="656"
+       y1="263.5"
+       y2="263.5"
+       id="line118" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="111"
+       x="501"
+       y="277.0229"
+       id="text120">HtmlDialog @dialog</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 1.0,2.0;"
+       x1="496"
+       x2="656"
+       y1="283.0532"
+       y2="283.0532"
+       id="line122" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="136"
+       x="501"
+       y="296.5762"
+       id="text124">on(eventname, handler)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="149"
+       x="501"
+       y="308.1294"
+       id="text126">once(eventname, handler)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="86"
+       x="501"
+       y="319.6826"
+       id="text128">off(eventname)</text>
+    <line
+       style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 1.0,2.0;"
+       x1="496"
+       x2="656"
+       y1="325.7129"
+       y2="325.7129"
+       id="line130" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="150"
+       x="501"
+       y="339.2358"
+       id="text132">call(name, *args, handler)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="11"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="149"
+       x="501"
+       y="350.7891"
+       id="text134">Promise get(name, *args)</text>
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32.6035"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="38"
+       x="974"
+       y="55.5"
+       id="rect136" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="24"
+       x="981"
+       y="96.888702"
+       id="text138"
+       transform="translate(0,-29)">app</text>
+    <line
+       style="stroke:#a80036;stroke-width:1.5"
+       x1="975"
+       x2="1011"
+       y1="72.1035"
+       y2="72.1035"
+       id="line140" />
+    <!--class JS::Editor-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32"
+       id="JS::Editor"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="69"
+       x="887.5"
+       y="249" />
+    <circle
+       cx="902.5"
+       cy="265"
+       fill="#ADD1B2"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse143"
+       r="11" />
+    <path
+       d="m 905.5,270 q -0.6094,0.5 -1.2656,0.75 -0.6563,0.25 -1.3906,0.25 -2.6094,0 -3.9766,-1.5391 Q 897.5,267.9219 897.5,265 q 0,-2.9219 1.3672,-4.4609 1.3672,-1.5391 3.9766,-1.5391 0.7343,0 1.4062,0.25 0.6719,0.25 1.25,0.75 v 3 q -0.6094,-1.0312 -1.1875,-1.5156 Q 903.7344,261 903.125,261 q -1.2969,0 -1.9609,1.0078 Q 900.5,263.0156 900.5,265 q 0,1.9844 0.6641,2.9922 0.664,1.0078 1.9609,1.0078 0.6094,0 1.1875,-0.4844 0.5781,-0.4843 1.1875,-1.5156 z"
+       id="path145"
+       inkscape:connector-curvature="0" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="37"
+       x="916.5"
+       y="298.08691"
+       id="text147"
+       transform="translate(0,-29)">Editor</text>
+    <!--class JS::Console-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32"
+       id="JS::Console"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="82"
+       x="992"
+       y="249" />
+    <circle
+       cx="1007"
+       cy="265"
+       fill="#ADD1B2"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse150"
+       r="11" />
+    <path
+       d="m 1010,270 q -0.6094,0.5 -1.2656,0.75 -0.6563,0.25 -1.3906,0.25 -2.6094,0 -3.9766,-1.5391 Q 1002,267.9219 1002,265 q 0,-2.9219 1.3672,-4.4609 1.3672,-1.5391 3.9766,-1.5391 0.7343,0 1.4062,0.25 0.6719,0.25 1.25,0.75 v 3 q -0.6094,-1.0312 -1.1875,-1.5156 Q 1008.2344,261 1007.625,261 q -1.2969,0 -1.9609,1.0078 Q 1005,263.0156 1005,265 q 0,1.9844 0.6641,2.9922 0.664,1.0078 1.9609,1.0078 0.6094,0 1.1875,-0.4844 0.5781,-0.4843 1.1875,-1.5156 z"
+       id="path152"
+       inkscape:connector-curvature="0" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="50"
+       x="1021"
+       y="298.08691"
+       id="text154"
+       transform="translate(0,-29)">Console</text>
+    <!--class Output-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32"
+       id="Output"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="75"
+       x="1109.5"
+       y="249" />
+    <circle
+       cx="1124.5"
+       cy="265"
+       fill="#ADD1B2"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse157"
+       r="11" />
+    <path
+       d="m 1127.5,270 q -0.6094,0.5 -1.2656,0.75 -0.6563,0.25 -1.3906,0.25 -2.6094,0 -3.9766,-1.5391 -1.3672,-1.539 -1.3672,-4.4609 0,-2.9219 1.3672,-4.4609 1.3672,-1.5391 3.9766,-1.5391 0.7343,0 1.4062,0.25 0.6719,0.25 1.25,0.75 v 3 q -0.6094,-1.0312 -1.1875,-1.5156 Q 1125.7344,261 1125.125,261 q -1.2969,0 -1.9609,1.0078 -0.6641,1.0078 -0.6641,2.9922 0,1.9844 0.6641,2.9922 0.664,1.0078 1.9609,1.0078 0.6094,0 1.1875,-0.4844 0.5781,-0.4843 1.1875,-1.5156 z"
+       id="path159"
+       inkscape:connector-curvature="0" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="43"
+       x="1138.5"
+       y="298.08691"
+       id="text161"
+       transform="translate(0,-29)">Output</text>
+    <!--class JS::Settings-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32"
+       id="JS::Settings"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="84"
+       x="1100"
+       y="56" />
+    <circle
+       cx="1115"
+       cy="72"
+       fill="#ADD1B2"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse164"
+       r="11" />
+    <path
+       d="m 1118,77 q -0.6094,0.5 -1.2656,0.75 -0.6563,0.25 -1.3906,0.25 -2.6094,0 -3.9766,-1.5391 Q 1110,74.9219 1110,72 q 0,-2.9219 1.3672,-4.4609 1.3672,-1.5391 3.9766,-1.5391 0.7343,0 1.4062,0.25 0.6719,0.25 1.25,0.75 v 3 q -0.6094,-1.0312 -1.1875,-1.5156 Q 1116.2344,68 1115.625,68 q -1.2969,0 -1.9609,1.0078 Q 1113,70.0156 1113,72 q 0,1.9844 0.6641,2.9922 0.664,1.0078 1.9609,1.0078 0.6094,0 1.1875,-0.4844 Q 1117.3906,75.0313 1118,74 Z"
+       id="path166"
+       inkscape:connector-curvature="0" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="52"
+       x="1129"
+       y="105.0869"
+       id="text168"
+       transform="translate(0,-29)">Settings</text>
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="66.615196"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="139"
+       x="713.5"
+       y="231.5"
+       id="rect170" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="40"
+       x="763"
+       y="272.8887"
+       id="text172"
+       transform="translate(0,-29)">Bridge</text>
+    <line
+       style="stroke:#a80036;stroke-width:1.5"
+       x1="714.5"
+       x2="851.5"
+       y1="248.10349"
+       y2="248.10349"
+       id="line174" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="125"
+       x="719.5"
+       y="289.76071"
+       id="text176"
+       transform="translate(0,-29)">call(name, *args, handler)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="127"
+       x="719.5"
+       y="300.2637"
+       id="text178"
+       transform="translate(0,-29)">Promise get(name, *args)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="56"
+       x="719.5"
+       y="310.7666"
+       id="text180"
+       transform="translate(0,-29)">puts(string)</text>
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="10"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="87"
+       x="719.5"
+       y="321.2695"
+       id="text182"
+       transform="translate(0,-29)">error(errorObject)</text>
+    <!--class ace::Editor-->
+    <rect
+       fill="#FEFECE"
+       filter="url(#f2hnuygxbuaqs)"
+       height="32"
+       id="ace::Editor"
+       style="stroke:#a80036;stroke-width:1.5"
+       width="69"
+       x="940.5"
+       y="355" />
+    <circle
+       cx="955.5"
+       cy="371"
+       fill="#ADD1B2"
+       style="stroke:#a80036;stroke-width:1"
+       id="ellipse185"
+       r="11" />
+    <path
+       d="m 958.5,376 q -0.6094,0.5 -1.2656,0.75 -0.6563,0.25 -1.3906,0.25 -2.6094,0 -3.9766,-1.5391 Q 950.5,373.9219 950.5,371 q 0,-2.9219 1.3672,-4.4609 1.3672,-1.5391 3.9766,-1.5391 0.7343,0 1.4062,0.25 0.6719,0.25 1.25,0.75 v 3 q -0.6094,-1.0312 -1.1875,-1.5156 Q 956.7344,367 956.125,367 q -1.2969,0 -1.9609,1.0078 Q 953.5,369.0156 953.5,371 q 0,1.9844 0.6641,2.9922 0.664,1.0078 1.9609,1.0078 0.6094,0 1.1875,-0.4844 0.5781,-0.4843 1.1875,-1.5156 z"
+       id="path187"
+       inkscape:connector-curvature="0" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="12"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="37"
+       x="969.5"
+       y="484.08691"
+       id="text189"
+       transform="translate(0,-109)">Editor</text>
+    <!--link ConsolePlugin to Ruby::Console-->
+    <path
+       d="M386.634,157.403 C378.06,176.9 368.287,199.122 359.169,219.854 "
+       fill="none"
+       id="ConsolePlugin-Ruby::Console"
+       style="stroke: #A80036; stroke-width: 1.0;" />
+    <polygon
+       fill="#A80036"
+       points="391.939,145.341,385.8618,149.2227,387.1075,156.3254,393.1847,152.4437,391.939,145.341"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="polygon192" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="82"
+       x="378"
+       y="187.2544"
+       id="text194">@@consoles</text>
+    <!--link ConsolePlugin to Feature-->
+    <path
+       d="M323.231,122.684 C287.033,134.094 246.131,150.955 214,175 C185.048,196.666 161.216,230.432 145.69,256.302 "
+       fill="none"
+       id="ConsolePlugin-Feature"
+       style="stroke: #A80036; stroke-width: 1.0;" />
+    <polygon
+       fill="#A80036"
+       points="335.816,118.872,328.9143,116.7824,324.3309,122.3496,331.2327,124.4391,335.816,118.872"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="polygon197" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="151"
+       x="215"
+       y="187.2544"
+       id="text199">@@registered_features</text>
+    <!--link FeatureAccess to ConsolePlugin-->
+    <path
+       d="M181.437,101 C228.359,101 288.752,101 335.816,101 "
+       fill="none"
+       id="FeatureAccess-ConsolePlugin"
+       style="stroke: #A80036; stroke-width: 1.0;" />
+    <polygon
+       fill="#A80036"
+       points="176.363,101,185.363,105,181.363,101,185.363,97,176.363,101"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="polygon202" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="123"
+       x="194.5"
+       y="95.2544"
+       id="text204">@@feature_access</text>
+    <!--link Ruby::Console to Ruby::Bridge-->
+    <path
+       d="M405.102,294 C431.955,294 462.169,294 489.641,294 "
+       fill="none"
+       id="Ruby::Console-Ruby::Bridge"
+       style="stroke: #A80036; stroke-width: 1.0;" />
+    <polygon
+       fill="#A80036"
+       points="494.737,294,485.737,290,489.737,294,485.737,298,494.737,294"
+       style="stroke: #A80036; stroke-width: 1.0;"
+       id="polygon207" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="53"
+       x="423.5"
+       y="288.2544"
+       id="text209">@bridge</text>
+    <!--link Ruby::Console to Ruby::Bridge-->
+    <!--link FeatureAccess to Feature-->
+    <!--link Feature to Ruby::Console-->
+    <!--link app to JS::Editor-->
+    <path
+       d="M 982.303,88.579 C 972.88,102.93 959.384,125.102 951,146 c -13.218,32.946 -21.589,73.564 -25.774,97.533"
+       fill="none"
+       id="app-JS::Editor"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="924.348,277.675 929.8056,269.4765 925.1894,272.7463 921.9197,268.1302 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon212"
+       transform="translate(0,-29)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="37"
+       x="952"
+       y="187.25439"
+       id="text214"
+       transform="translate(0,-29)">editor</text>
+    <!--link app to JS::Console-->
+    <path
+       d="m 993.433,88.72 c 0.717,17.716 2.609,47.302 7.567,72.28 5.85,29.461 16.93,62.442 24.39,82.964"
+       fill="none"
+       id="app-JS::Console"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="1027.21,277.903 1027.8655,268.076 1025.4879,273.2089 1020.3549,270.8314 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon217"
+       transform="translate(0,-29)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="49"
+       x="1002"
+       y="187.25439"
+       id="text219"
+       transform="translate(0,-29)">console</text>
+    <!--link app to Output-->
+    <path
+       d="m 1006.69,88.52 c 12.88,14.681 32.62,37.395 49.31,57.48 16.37,19.698 20.29,24.77 36,45 13.93,17.947 29.49,38.655 40.49,53.421"
+       fill="none"
+       id="app-Output"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="1135.75,277.803 1133.5884,268.1943 1132.766,273.791 1127.1693,272.9687 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon222"
+       transform="translate(0,-29)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="42"
+       x="1069"
+       y="187.25439"
+       id="text224"
+       transform="translate(0,-29)">output</text>
+    <!--link app to JS::Settings-->
+    <path
+       d="m 1012.17,72 c 20.72,0 54.52,0 82.43,0"
+       fill="none"
+       id="app-JS::Settings"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="1099.74,101 1090.74,97 1094.74,101 1090.74,105 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon227"
+       transform="translate(0,-29)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="51"
+       x="1030.5"
+       y="95.254402"
+       id="text229"
+       transform="translate(0,-29)">settings</text>
+    <!--link app to JS::Settings-->
+    <!--link app to Bridge-->
+    <path
+       d="m 975.815,88.63 c -33.252,30.244 -107.168,97.472 -153.21,139.349"
+       fill="none"
+       id="app-Bridge"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="818.789,260.449 828.1383,257.352 822.4877,257.0846 822.7552,251.434 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon232"
+       transform="translate(0,-29)" />
+    <!--link JS::Console to Output-->
+    <path
+       d="m 1074.41,265 c 9.9,0 19.8,0 29.7,0"
+       fill="none"
+       id="JS::Console-Output"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="1109.29,294 1100.29,290 1104.29,294 1100.29,298 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon235"
+       transform="translate(0,-29)" />
+    <!--link JS::Editor to ace::Editor-->
+    <path
+       d="m 929.4,281.334 c 2.82323,34.13112 18.29681,49.19478 45.52,68.7857"
+       fill="none"
+       id="JS::Editor-ace::Editor"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <polygon
+       fill="#A80036"
+       points="958.596,463.9442 955.2437,454.6834 955.1314,460.3392 949.4756,460.2268 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon238"
+       transform="rotate(-9.1131676,273.52157,281.07811)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="60"
+       x="926"
+       y="412.25439"
+       id="text240"
+       transform="translate(-54,-99)">aceEditor</text>
+    <!--link JS::Console to ace::Editor-->
+    <path
+       d="m 1038.25,281.057 c -8.1991,34.62497 -16.7792,44.99039 -46.887,68.7572"
+       fill="none"
+       id="JS::Console-ace::Editor"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <polygon
+       fill="#A80036"
+       points="981.2342,459.2238 978.6218,454.2063 979.731,463.9925 986.2517,456.6114 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon243"
+       transform="rotate(35.958628,1155.3156,420.47837)" />
+    <text
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="13"
+       lengthAdjust="spacingAndGlyphs"
+       textLength="60"
+       x="999"
+       y="412.25439"
+       id="text245"
+       transform="translate(34,-99)">aceEditor</text>
+    <!--link Bridge to JS::Editor-->
+    <!--link JS::Editor to JS::Console-->
+    <!--link JS::Settings to Output-->
+    <!--link Ruby::Bridge to Bridge-->
+    <path
+       d="m 662.384,310.593 c 22.404,3.356 44.807,0.123 67.211,-9.699"
+       fill="none"
+       id="Ruby::Bridge-Bridge"
+       style="stroke:#a80036;stroke-width:1"
+       inkscape:connector-curvature="0" />
+    <polygon
+       fill="#A80036"
+       points="734.375,327.698 724.5269,327.8206 729.8316,329.7854 727.8668,335.0901 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon248"
+       transform="translate(0,-29)" />
+    <polygon
+       fill="#A80036"
+       points="657.264,338.711 665.4548,344.1801 662.1915,339.5594 666.8122,336.2961 "
+       style="stroke:#a80036;stroke-width:1"
+       id="polygon250"
+       transform="translate(0,-29)" />
+    <!--
+@startuml
+set namespaceSeparator ::
+hide empty members
+!pragma horizontalLineBetweenDifferentPackageAllowed
+
+package Ruby {
+    object ConsolePlugin {
+        + Settings @@settings
+        ..
+        open()
+        close()
+        ..
+        register_feature(Feature)
+    }
+
+    class Ruby::Console {
+        + Bridge @bridge
+        + UI::HtmlDialog @dialog
+        ..
+        show()
+        close()
+        ..
+        puts(*args)
+        print(*args)
+        warn(*args)
+        error(exception)
+    }
+
+    interface Feature {
+        initialize(FeatureAccess)
+        String get_javascript_string()
+        String get_javascript_path()
+    }
+
+    object FeatureAccess {
+        Array<Console> consoles
+        Settings settings
+        ConsolePlugin plugin
+    }
+
+    class Ruby::Bridge {
+        HtmlDialog @dialog
+        ..
+        on(eventname, handler)
+        once(eventname, handler)
+        off(eventname)
+        ..
+        call(name, *args, handler)
+        Promise get(name, *args)
+    }
+
+    ConsolePlugin *-down- Ruby::Console: @@consoles
+    ConsolePlugin *- - Feature: @@registered_features
+    ConsolePlugin -left-> FeatureAccess: @@feature_access
+
+    Ruby::Console - -> Ruby::Bridge: @bridge
+
+    'some hidden links for better layout
+    FeatureAccess -[hidden]down->  Feature
+    Feature       -[hidden]right-> Ruby::Console
+    Ruby::Console -[hidden]right-> Ruby::Bridge
+}
+
+package JS {
+    object app
+    class JS::Editor
+    class JS::Console
+    class Output
+    class JS::Settings
+
+    object Bridge {
+        call(name, *args, handler)
+        Promise get(name, *args)
+        puts(string)
+        error(errorObject)
+    }
+
+    app - -> JS::Editor: editor
+    app - -> JS::Console: console
+    app - -> Output: output
+    app - -> JS::Settings: settings
+    app - -> Bridge
+
+    JS::Console -right-> Output
+    'JS::Console - -> JS::Settings
+
+    'JS::Editor - -> JS::Settings
+
+    'Output - -> JS::Settings
+
+    package ace {
+       JS::Editor - -> ace::Editor: aceEditor
+       JS::Console - -> ace::Editor: aceEditor
+    }
+
+    'some hidden links for better layout
+    app    -[hidden]right-> JS::Settings
+    JS::Editor -[hidden]left->  Bridge
+    JS::Editor -[hidden]right-> JS::Console
+    Output -[hidden]up->        JS::Settings
+}
+
+Ruby::Bridge <-right-> Bridge
+
+@enduml
+
+PlantUML version 1.2017.15(Mon Jul 03 18:45:34 CEST 2017)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 1.8.0_152-release-915-b6
+Operating System: Linux
+OS Version: 4.10.0-32-generic
+Default Encoding: UTF-8
+Language: de
+Country: DE
+-->
+  </g>
+</svg>

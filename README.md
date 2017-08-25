@@ -52,7 +52,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Aerili
 
 ## Development
 
-You can a technical overview about this extension in the design folder.
+You can find a technical overview about this extension in the design folder.
 
 Run `rake test` to run the tests.
 

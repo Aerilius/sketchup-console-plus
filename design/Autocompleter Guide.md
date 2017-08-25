@@ -24,7 +24,7 @@ statically
 typed, introspection cannot provide the return types).</dd>
 </dl>
 
-<img alt="Forward evaluation state diagram" src="./forward_evaluation_resolver.svg">
+<img alt="Forward evaluation state diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/d20b7e5b/design/forward_evaluation_resolver.svg">
 
 ## Backtracking Resolver
 

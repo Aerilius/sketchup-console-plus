@@ -2,12 +2,9 @@
 
 This third version of the Ruby Console+ makes use of the observer pattern, asynchronous communication and promises.
 
-<img alt="Class diagram" src="./class_diagram.svg">
+<img alt="Simplified class diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/d20b7e5b/design/class_diagram.svg" />
 
-## Ace Editor
-
-The [ace editor](https://ace.c9.io/) is an IDE based on web technologies.
-To update to a new version, download from the [prepackaged versions](https://github.com/ajaxorg/ace-builds/). For the old Internet-Explorer-based webdialogs in older SketchUp versions, I had to heavily patch ace to circumvent errors caused by limited web standard support. This is not necessary anymore since this version does at the moment not aim for backward compatibility. Remaining patches can be found in the `patches` directory. 
+The console plugin can create one or more console instances. The Console class provides basic functionality and is extended with Feature classes. A console instance opens an HtmlDialog which contains the user interface consisting of the console (input), the console output and an editor for files.
 
 ## Bridge
 
@@ -17,9 +14,9 @@ Communication is completely asynchronous and based on **promises**. A promise is
 
 ## Features System
 
-To handle the growing amount of features, they are implemented like extensions, with the core console having only elementary functionality. A feature can bring both Ruby code and JavaScript code.
+To handle the growing amount of features, they are implemented like extensions, with the core console having only basic functionality. A feature can include both Ruby code and JavaScript code.
 
-The plugin searches features in the features folder and loads them as soon as the plugin is loaded, and loads JavaScript whenever a console dialog is opened. A feature is initialized with a struct giving access to several components of the plugin (consoles) on which it can listen for events and act on them (console dialog opened etc.). 
+Features are searched in the features folder and loaded as soon as the plugin is loaded, and JavaScript is loaded whenever a console dialog is opened. A feature's class is initialized with a struct giving access to several components of the plugin (consoles) on which it can listen for events and act on them (console dialog opened etc.). 
 
 ## JavaScript Modules
 
@@ -32,3 +29,8 @@ The `main` module configures paths where to look up modules and then loads the u
 ## User Interface
 
 The user interface uses Bootstrap for CSS and some widgets. The user interface consists of modules `console` (with `output`) and `editor`, which each are wrappers around an instance of ace.
+
+## Ace Editor
+
+The [ace editor](https://ace.c9.io/) is an IDE based on web technologies.
+To update to a new version, download from the [prepackaged versions](https://github.com/ajaxorg/ace-builds/). For the old Internet-Explorer-based webdialogs in older SketchUp versions, I had to heavily patch ace to circumvent errors caused by limited web standard support. This is not necessary anymore since this version does at the moment not aim for backward compatibility. Remaining patches can be found in the `patches` directory. 

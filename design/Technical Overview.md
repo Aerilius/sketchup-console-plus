@@ -2,7 +2,7 @@
 
 This third version of the Ruby Console+ makes use of the observer pattern, asynchronous communication and promises.
 
-<img alt="Simplified class diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/d20b7e5b/design/class_diagram.svg" />
+<img alt="Simplified class diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/db254409/design/class_diagram.svg" />
 
 The console plugin can create one or more console instances. The Console class provides basic functionality and is extended with Feature classes. A console instance opens an HtmlDialog which contains the user interface consisting of the console (input), the console output and an editor for files.
 

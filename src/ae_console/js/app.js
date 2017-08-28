@@ -38,7 +38,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         });
 
         // Load settings from SketchUp
-        Bridge.call('get_settings', settings.load);
+        Bridge.get('get_settings').then(settings.load);
     }
 
     function initializeSettings () {

@@ -30,7 +30,6 @@ requirejs(['./app', './bridge', './console_api', 'jquery'], function (app, Bridg
             errorObject.columnNumber = columnNumber;
         }
         API.javaScriptError(errorObject);
-        Bridge.puts('JavaScript Error: '+errorObject.message+'('+source+':'+lineNumber+':'+columnNumber+')');
         return true;
     };
 });

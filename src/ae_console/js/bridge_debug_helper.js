@@ -7,7 +7,7 @@ define(['./bridge'], function (Bridge) {
     var mockedCallbacks = {};
 
     function interactiveRequestHandler (message, resolve, reject) {
-        var request = 'skp:' + message.name + '(' + JSON.stringify(message.arguments).slice(1, -1) + ')';
+        var request = 'skp:' + message.name + '(' + JSON.stringify(message.parameters).slice(1, -1) + ')';
         if (message.expectsCallback) {
             // Respond to the request and call the callback.
             if (message.name in mockedCallbacks) {
@@ -33,7 +33,7 @@ define(['./bridge'], function (Bridge) {
                 } else {
                     try {
                         // Resolver function that returns return value.
-                        result = mockedCallbacks[message.name].apply(undefined, message.arguments);
+                        result = mockedCallbacks[message.name].apply(undefined, message.parameters);
                         if (typeof resolve === 'function') resolve(result);
                         window.console.log('>> ' + JSON.stringify(result));
                     } catch (error) {

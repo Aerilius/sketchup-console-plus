@@ -1,30 +1,3 @@
-=begin
-
-Copyright 2012-2017, Andreas Eisenbarth
-All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software for
-any purpose and without fee is hereby granted, provided that the above
-copyright notice appear in all copies.
-
-THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-
-@module  ConsolePlugin
-@version 3.0.0
-@date    23.07.2017
-@author  Andreas Eisenbarth
-@license MIT License (MIT)
-
-This is another Ruby Console implemented as HtmlDialog. 
-It features a history that is saved over sessions, a multi-line code editor with
-syntax highlighting and indentation, and a file editor.
-
-Usage: menu Window → Ruby Console+
-
-=end
-
 module AE
 
   module ConsolePlugin

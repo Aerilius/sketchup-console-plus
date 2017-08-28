@@ -136,7 +136,7 @@ define(['jquery', './bridge'], function ($, Bridge) {
             properties[name] = property;
             return property;
         }
-    };
+    }
 
     Settings.Property = Property;
 

@@ -17,6 +17,7 @@ module AE
       end
 
       def add_listener(event_name, &block)
+        event_name = event_name.to_sym
         @listeners ||= {}
         @listeners[event_name] ||= []
         @listeners[event_name] << block
@@ -25,6 +26,7 @@ module AE
       alias_method :on, :add_listener
 
       def remove_listener(event_name, block=nil, &_block)
+        event_name = event_name.to_sym
         return unless @listeners && @listeners.include?(event_name)
         block = _block if block_given?
         if block
@@ -39,6 +41,7 @@ module AE
       private
 
       def trigger(event_name, *arguments)
+        event_name = event_name.to_sym
         return unless @listeners && @listeners.include?(event_name)
         @listeners[event_name].each{ |block|
           block.call(*arguments)

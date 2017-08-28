@@ -81,18 +81,21 @@ module AE
               on_resolve = block
             end
           end
-          raise ArgumentError.new("Argument must be callable") unless on_resolve.respond_to?(:call) || on_reject.respond_to?(:call)
           (unhandled_rejection(*@values); return self) if @state == State::REJECTED && !on_reject.respond_to?(:call)
 
           next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
             @handlers << Handler.new(on_resolve, on_reject, resolve_next, reject_next)
+            case @state
+              when State::RESOLVED
+                if on_resolve.respond_to?(:call)
+                  handle(on_resolve, resolve_next, reject_next)
+                end
+              when State::REJECTED
+                if on_reject.respond_to?(:call)
+                  handle(on_reject, resolve_next, reject_next)
+                end
+            end
           }
-          case @state
-            when State::RESOLVED
-              handle(on_resolve, resolve_next, reject_next)
-            when State::REJECTED
-              handle(on_reject, resolve_next, reject_next)
-          end
           return next_promise
         end
 
@@ -159,6 +162,8 @@ module AE
             promises.each{ |promise|
               if promise.respond_to?(:then)
                 promise.then(resolve, reject)
+              else
+                break resolve.call(promise) # non-Promise value
               end
             }
           }
@@ -180,7 +185,7 @@ module AE
         def resolve(*results)
           raise Exception.new("A once rejected promise can not be resolved later") if @state == State::REJECTED
           raise Exception.new("A resolved promise can not be resolved again with different results") if @state == State::RESOLVED && !results.empty? && results != @values
-          return self unless @state == State::PENDING
+          return nil unless @state == State::PENDING
 
           # If this promise is resolved with another promise, the final results are not yet
           # known, so we we register this promise to be resolved once all results are resolved.
@@ -251,10 +256,6 @@ module AE
                 if handler.reject_next.respond_to?(:call)
                   handler.reject_next.call(*@values)
                 end
-              end
-            else # No on_reject registered.
-              if handler.reject_next.respond_to?(:call)
-                handler.reject_next.call(@value)
               end
             end
           end

@@ -44,19 +44,22 @@ module AE
 
     class TC_FileObserver < TestCase
       # This test suite fails when run in SketchUp because AsyncMiniTestHelper 
-      # does not work with SketchUp's UI module's uses threading.
+      # does not work with SketchUp's UI module's use of threading.
 
       def setup
         dir = File.dirname(__FILE__)
         @filename = File.join(dir, "test")
+        @filename2 = File.join(dir, "test2")
         File.delete(@filename) if File.exists?(@filename)
-        @observer = FileObserver.new(0.2)
+        File.delete(@filename2) if File.exists?(@filename2)
+        @observer = FileObserver.new(0.01)
       end
 
       def shutdown
         @observer.unregister_all
         @observer = nil
         File.delete(@filename) if File.exists?(@filename)
+        File.delete(@filename2) if File.exists?(@filename2)
       end
 
       def test_created
@@ -68,14 +71,14 @@ module AE
       end
 
       def test_changed
-        async = AsyncMiniTestHelper.new(self, 2, 3.0)
+        async = AsyncMiniTestHelper.new(self, 2, 2.0)
         File.open(@filename, "w"){ |f| f.puts("test") }
         @observer.register(@filename, :changed) { async.done() }
 
-        UI.start_timer(1, false) {
+        UI.start_timer(0.5, false) {
           File.open(@filename, "a"){ |f| f.puts("2") }
         }
-        UI.start_timer(2, false) {
+        UI.start_timer(1.5, false) {
           File.open(@filename, "w"){ |f| f.puts("hello") }
         }
         async.await()
@@ -85,9 +88,41 @@ module AE
         async = AsyncMiniTestHelper.new(self, 1)
         File.open(@filename, "w"){ |f| f.puts("test") }
         @observer.register(@filename, :deleted) { async.done() }
+        UI.start_timer(0.5, false) {
+          File.delete(@filename)
+        }
+        async.await()
+      end
 
+      def test_unregister
+        async = AsyncMiniTestHelper.new(self, 1, 0.5)
+        @observer.register(@filename, :created) { async.done() }
+        @observer.register(@filename, :deleted) { async.done() }
+        # Unregister a file with a specific event
+        @observer.unregister(@filename, :created)
+        File.open(@filename, "w"){ |f| f.puts("test") }
+        async.await_timeout()
+
+        # Other events for that file should still trigger
+        async = AsyncMiniTestHelper.new(self, 1)
         File.delete(@filename)
         async.await()
+
+        # Unregister all events for a file
+        async = AsyncMiniTestHelper.new(self, 1, 0.5)
+        @observer.unregister(@filename)
+        async.await_timeout()
+      end
+
+      def test_unregister_all
+        async = AsyncMiniTestHelper.new(self, 2, 0.5)
+        @observer.register(@filename, :created) { async.done() }
+        @observer.register(@filename2, :created) { async.done() }
+        # Unregister all files
+        @observer.unregister_all()
+        File.open(@filename, "w"){ |f| f.puts("test") }
+        File.open(@filename2, "w"){ |f| f.puts("test2") }
+        async.await_timeout()
       end
 
     end # class TC_FileObserver

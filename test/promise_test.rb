@@ -1,13 +1,5 @@
 require_relative 'test_helper'
 
-# TODO:
-# test Promise#resolve with a promise
-# test Promise#then on a resolved/rejected promise
-# test Promise.all
-# test Promise.race
-# test Promise.resolve
-# test Promise.reject
-
 module AE
 
   module ConsolePlugin
@@ -40,16 +32,149 @@ module AE
       def test_new
       end
 
-      def test_then
+      def test_all
+        # Resolving all promises
+        expected = [1, 2, 3]
+        actual = nil
+        deferred1 = Promise::Deferred.new
+        deferred2 = Promise::Deferred.new
+        Promise.all([deferred1.promise, deferred2.promise, 3]).then(Proc.new{ |v|
+          actual = v
+        }, Proc.new{ |r|
+        })
+        deferred1.resolve(expected[0])
+        assert_equal(nil, actual, "After resolving one of many promises, Promise.all is not yet resolved")
+        deferred2.resolve(expected[1])
+        assert_equal(expected, actual, "After resolving all promises, Promise.all is resolved")
+        # Rejecting one promise
+        reason = 'some reason'
+        actual = nil
+        deferred1 = Promise::Deferred.new
+        deferred2 = Promise::Deferred.new
+        Promise.all([deferred1.promise, deferred2.promise, 3]).then(Proc.new{ |v|
+        }, Proc.new{ |r|
+          actual = r
+        })
+        deferred1.reject(reason)
+        assert_equal(reason, actual, "When one promise is rejected, Promise.all is also rejected")
+        # Empty array given
+        expected = []
+        actual_result = nil
+        Promise.all([]).then(Proc.new{ |v|
+          actual_result = v
+        }, Proc.new{ |r|
+          actual_reason = v
+        })
+        assert_equal(expected, actual_result, "When the promises array is empty, Promise.all is immediately resolved")
+      end
+
+      def test_race
+        # Resolving first promise
+        expected = 1
+        actual_result = nil
+        deferred1 = Promise::Deferred.new
+        deferred2 = Promise::Deferred.new
+        Promise.race([deferred1.promise, deferred2.promise]).then(Proc.new{ |v|
+          actual_result = v
+        }, Proc.new{ |r|
+        })
+        deferred1.resolve(expected)
+        assert_equal(expected, actual_result, "After resolving one promise, Promise.race is resolved")
+        # Rejecting first promise
+        reason = 'some reason'
+        actual_reason = nil
+        deferred1 = Promise::Deferred.new
+        deferred2 = Promise::Deferred.new
+        Promise.race([deferred1.promise, deferred2.promise]).then(Proc.new{ |v|
+        }, Proc.new{ |r|
+          actual_reason = r
+        })
+        deferred1.reject(reason)
+        deferred1.reject('some reason')
+        assert_equal(reason, actual_reason, "After rejecting one Promise, Promise.race is also rejected")
+        # Non-Promise given
+        expected = 2
+        actual_result = nil
+        deferred1 = Promise::Deferred.new
+        deferred2 = Promise::Deferred.new
+        Promise.race([deferred1.promise, 2]).then(Proc.new{ |v|
+          actual_result = v
+        }, Proc.new{ |r|
+        })
+        assert_equal(expected, actual_result, "When the promises array contains a non-Promise, Promise.race is immediately resolved")
+        # Empty array given
+        actual_result = nil
+        actual_reason = nil
+        Promise.race([]).then(Proc.new{ |v|
+          actual_result = v
+        }, Proc.new{ |r|
+          actual_reason = v
+        })
+        assert_equal(nil, actual_result, "When the promises array is empty, Promise.race is never resolved")
+        assert_equal(nil, actual_reason, "When the promises array is empty, Promise.race is never rejected")
+      end
+
+      def test_then # Tests also Promise.resolve and Promise.reject
         promise1 = Promise.new
         promise2 = promise1.then{ |_| }
+        assert_kind_of(Promise, promise2, "It returns a new promise.")
         assert(promise1 != promise2, "It returns a new promise.")
+        # then on a resolved promise
+        actual_resolved = false
+        resolved = Promise.resolve('some result')
+        resolved.then(Proc.new{ |v|
+          actual_resolved = true
+        }){ |r|
+          actual_resolved = false
+        }
+        assert(actual_resolved, "A thenable on a resolved promise executes immediately the on_resolve callback")
+        # then on a rejected promise
+        actual_rejected = false
+        rejected = Promise.reject('some reason')
+        rejected.then(Proc.new{ |v|
+          actual_rejected = false
+        }, Proc.new{ |r|
+          actual_rejected = true
+        })
+        assert(actual_rejected, "A thenable on a rejected promise executes immediately the on_reject callback")
+        # Resolve empty thenable
+        actual_resolved = false
+        deferred = Promise::Deferred.new
+        promise1 = deferred.promise
+        promise2 = promise1.then()
+        promise3 = promise1.then(Proc.new{ |v|
+          actual_resolved = true
+        }){ |r|
+          actual_resolved = false
+        }
+        deferred.resolve('some result')
+        assert(actual_resolved, "A thenable without callbacks returns a Promise that resolves/rejects subsequent thenables")
+        # Reject empty thenable
+        actual_rejected = false
+        deferred = Promise::Deferred.new
+        promise1 = deferred.promise
+        promise2 = promise1.then()
+        promise3 = promise1.then(Proc.new{ |v|
+          actual_rejected = false
+        }){ |r|
+          actual_rejected = true
+        }
+        deferred.reject('some reason')
+        assert(actual_rejected, "A thenable without callbacks returns a Promise that resolves/rejects subsequent thenables")
       end
 
       def test_catch
         promise1 = Promise.new
         promise2 = promise1.catch{ |_| }
         assert(promise1 != promise2, "It returns a new promise.")
+        # catch on a rejected promise
+        actual_rejected = false
+        reason = 'some reason'
+        rejected = Promise.reject(reason)
+        rejected.catch{ |r|
+          actual_rejected = true
+        }
+        assert(actual_rejected, "A thenable on a rejected promise executes immediately the on_reject callback")
       end
 
       def test_transitions
@@ -61,7 +186,7 @@ module AE
         counter1_rejected = 0
         counter2_resolved = 0
         counter2_rejected = 0
-        # Promise 1
+        # Create Promise 1
         result1 = nil
         resolved1 = false
         deferred1 = Promise::Deferred.new
@@ -74,7 +199,7 @@ module AE
           result1 = r
           resolved1 = false
         })
-        # Promise 2
+        # Create Promise 2
         result2 = nil
         rejected2  = false
         deferred2 = Promise::Deferred.new
@@ -132,6 +257,17 @@ module AE
         deferred.promise.then(Proc.new{ |v| called_with = v })
         deferred.resolve(value)
         assert_equal(called_with, value, "on_resolve is called with fulfillment value.")
+        # Resolving with a promise
+        value = "value"
+        called_with = nil
+        deferred1 = Promise::Deferred.new
+        deferred1.promise.then(Proc.new{ |v| called_with = v })
+        deferred2 = Promise::Deferred.new
+        deferred2.promise.then(Proc.new{ |v| called_with = v })
+        deferred1.resolve(deferred2.promise)
+        assert_equal(called_with, nil, "When resolved with a promise, on_resolve is not called before the fulfillment promise is resolved.")
+        deferred2.resolve(value)
+        assert_equal(called_with, value, "When resolved with a promise, on_resolve is not called before the fulfillment promise is resolved.")
       end
 
       def test_on_reject
@@ -141,6 +277,17 @@ module AE
         deferred.promise.then(nil, Proc.new{ |r| called_with = r })
         deferred.reject(reason)
         assert_equal(called_with, reason, "on_reject is called with rejection reason.")
+        # Rejecting with a promise
+        reason = "reason"
+        called_with = nil
+        deferred1 = Promise::Deferred.new
+        deferred1.promise.then(Proc.new{ |v| called_with = v })
+        deferred2 = Promise::Deferred.new
+        deferred2.promise.then(Proc.new{ |v| called_with = v })
+        deferred1.reject(deferred2.promise)
+        assert_equal(called_with, nil, "When resolved with a promise, on_reject is not called before the reason promise is resolved.")
+        deferred2.resolve(reason)
+        assert_equal(called_with, reason, "When rejected with a promise, on_reject is not called before the reason promise is resolved.")
       end
 
       # Adds two levels to the backtrace before the raise.

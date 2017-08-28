@@ -36,13 +36,14 @@ module AE
       class Length < Float; end
     end
 
+    # noinspection RubyStringKeysInHashInspection
     class TC_Settings < TestCase
 
       def setup
         # Cleanup the test data from the registry.
         if NATIVE
           # TODO: Implement proper cleaning for real Windows Registry or macOS plist files.
-          ['key', 'key2', 'string', 'string1', 'float', 'fixnum', 'nil', 'boolean', 'array', 'array1', 'hash', 'hash1'].each{ |key|
+          %w(key key2 string string1 float fixnum nil boolean array array1 hash hash1).each{ |key|
             Sketchup.write_defaults('test', key, nil)
           }
         else
@@ -53,62 +54,119 @@ module AE
       def test_settings_load
         data = {'key' => 'value', 'key2' => 'value2'}
         name = 'key'
+        name2 = 'key2'
         expected = data[name]
+        expected2 = data[name2]
+        actual2 = nil
         settings = Settings.new('test')
-        property = settings.get_property('key2', 'default')
+        property = settings.get_property(name2, 'default')
         property.add_listener('change'){ |triggered_value|
-          assert_equal('value2', triggered_value, 'Loading settings should trigger the "change" event on overwritten properties.')
+          actual2 = triggered_value
         }
+
         settings.load(data)
+
         actual = settings.get(name)
         assert_equal(expected, actual, 'It should return the loaded value.')
+        assert_equal(expected2, actual2, 'Loading settings should trigger the "change" event on overwritten properties.')
       end
 
-      def settings_get
+      def test_settings_get
         data = {'key' => 'value', 'key2' => 'value2'}
         name = 'key'
         expected = data[name]
         settings = Settings.new('test').load(data)
+
         property = settings.get_property(name)
+
         assert_equal(expected, settings.get(name))
         assert_equal(expected, property.get_value())
         assert_equal(property.get_value(), settings.get(name))
+
+        new_name = 'key3'
+        default = 81
+        actual = settings.get(new_name, default)
+        assert_equal(default, actual, 'It should return the default value if the key does not exist')
       end
 
-      def settings_set
+      def test_settings_set
         data = {'key5' => 'value', 'key2' => 'value2'}
-        name = 'key5'
+        name = :key5
         expected_value = 'changed value'
+        actual_name = nil
+        actual_value = nil
+        actual_property_value = nil
         settings = Settings.new('test').load(data)
         property = settings.get_property(name)
         settings.add_listener('change'){ |triggered_name, triggered_value|
-          assert_equal(name,           triggered_name,  'settings.set should trigger "changed" on settings')
-          assert_equal(expected_value, triggered_value, 'settings.set should trigger "changed" on settings')
+          actual_name = triggered_name
+          actual_value = triggered_value
         }
         property.add_listener('change'){ |triggered_value|
-          assert_equal(expected_value, triggered_value, 'settings.set should trigger "changed" on property')
+          actual_property_value = triggered_value
         }
+
         settings.set(name, expected_value)
+
         assert_equal(expected_value, settings.get(name))
         assert_equal(expected_value, property.get_value())
+        assert_equal(name,           actual_name,  'settings.set should trigger "changed" on settings')
+        assert_equal(expected_value, actual_value, 'settings.set should trigger "changed" on settings')
+        assert_equal(expected_value, actual_property_value, 'settings.set should trigger "changed" on property')
+        
+        # TODO: setting new key should create property
+        new_name = 'key3'
+        new_value = 81
+        settings.set(new_name, new_value)
+        property = settings.get_property(new_name)
+        refute_nil(property)
+        assert_equal(new_value, property.get_value())
       end
 
       def test_property_set_value
         data = {'key' => 'value3', 'key2' => 'value2'}
-        name = 'key'
+        name = :key
         expected_value = 'changed value3'
+        actual_name = nil
+        actual_value = nil
+        actual_property_value = nil
         settings = Settings.new('test').load(data)
         property = settings.get_property(name)
         settings.add_listener('change'){ |triggered_name, triggered_value|
-          assert_equal(name,           triggered_name,  'property.set_value should trigger "changed" on settings')
-          assert_equal(expected_value, triggered_value, 'property.set_value should trigger "changed" on settings')
+          actual_name = triggered_name
+          actual_value = triggered_value
         }
         property.add_listener('change'){ |triggered_value|
-          assert_equal(expected_value, triggered_value, 'property.set_value should trigger "changed"')
+          actual_property_value = triggered_value
         }
+
         property.set_value(expected_value)
+
         assert_equal(expected_value, settings.get(name))
         assert_equal(expected_value, property.get_value())
+        assert_equal(name,           actual_name,  'property.set_value should trigger "changed" on settings')
+        assert_equal(expected_value, actual_value, 'property.set_value should trigger "changed" on settings')
+        assert_equal(expected_value, actual_property_value, 'property.set_value should trigger "changed"')
+      end
+
+      def test_property_get_name
+        name = :key
+        property = Property.new(name, 42, 'test')
+        assert_equal(name, property.get_name())
+      end
+
+      def test_settings_has
+        settings = Settings.new('test')
+        assert_equal(false, settings.has('key'))
+        settings.set('key', 42)
+        assert_equal(true, settings.has('key'))
+      end
+
+      def test_settings_to_hash
+        data = {'key' => 'value3', 'key2' => 'value2'}
+        settings = Settings.new('test').load(data)
+
+        assert_equal(data, settings.to_hash)
       end
 
       def test_supported_types

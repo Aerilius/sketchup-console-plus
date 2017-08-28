@@ -131,11 +131,11 @@ module AE
           def resolve_first_token_as_global_method(token)
             doc_info = DocProvider.get_info_for_docpath(token)
             # Try methods of global objects.
-            doc_info = DocProvider.get_info_for_docpath("Object.#{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
-            doc_info = DocProvider.get_info_for_docpath("Object##{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
-            doc_info = DocProvider.get_info_for_docpath("Kernel.#{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
-            doc_info = DocProvider.get_info_for_docpath("Kernel##{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
-            raise TokenResolverError.new(("Doc info not found for `#{token}`")) unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[:key] }
+            doc_info = DocProvider.get_info_for_docpath("Object.#{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[key] }
+            doc_info = DocProvider.get_info_for_docpath("Object##{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[key] }
+            doc_info = DocProvider.get_info_for_docpath("Kernel.#{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[key] }
+            doc_info = DocProvider.get_info_for_docpath("Kernel##{token}") unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[key] }
+            raise TokenResolverError.new(("Doc info not found for `#{token}`")) unless doc_info && [:type, :namespace, :return].all?{ |key| doc_info[key] }
             returned_types = DocProvider.extract_return_types(doc_info)
             classifications = returned_types.map{ |returned_type|
               begin

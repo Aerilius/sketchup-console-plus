@@ -115,15 +115,7 @@ module AE
         @name = name.to_sym
         read_value = Sketchup.read_default(@section.to_s, @name.to_s, initial_value)
         # Type validation. If values read from the registry have an incorrect type, it might cause unexpected behavior in the program.
-        @initial_value = (read_value.is_a?(initial_value.class)) ? read_value : @initial_value
-      end
-
-      def bind_action(event_name, &fn)
-        fn.call(value)
-        self.add_listener(event_name) { |event, args|
-          fn.call(*args)
-        }
-        return self
+        @initial_value = (read_value.is_a?(initial_value.class)) ? read_value : initial_value
       end
 
       def get_name()
@@ -147,7 +139,7 @@ module AE
         # to always pack the value in a hash (and always unpack it when reading).
         Sketchup.write_default(@section.to_s, @name.to_s, new_value)
         trigger(:change, new_value)
-        return new_value
+        nil
       end
 
       def get_value()

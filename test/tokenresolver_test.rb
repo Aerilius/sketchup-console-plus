@@ -4,45 +4,89 @@ module AE
 
   module ConsolePlugin
 
+    class TC_TokenResolver < TestCase
+
+      require 'ae_console/features/tokenresolver.rb'
+
+      def test_resolve_module_path
+        actual = TokenResolver.resolve_module_path('ClassA::CONSTANT')
+        assert_equal(ClassA::CONSTANT, actual, 'It should resolve a string of namespaces and constants into the constant')
+        actual = TokenResolver.resolve_module_path('ClassA::ClassB')
+        assert_equal(ClassA::ClassB, actual, 'It should resolve a string of namespaces and classes into the class')
+        actual = TokenResolver.resolve_module_path('ClassA::ModuleB')
+        assert_equal(ClassA::ModuleB, actual, 'It should resolve a string of namespaces and modules into the module')
+      end
+
+    end
+
     class TC_ForwardEvaluationResolver < TestCase
 
       require 'ae_console/features/tokenresolver.rb'
 
-      def test_resolve_tokens
-        # Mock DocProvider:
-        DocProvider.initialize
-        DocProvider.create_mock('ClassA.class_method_a', { :return => [['ClassE'], 'description'], :type => :class_method })
-        DocProvider.create_mock('ClassA#instance_method_a', { :return => [['ClassF'], 'description'] })
-        DocProvider.create_mock('ClassA::ModuleB.module_function_b', { :return => [['ClassG'], 'description'], :type => :module_function })
+      def setup
+        @original_docprovider = ConsolePlugin.const_get(:DocProvider)
+        @docprovider = DocProviderStub.initialize
+        ConsolePlugin.send(:const_set, :DocProvider, @docprovider)
+      end
 
+      def teardown
+        ConsolePlugin.send(:const_set, :DocProvider, @original_docprovider)
+      end
+
+      def test_resolve_tokens
         binding = TOPLEVEL_BINDING
+
         # Given: token for existing object, second token for constant, method
-        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'CONSTANT'], binding)
+
+        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', '::', 'CONSTANT'], binding)
         assert_equal('CONSTANT', actual.token)
         assert_equal(:constant,  actual.type)
         assert_equal('ClassA',   actual.namespace)
+
         actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'ModuleB'], binding)
         assert_equal('ModuleB', actual.token)
         assert_equal(:module,   actual.type)
         assert_equal('ClassA',  actual.namespace)
+
         actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'ClassB'], binding)
         assert_equal('ClassB', actual.token)
         assert_equal(:class,   actual.type)
         assert_equal('ClassA', actual.namespace)
-        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'class_method_a'], binding)
+
+        @docprovider.stub_data('ClassA.class_method_a', { :return => [['ClassE'], 'description'], :type => :class_method })
+        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', '.', 'class_method_a'], binding)
         assert_equal('class_method_a', actual.token)
         assert_equal(:class_method,    actual.type)
         assert_equal('ClassA',         actual.namespace)
-        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['INSTANCE_A', 'instance_method_a'], binding)
+
+        @docprovider.stub_data('ClassA#instance_method_a', { :return => [['ClassF'], 'description'], :type => :instance_method })
+        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['INSTANCE_A', '.', 'instance_method_a'], binding)
         assert_equal('instance_method_a', actual.token)
         assert_equal(:instance_method,    actual.type)
         assert_equal('ClassA',            actual.namespace)
 
         # Given: third token
+        @docprovider.stub_data('ClassA::ModuleB.module_function_b', { :return => [['ClassG'], 'description'], :type => :module_function })
         actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'ModuleB', 'module_function_b'], binding)
         assert_equal('module_function_b', actual.token)
         assert_equal(:module_function,    actual.type)
         assert_equal('ClassA::ModuleB', actual.namespace)
+
+        # Global method as token
+        @docprovider.stub_data('Kernel.puts', { :return => [['NilClass'], 'description'], :type => :module_function })
+        actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['puts'], binding)
+        assert_equal('puts', actual.token)
+        assert_equal(:module_function, actual.type)
+        assert_equal('Kernel', actual.namespace)
+
+        # Unresolvable token
+        assert_raises(TokenResolver::TokenResolverError){
+            actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['NonExistingConstant'], binding)
+        }
+
+        assert_raises(TokenResolver::TokenResolverError){
+            actual = TokenResolver::ForwardEvaluationResolver.resolve_tokens(['ClassA', 'non_existing_method'], binding)
+        }
       end
 
       def test_resolve_identifier_in_scope
@@ -79,6 +123,14 @@ module AE
         assert_equal(ModuleA::ClassB::TC_Autocompleter_CONSTANT2, actual.object)
         actual = TokenResolver::ForwardEvaluationResolver.send(:resolve_identifier_in_scope, 'local_variable_b', binding) rescue nil
         assert_equal(42, actual.object)
+
+        # method
+        assert_raises(TokenResolver::TokenResolverError){
+          TokenResolver::ForwardEvaluationResolver.send(:resolve_identifier_in_scope, 'puts', binding)
+        }
+        assert_raises(TokenResolver::TokenResolverError){
+          TokenResolver::ForwardEvaluationResolver.send(:resolve_identifier_in_scope, 'unknown_token', binding)
+        }
       end
 
       def do_tests_for_identifiers_with_binding(binding)
@@ -96,13 +148,23 @@ module AE
 
       require 'ae_console/features/tokenresolver.rb'
 
+      def setup
+        @original_docprovider = ConsolePlugin.const_get(:DocProvider)
+        @docprovider = DocProviderStub.initialize # MiniTest::Mock.new
+        ConsolePlugin.send(:const_set, :DocProvider, @docprovider)
+      end
+
+      def teardown
+        ConsolePlugin.send(:const_set, :DocProvider, @original_docprovider)
+      end
+
       def test_resolve_tokens
-        # Mock DocProvider:
-        DocProvider.initialize
-        DocProvider.create_mock('ClassD#instance_method1', { :return => [['ClassA'], 'description'] })
-        DocProvider.create_mock('ClassA#instance_method2', { :return => [['ClassE'], 'description'] })
-        DocProvider.create_mock('ClassB#instance_method2', { :return => [['ClassF'], 'description'] })
-        DocProvider.create_mock('ClassC#instance_method3', { :return => [['ClassG'], 'description'] })
+        # Mock @docprovider:
+        @docprovider.initialize
+        @docprovider.stub_data('ClassD#instance_method1', { :return => [['ClassA'], 'description'] })
+        @docprovider.stub_data('ClassA#instance_method2', { :return => [['ClassE'], 'description'] })
+        @docprovider.stub_data('ClassB#instance_method2', { :return => [['ClassF'], 'description'] })
+        @docprovider.stub_data('ClassC#instance_method3', { :return => [['ClassG'], 'description'] })
 
         # Given: one token, token is available for classes A, B but not C
         actual = TokenResolver::BacktrackingResolver.resolve_tokens(['instance_method2'])
@@ -114,16 +176,26 @@ module AE
         # first token produces class A but not B or C
         actual = TokenResolver::BacktrackingResolver.resolve_tokens(['instance_method1', 'instance_method2'])
         assert_equal('ClassA', actual.namespace)
+
+        # Token has one match
+        actual = TokenResolver::BacktrackingResolver.resolve_tokens(['instance_method3'])
+        assert_equal('ClassC', actual.namespace)
+        assert(!actual.is_a?(MultipleTokenClassification) || actual.classifications.length == 1)
+
+        # Token has no matches
+        assert_raises(TokenResolver::TokenResolverError){
+          TokenResolver::BacktrackingResolver.resolve_tokens(['instance_method4'])
+        }
       end
 
     end # class TC_BacktrackingResolver
 
-    module DocProvider # Mock
+    module DocProviderStub
       def self.initialize
         @apis = {}
-        nil
+        self
       end
-      def self.create_mock(docpath, hash={})
+      def self.stub_data(docpath, hash={})
         doc_info = {
         :description => 'Description Text',
         #:name => 'instance_method_b',
@@ -133,16 +205,13 @@ module AE
         #:type => 'instance_method',
         :visibility => 'public'
         }.merge(hash)
-        docpath[/^(?:(.*)(\:\:|\.|\#))?([^\.\:\#]+)$/]
+        docpath[/^(?:(.*)(::|\.|#))?([^.:#]+)$/]
         doc_info[:name] = $3
         doc_info[:namespace] = ($1.nil?) ? '' : $1
         doc_info[:path] = docpath
         doc_info[:type] ||= ($2 == '#') ? :instance_method : raise # '.' :class_method, :module_function ; '::' :constant, :class, :module
         @apis[docpath.to_sym] = doc_info
         nil
-      end
-      def self.apis
-        return @apis
       end
       def self.get_info_for_docpath(docpath)
         return @apis[docpath.to_sym]
@@ -153,7 +222,10 @@ module AE
       def self.get_infos_for_token(token)
         return @apis.values.select{ |doc_info| doc_info[:name] == token }
       end
-    end # module DocProvider
+      def self.extract_return_types(doc_info)
+        return doc_info[:return] && doc_info[:return].first || []
+      end
+    end # module DocProviderStub
 
   end
 

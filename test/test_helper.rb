@@ -5,6 +5,11 @@ if File.exists?(src_path = File.expand_path('../../src', __FILE__))
   # Now we could do: require 'ae_console'
 end
 
+# Do not display warnings
+$VERBOSE = false
+
+# Define namespaces
+# and choose TestCase class depending on environment.
 module AE
   module ConsolePlugin
 
@@ -12,8 +17,11 @@ module AE
       require 'testup/testcase'
       TestCase = TestUp::TestCase
     else
-      require 'simplecov'
-      SimpleCov.start
+      begin
+        require 'simplecov'
+        SimpleCov.start
+      rescue LoadError
+      end
       require 'minitest'
       TestCase = Minitest::Test
       require 'minitest/autorun'

@@ -249,7 +249,7 @@ module AE
           })
         else
           completions.concat(@returned_class.constants.grep(prefix_regexp).map{ |constant|
-            return_value = @returned_object.const_get(constant)
+            return_value = @returned_class.const_get(constant)
             type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
             TokenClassification.new(constant, type, @returned_class.name)
           })
@@ -278,12 +278,13 @@ module AE
         if @is_instance == false &&
             ( doc_info = DocProvider.get_info_for_docpath(docpath + '::' + token) )
           type = doc_info[:type] # :constant, :class, :module
-          returned_namespace = @returned_namespace + '::' + token
+          returned_namespace = @returned_namespace + '::' + token #returned_namespace = doc_info[:path] # TODO: is this still correct
           begin
             returned_class = resolve_module_path(returned_namespace)
             TokenClassificationByClass.new(token, type, @returned_namespace, returned_class, false)
           rescue NameError
             is_instance = false # assume the constant is a Class or Module
+            #return TokenClassificationByDoc.new(token, type, doc_info[:path], returned_namespace, is_instance)
             return TokenClassificationByDoc.new(token, type, @returned_namespace, returned_namespace, is_instance)
           end
         # Class constructor method

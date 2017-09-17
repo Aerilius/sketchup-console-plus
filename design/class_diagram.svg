@@ -346,7 +346,7 @@
        textLength="65"
        x="255"
        y="327.7358"
-       id="text76">puts(*args)</text>
+       id="text76">puts(…args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -355,7 +355,7 @@
        textLength="66"
        x="255"
        y="339.2891"
-       id="text78">print(*args)</text>
+       id="text78">print(…args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -364,7 +364,7 @@
        textLength="68"
        x="255"
        y="350.8423"
-       id="text80">warn(*args)</text>
+       id="text80">warn(…args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -584,7 +584,7 @@
        textLength="150"
        x="501"
        y="339.2358"
-       id="text132">call(name, *args, handler)</text>
+       id="text132">call(name, …args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -593,7 +593,7 @@
        textLength="149"
        x="501"
        y="350.7891"
-       id="text134">Promise get(name, *args)</text>
+       id="text134">Promise get(name, …args)</text>
     <rect
        fill="#FEFECE"
        filter="url(#f2hnuygxbuaqs)"
@@ -779,7 +779,7 @@
        x="719.5"
        y="289.76071"
        id="text176"
-       transform="translate(0,-29)">call(name, *args, handler)</text>
+       transform="translate(0,-29)">call(name, …args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -789,7 +789,7 @@
        x="719.5"
        y="300.2637"
        id="text178"
-       transform="translate(0,-29)">Promise get(name, *args)</text>
+       transform="translate(0,-29)">Promise get(name, …args)</text>
     <text
        fill="#000000"
        font-family="sans-serif"
@@ -1136,9 +1136,9 @@ package Ruby {
         show()
         close()
         ..
-        puts(*args)
-        print(*args)
-        warn(*args)
+        puts(…args)
+        print(…args)
+        warn(…args)
         error(exception)
     }
 
@@ -1161,8 +1161,8 @@ package Ruby {
         once(eventname, handler)
         off(eventname)
         ..
-        call(name, *args, handler)
-        Promise get(name, *args)
+        call(name, …args)
+        Promise get(name, …args)
     }
 
     ConsolePlugin *-down- Ruby::Console: @@consoles
@@ -1185,8 +1185,8 @@ package JS {
     class JS::Settings
 
     object Bridge {
-        call(name, *args, handler)
-        Promise get(name, *args)
+        call(name, …args)
+        Promise get(name, …args)
         puts(string)
         error(errorObject)
     }

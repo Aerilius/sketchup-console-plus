@@ -20,9 +20,9 @@ package Ruby {
         show()
         close()
         ..
-        puts(*args)
-        print(*args)
-        warn(*args)
+        puts(…args)
+        print(…args)
+        warn(…args)
         error(exception)
     }
 
@@ -45,8 +45,8 @@ package Ruby {
         once(eventname, handler)
         off(eventname)
         ..
-        call(name, *args, handler)
-        Promise get(name, *args)
+        call(name, …args)
+        Promise get(name, …args)
     }
 
     ConsolePlugin *-down- Ruby::Console: @@consoles
@@ -69,8 +69,8 @@ package JS {
     class JS::Settings
 
     object Bridge {
-        call(name, *args, handler)
-        Promise get(name, *args)
+        call(name, …args)
+        Promise get(name, …args)
         puts(string)
         error(errorObject)
     }

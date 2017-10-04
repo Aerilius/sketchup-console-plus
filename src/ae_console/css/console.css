@@ -178,6 +178,8 @@ table {
 .toolbar > .toolbar-center-expandable-outer > .toolbar-center-expandable-inner {
     position: absolute; /* prevent overflow */
     width: inherit; /* 100% */
+    top: 0;
+    left: 0;
 }
 
 .toolbar > .toolbar-center .toolbar-center-centering {
@@ -269,6 +271,7 @@ table {
 .menu label select {
     float: right;
     max-width: 100%;
+    color: MenuText;
 }
 .menu label input[type=radio],
 .menu label input[type=checkbox] {

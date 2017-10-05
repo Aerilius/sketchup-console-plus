@@ -261,7 +261,7 @@ module AE
           return host + path + fragment
         end
 
-        HTML_ENCODING_MAP ||= {
+        HTML_ENCODING_MAP = {
           '&' => '&amp;',
           '<' => '&lt;',
           '>' => '&gt;',
@@ -270,7 +270,7 @@ module AE
           '/' => '&#x2F;',
           '`' => '&#x60;',
           '=' => '&#x3D;'
-        }
+        } unless defined?(HTML_ENCODING_MAP)
 
         def escape(text)
           return text.to_s.gsub(/&nbsp;|<\/?\w+>|<\w+\/>|[&<>"'`=\/]/){ |match|
@@ -279,7 +279,7 @@ module AE
         end
 
 
-        RDOC_TO_HTML_MAP ||= Hash[{
+        RDOC_TO_HTML_MAP = Hash[{
           '+'  => 'tt',
           '_'  => 'i',
           '*'  => 'i',
@@ -289,7 +289,7 @@ module AE
           regexp      = Regexp.new("#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}")
           replacement = "<#{tagname}>\\1</#{tagname}>"
           [regexp, replacement]
-        }]
+        }] unless defined?(RDOC_TO_HTML_MAP)
 
         def rdoc_to_html(text)
           text = text.clone

@@ -3,7 +3,7 @@ module AE
   module ConsolePlugin
 
     # Constants
-    self::PATH ||= File.expand_path('..', __FILE__)
+    self::PATH = File.expand_path('..', __FILE__) unless defined?(self::PATH)
 
     # Requirements
     %w(translate.rb
@@ -15,7 +15,7 @@ module AE
     ).each{ |file| require(File.join(PATH, file)) }
 
     # Constants
-    self::TRANSLATE ||= Translate.new('console.strings')
+    self::TRANSLATE = Translate.new('console.strings') unless defined?(self::TRANSLATE)
 
     extend Observable
 
@@ -75,7 +75,7 @@ module AE
     # mutable value outside of it (it cannot see class or instance variables outside).
     #
     # We use this one as a lock variable. Must be accessible by ConsolePlugin::Console instances.
-    self::PRIMARY_CONSOLE ||= Struct.new(:value).new(nil)
+    self::PRIMARY_CONSOLE = Struct.new(:value).new(nil) unless defined?(self::PRIMARY_CONSOLE)
 
     def self.initialize_plugin
       # Load settings

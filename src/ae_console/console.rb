@@ -108,7 +108,7 @@ module AE
       private
 
       def initialize_ui
-        @dialog = UI::HtmlDialog.new({
+        properties = {
             :dialog_title    => TRANSLATE['Ruby Console+'],
             :preferences_key => "com.aerilius.console",
             :scrollable      => false,
@@ -117,8 +117,13 @@ module AE
             :height          => 300,
             :left            => 200,
             :top             => 200,
-            :style => UI::HtmlDialog::STYLE_DIALOG
-        })
+        }
+        if defined?(UI::HtmlDialog)
+          properties[:style] = UI::HtmlDialog::STYLE_DIALOG
+          @dialog = UI::HtmlDialog.new(properties)
+        else
+          @dialog = UI::WebDialog.new(properties)
+        end
         @dialog.set_file(CONSOLE_HTML)
 
         # Add a Bridge to handle JavaScript-Ruby communication.
@@ -147,13 +152,17 @@ module AE
           }
         }
 
-        @dialog.set_can_close {
-          trigger(:before_close)
-        }
+        if @dialog.respond_to?(:set_can_close)
+          @dialog.set_can_close {
+            trigger(:before_close)
+          }
+        end
 
-        @dialog.set_on_closed {
-          trigger(:closed)
-        }
+        if @dialog.respond_to?(:set_on_closed)
+          @dialog.set_on_closed {
+            trigger(:closed)
+          }
+        end
       end
 
       def do_eval(action_context, command, line_number=0, metadata={})

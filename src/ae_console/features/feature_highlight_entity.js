@@ -38,11 +38,11 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                 var text = $element.text();
 
                 if (regexpEntity.test(text) || regexpBoundingBox.test(text)) {
-                    // Add highlight feature to SketchUp entities and get their id (which is for some reason 2 * the Ruby object_id)
-                    var id = parseInt(RegExp.$1) >> 1;
+                    // Add highlight feature to SketchUp entities and get their id.
+                    var idString = RegExp.$1;
                     $element.addClass(className)
                     .on('mouseover', function() { // Note: This can trigger repeatedly times!
-                        Bridge.get('highlight_entity', id)['catch'](function () {
+                        Bridge.get('highlight_entity', idString)['catch'](function () {
                             // If the entity isn't valid (deleted or GC), remove the highlight feature.
                             $element.removeClass(className);
                             $element.off('mouseover');

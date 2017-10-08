@@ -16,16 +16,21 @@ module AE
         instance = nil
         model = nil # Reference used while highlighting is active
 
-        dialog.on('highlight_entity') { |action_context, id|
-          object = ObjectSpace._id2ref(id.to_i)
-          model = (object.respond_to?(:model)) ? object.model || Sketchup.active_model : Sketchup.active_model
-          unless is_active
-            instance ||= EntityHighlightTool.new
-            model.tools.push_tool(instance)
+        dialog.on('highlight_entity') { |action_context, id_string|
+          begin
+            object = ObjectSpace._id2ref(id_string.to_i(16) >> 1)
+            model = (object.respond_to?(:model)) ? object.model || Sketchup.active_model : Sketchup.active_model
+            unless is_active
+              instance ||= EntityHighlightTool.new
+              model.tools.push_tool(instance)
+            end
+            instance.highlight(object)
+            is_active = true
+            # RangeError if no entity found for given id,
+            # TypeError "Reference to deleted entity" if entity has been deleted.
+          rescue RangeError, TypeError => e
+            action_context.reject
           end
-          instance.highlight(object)
-          is_active = true
-          # Exceptions (invalid/deleted entity) will reject the webdialog's promise.
         }
 
         dialog.on('highlight_point') { |action_context, array_xyz, unit|

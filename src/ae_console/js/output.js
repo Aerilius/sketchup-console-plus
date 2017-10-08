@@ -44,14 +44,14 @@ define(['jquery', 'bootstrap'], function ($, _) {
                 return;
             }
 
-            // Empty line after puts: Skip and remember to put next message on new entry.
+            // Empty line after puts/warn: Skip and remember to put next message on new entry.
             //
             // Unfortunately SketchUp's stdout and stderr have only one `write` method
             // that prints inline text. To produce new lines (like with `puts`), it sends
             // a single line break afterwards. In that case we receive a `print` with '\n'
             // and later a `print` with the next message (puts or error).
             // So we absorb the line break and let the next message start in a new line.
-            if (text === '\n' && /print|error/.test(metadata.type)) {
+            if (text === '\n' && /print|error|warn/.test(metadata.type)) {
                 // This case actually means "puts follows" or "error follows"
                 nextMessageNewEntry = true;
                 return;

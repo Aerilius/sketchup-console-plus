@@ -103,7 +103,7 @@ module AE
             if args.first && args.first[/warning/i]
               PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
             else
-              PRIMARY_CONSOLE.value.error(*args, :backtrace => caller)
+              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
             end
           end
           super

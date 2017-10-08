@@ -84,6 +84,43 @@ module AE
         view.draw2d(GL_POLYGON, arrow)
       end
 
+      def draw_unitvector3d(view, p, vector, color=nil, t=IDENTITY)
+        return unless vector.valid? # Invalid vectors cannot be shown.
+        # Project to the screen plane.
+        p1   = view.screen_coords(p.transform(t))
+        p2   = view.screen_coords(p.transform(t) + vector)
+        p1.z = p2.z = 0
+        vec  = p1.vector_to(p2)
+        # Scale to a fixed screen space length.
+        vec.length = 100
+        p2 = p1 + vec
+        # Alternatively, set a minimum length limit.
+        # if vec.length < 20
+        #   vec.length = 20
+        #   p2 = p1 + vec
+        # end
+        # If the last viewed point is out of the viewport, take the viewport center.
+        w    = view.vpwidth
+        h    = view.vpheight
+        if p1.x < 0 || p1.x > w || p1.y < 0 || p1.y > h
+          p1 = Geom::Point3d.new(w/2, h/2, 0)
+          p2 = p1 + vec
+        end
+        # Clip the second point if it lays outside the viewport.
+        p2 = Geom.intersect_line_line([p1, vec], [[0, 0, 0], Y_AXIS]) || p2 if p2.x < 0
+        p2 = Geom.intersect_line_line([p1, vec], [[w, 0, 0], Y_AXIS]) || p2 if p2.x > w
+        p2 = Geom.intersect_line_line([p1, vec], [[0, 0, 0], X_AXIS]) || p2 if p2.y < 0
+        p2 = Geom.intersect_line_line([p1, vec], [[0, h, 0], X_AXIS]) || p2 if p2.y > h
+        # Draw the vector direction.
+        view.drawing_color = color unless color.nil?
+        view.draw2d(GL_LINE_STRIP, p1, p2)
+        # Draw an arrow at the end of the vector.
+        vec.length = 9 # pixels
+        side       = vec * Z_AXIS
+        arrow      = [p2, p2-vec-vec+side, p2-vec-vec-side]
+        view.draw2d(GL_POLYGON, arrow)
+      end
+
       def draw_component_group(view, group, line_color, face_color, t=IDENTITY)
         draw_boundingbox(view, group.entities.parent.bounds, line_color, face_color, t)
       end

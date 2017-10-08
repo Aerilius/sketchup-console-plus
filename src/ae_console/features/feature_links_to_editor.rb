@@ -31,7 +31,7 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
 
     app.output.addListener('added', function (entryElement, text, metadata) {
         if (/puts|print/.test(metadata.type)) {
-            // Add first trace to message.
+            // Add right of the message body a shortlink for caller of puts/print.
             if (metadata.backtrace && metadata.backtrace.length > 0) {
                 var trace = metadata.backtrace[0], match, path, lineNumber;
                 // Extract the path and line number from the beginning of a trace.
@@ -55,14 +55,16 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
                 var path = $(traceElement).data('path');
                 var lineNumber = $(traceElement).data('line-number');
                 if (path && lineNumber) {
+                    // Replace path:lineNumber by <a>path</a>:lineNumber
                     $(traceElement).html( $(traceElement).html().replace(/^(.+)(\:\d+)/, '<a href="#">$1</a>$2') )
+                    // Add a clickable link.
                     .find('a').on('click', function () {
                         app.editor.open(path, lineNumber);
                         app.settings.getProperty('console_active').setValue(false); // app.switchToEditor();
                     });
                 }
             });
-            // Add first trace to message.
+            // Add right of the message body a shortlink for first trace.
             if ($('.backtrace *', entryElement).length > 0) {
                 var traceElement = $('.backtrace *', entryElement)[0];
                 var path = $(traceElement).data('path');

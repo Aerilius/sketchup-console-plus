@@ -51,6 +51,7 @@ module AE
         # @return [AE::ConsolePlugin::TokenClassification]
         # @raise TokenResolverError
         def self.resolve_tokens(tokens, binding)
+          raise TokenResolverError.new("At least one token required.") if tokens.empty?
           tokens = tokens.clone # We will mutate the array.
           first_token = tokens.shift
           classification = resolve_first_token(first_token, binding)
@@ -167,7 +168,7 @@ module AE
         # @return [TokenClassification]
         # @raise TokenResolverError
         def self.resolve_tokens(tokens)
-          raise ArgumentError.new("At least one token required.") if tokens.empty?
+          raise TokenResolverError.new("At least one token required.") if tokens.empty?
           tokens = tokens.clone # We will mutate the array.
           consumed = []
           consumed << first_token = tokens.pop

@@ -18,7 +18,7 @@ module AE
 
         dialog.on('highlight_entity') { |action_context, id_string|
           begin
-            object = ObjectSpace._id2ref(id_string.to_i(16) >> 1)
+            entity = id_string_to_entity(id_string)
             select_highlighter_tool{ |tool|
               tool.highlight(entity)
             }
@@ -30,26 +30,14 @@ module AE
         }
 
         dialog.on('highlight_point') { |action_context, array_xyz, unit|
-          case unit
-          when 'm' then
-            array_xyz.map! { |c| c.m }
-          when 'feet' then
-            array_xyz.map! { |c| c.feet }
-          when 'inch' then
-            array_xyz.map! { |c| c.inch }
-          when 'cm' then
-            array_xyz.map! { |c| c.cm }
-          when 'mm' then
-            array_xyz.map! { |c| c.mm }
-          end
-          point = Geom::Point3d.new(array_xyz)
+          point = coordinates_array_to_point(array_xyz, unit)
           select_highlighter_tool{ |tool|
             tool.highlight(point)
           }
         }
 
         dialog.on('highlight_vector') { |action_context, array_xyz|
-          vector = Geom::Vector3d.new(array_xyz)
+          vector = coordinates_array_to_vector(array_xyz)
           select_highlighter_tool{ |tool|
             tool.highlight(vector)
           }
@@ -76,6 +64,30 @@ module AE
           @model = nil
           @is_active = false
         end
+      end
+
+      def id_string_to_entity(id_string)
+        return ObjectSpace._id2ref(id_string.to_i(16) >> 1)
+      end
+
+      def coordinates_array_to_point(array_xyz, unit)
+        case unit
+        when 'm' then
+          array_xyz.map! { |c| c.m }
+        when 'feet' then
+          array_xyz.map! { |c| c.feet }
+        when 'inch' then
+          array_xyz.map! { |c| c.inch }
+        when 'cm' then
+          array_xyz.map! { |c| c.cm }
+        when 'mm' then
+          array_xyz.map! { |c| c.mm }
+        end
+        return Geom::Point3d.new(array_xyz)
+      end
+
+      def coordinates_array_to_vector(array_xyz)
+        return Geom::Vector3d.new(array_xyz)
       end
 
       def get_javascript_path

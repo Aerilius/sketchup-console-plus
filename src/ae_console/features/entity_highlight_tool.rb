@@ -202,7 +202,7 @@ module AE
             @entities << entity
             # Point3d, Vector3d, Geom::BoundingBox have no instance path (no position in
             # model nesting hierarchy). So we draw them always relative to the active context.
-            @transformations_active[entity] = model.edit_transform
+            @transformations_active[entity] = [model.edit_transform]
             @transformations_inactive[entity] = []
           end
         }

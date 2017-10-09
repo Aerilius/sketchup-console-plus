@@ -8,12 +8,20 @@ requirejs(['./app', './bridge', './console_api', 'jquery'], function (app, Bridg
     // 3. Publish 'Console' API interface on which the consoles on the Ruby side will call functions.
     window.Console = API;
 
-    // 4. Fallback for svg-resources to png images (this was for old Internet Explorer versions).
-    $('img').on('error', function () {
-        var img = $(this),
-            src = img.attr('src');
-        img.attr('src', src.replace(/\.svg$/, '.png'));
-    });
+    // 4. Fallback for svg-resources to png images.
+    if (navigator.userAgent.match(/MSIE/i)) {
+        // Internet Explorer (even if it can render svg, it does not scale them properly).
+        $('img').each(function (index, img) {
+            img.src = img.src.replace(/\.svg$/, '.png');
+        });
+    } else {
+        // Fallback on load failure.
+        $('img').on('error', function () {
+            var img = $(this),
+                src = img.attr('src');
+            img.attr('src', src.replace(/\.svg$/, '.png'));
+        });
+    }
 
     // 5. Catch uncaught errors in the WebDialog and send them to the console.
     // There are some errors by the ACE editor (when double-clicking or selection

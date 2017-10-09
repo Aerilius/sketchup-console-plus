@@ -17,7 +17,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
     color: Highlight;           \
     border-color: Highlight;    \
 }                               \
-")
+");
 
     function stop () {
         Bridge.call('highlight_stop');
@@ -33,7 +33,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
 
     app.output.addListener('added', function (htmlElement, text, metadata) {
         if (metadata.type && /input|result|puts|print/.test(metadata.type) && !/javascript/.test(metadata.type)) {
-            $(htmlElement).find('.ace_sketchup').each(function(index, element){
+            $(htmlElement).find('.ace_sketchup').each(function(index, element) {
                 var $element = $(element);
                 var text = $element.text();
 
@@ -41,6 +41,8 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                     // Add highlight feature to SketchUp entities and get their id.
                     var idString = RegExp.$1;
                     $element.addClass(className)
+                    .data('type', 'entity')
+                    .data('identifier', idString)
                     .on('mouseover', function() { // Note: This can trigger repeatedly times!
                         Bridge.get('highlight_entity', idString)['catch'](function () {
                             // If the entity isn't valid (deleted or GC), remove the highlight feature.
@@ -52,9 +54,11 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                     .on('mouseout', stop);
 
                 } else if (regexpPoint.test(text)) {
-                    // Add highlight feature to Point3d (without units: inch = " = \u0022 )
+                    // Add highlight feature to Point3d (without units: units = 'inch')
                     var coordinates = [parseFloat(RegExp.$1), parseFloat(RegExp.$2), parseFloat(RegExp.$3)];
                     $element.addClass(className)
+                    .data('type', 'point')
+                    .data('identifier', [coordinates, 'inch'])
                     .on('mouseover', function() {
                         Bridge.call('highlight_point', coordinates);
                     })
@@ -76,6 +80,8 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                             break;
                     }
                     $element.addClass(className)
+                    .data('type', 'point')
+                    .data('identifier', [coordinates, units])
                     .on('mouseover', function() {
                         Bridge.call('highlight_point', coordinates, units);
                     })
@@ -85,6 +91,8 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                     // Add highlight feature to Vector3d or Vector3d string
                     var coordinates = [parseFloat(RegExp.$1), parseFloat(RegExp.$2), parseFloat(RegExp.$3)];
                     $element.addClass(className)
+                    .data('type', 'vector')
+                    .data('identifier', coordinates)
                     .on('mouseover', function() {
                         Bridge.call('highlight_vector', coordinates);
                     })
@@ -101,6 +109,47 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                     });
                 }
             });
+            // Find arrays that contain only elements that can be visualized (SketchUp entities, points, vectors)
+            // Begin of an array.
+            var arrayStart = $(htmlElement).find('.ace_paren.ace_lparen'),
+                arrayEnd,
+                currentElement = arrayStart,
+                nextElement,
+                arrayElements = [],
+                dataToHighlight = {
+                  entity: [],
+                  point: [],
+                  vector: []
+                };
+            while (true) {
+                nextElement = currentElement.next(); // Or comma, but text nodes are ignored by jQuery.
+                if (nextElement.length == 0) {
+                    // No element. Something is wrong, end the traversal.
+                    arrayElements.length = 0;
+                    break;
+                } else if (nextElement.hasClass('highlight_entity')) { // or 'highlight_entity'
+                    // This is a visualizable element, add it.
+                    arrayElements.push(nextElement);
+                    dataToHighlight[nextElement.data('type')].push(nextElement.data('identifier'));
+                    // TODO: collect type and data
+                } else if (nextElement.hasClass('ace_rparen')) {
+                    arrayEnd = nextElement;
+                    // End of the array.
+                    break;
+                }
+                currentElement = nextElement;
+            }
+            if (arrayElements.length != 0) {
+                // TODO: Highlight all elements at once when hovered.
+                // Wrap in container?
+                var contents = arrayStart.parent().contents(); // Includes text nodes
+                contents.slice(contents.index(arrayStart), contents.index(arrayEnd)+1).wrapAll(
+                    $('<span>').addClass(className)
+                    .on('mouseenter', function() {
+                        Bridge.call('highlight_multiple', dataToHighlight); // TODO: define highlight_multiple in Ruby
+                    }).on('mouseout', stop)
+                );
+            }
         }
     });
 });

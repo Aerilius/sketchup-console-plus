@@ -12,6 +12,11 @@ html {
     overflow: hidden;
 }
 
+/* Override bootstrap.css because device-width causes WebDialog/MSIE to show scrollbar */
+@-ms-viewport {
+  width: auto !important;
+}
+
 body {
     position: fixed; /* Prevents scrolling of content in IE. */
     width: inherit;

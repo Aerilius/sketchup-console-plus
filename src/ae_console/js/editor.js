@@ -173,6 +173,36 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
         function configureAce (aceEditor) {
             // Set the mode to Ruby.
             aceEditor.session.setMode('ace/mode/ruby_sketchup');
+            // Keyhandler to open a document.
+            aceEditor.commands.addCommand({
+                name: 'Open',
+                bindKey: 'ctrl-o',
+                exec: function (aceEditor) {
+                    Bridge.get('openpanel', Translate.get('Open a text file to edit'), editor.getCurrentFilepath())
+                    .then(function (filepath) {
+                        editor.open(filepath);
+                    });
+                },
+                readOnly: true
+            });
+            // Keyhandler to save the document.
+            aceEditor.commands.addCommand({
+                name: 'Save',
+                bindKey: 'ctrl-s',
+                exec: function (aceEditor) {
+                    editor.save();
+                },
+                readOnly: true
+            });
+            // Keyhandler to save as.
+            aceEditor.commands.addCommand({
+                name: 'Save as…',
+                bindKey: 'ctrl-shift-s',
+                exec: function (aceEditor) {
+                    editor.saveAs();
+                },
+                readOnly: true
+            });
         }
 
         function alert (message, type) {

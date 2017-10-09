@@ -330,7 +330,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
         // Open button: opens the traditional file selector.
         $buttonOpen.on('click', function () {
-            Bridge.get('openpanel', Translate.get('Open a text file to edit'), editor.getCurrentFilePath())
+            Bridge.get('openpanel', Translate.get('Open a text file to edit'), editor.getCurrentFilepath())
             .then(function (filepath) {
                 editor.open(filepath);
                 $attached.popover('hide');

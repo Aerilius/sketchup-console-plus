@@ -163,12 +163,12 @@ module AE
       @@last_point = ORIGIN # TODO: avoid having a global state through this class variable
 
       def initialize()
-        @entity = nil
+        @entities = []
         # Global transformations of entities in or below the active path.
-        @transformations_active   = []
+        @transformations_active   = {}
         # Global transformations for entities in sibling paths, like entities in other instances of a component.
         # In SketchUp, the so-called "components in the rest of the model"
-        @transformations_inactive = []
+        @transformations_inactive = {}
         # Color for the active path.
         @color_active = Sketchup.active_model.rendering_options["HighlightColor"]
         @color_active_transparent = Sketchup::Color.new(@color_active)
@@ -181,31 +181,31 @@ module AE
       end
 
       # Set the entity to highlight.
-      # @param entity [Sketchup::Drawingelement, Sketchup::Curve, Sketchup::Vertex, Geom::Point3d, Geom::Vector3d, Geom::BoundingBox]
-      def highlight(entity)
-        if entity.is_a?(Sketchup::Drawingelement) ||
-            entity.is_a?(Sketchup::Curve)  ||
-            entity.is_a?(Sketchup::Vertex)
-          @entity = entity
-          # Find all occurences of the entity (in instances) and collect their transformations.
-          @transformations_active = collect_all_active_occurences(entity)
-          @transformations_inactive = collect_all_inactive_occurences(entity)
-          model = entity.model
-        elsif entity.is_a?(Geom::Point3d) ||
-            entity.is_a?(Geom::Vector3d) ||
-            entity.is_a?(Geom::BoundingBox)
-          @entity = entity
-          # Point3d, Vector3d, Geom::BoundingBox have no instance path (no position in
-          # model nesting hierarchy). So we draw them always relative to the active context.
-          model = Sketchup.active_model
-          @transformations_active << model.edit_transform
-          @transformations_inactive.clear
-        else
-          @entity = nil
-          @transformations_active.clear
-          @transformations_inactive.clear
-          model = Sketchup.active_model
-        end
+      # @param entities [Array<Sketchup::Drawingelement, Sketchup::Curve, Sketchup::Vertex, Geom::Point3d, Geom::Vector3d, Geom::BoundingBox>]
+      def highlight(*entities)
+        @entities.clear
+        @transformations_active.clear
+        @transformations_inactive.clear
+        model = Sketchup.active_model
+        entities.each{ |entity|
+          if entity.is_a?(Sketchup::Drawingelement) ||
+              entity.is_a?(Sketchup::Curve) ||
+              entity.is_a?(Sketchup::Vertex)
+            @entities << entity
+            # Find all occurences of the entity (in instances) and collect their transformations.
+            @transformations_active[entity] = collect_all_active_occurences(entity)
+            @transformations_inactive[entity] = collect_all_inactive_occurences(entity)
+            model = entity.model
+          elsif entity.is_a?(Geom::Point3d) ||
+              entity.is_a?(Geom::Vector3d) ||
+              entity.is_a?(Geom::BoundingBox)
+            @entities << entity
+            # Point3d, Vector3d, Geom::BoundingBox have no instance path (no position in
+            # model nesting hierarchy). So we draw them always relative to the active context.
+            @transformations_active[entity] = [model.edit_transform]
+            @transformations_inactive[entity] = []
+          end
+        }
         model.active_view.invalidate
       end
 
@@ -219,61 +219,63 @@ module AE
         view.drawing_color = @color_active
         view.line_width    = 5
 
-        case @entity
-        when nil
-          return
+        @entities.each{ |entity|
+          case entity
+          when nil
+            return
 
-        when Geom::Point3d, Sketchup::Vertex
-          # Point3d / Vertex
-          p1 = (@entity.is_a?(Sketchup::Vertex)) ? @entity.position : @entity
-          view.line_width = 3
-          view.drawing_color = @color_active
-          @transformations_active.each { |t| draw_point3d(view, p1, nil, t) }
-          view.drawing_color = @color_inactive
-          @transformations_inactive.each { |t| draw_point3d(view, p1, nil, t) } # We only have transformations here for vertices.
-          @@last_point = p1
+          when Geom::Point3d, Sketchup::Vertex
+            # Point3d / Vertex
+            p1 = (entity.is_a?(Sketchup::Vertex)) ? entity.position : entity
+            view.line_width = 3
+            view.drawing_color = @color_active
+            @transformations_active[entity].each{ |t| draw_point3d(view, p1, nil, t) }
+            view.drawing_color = @color_inactive
+            @transformations_inactive[entity].each{ |t| draw_point3d(view, p1, nil, t) } # We only have transformations here for vertices.
+            @@last_point = p1
 
-        when Geom::Vector3d
-          # Vector3d
-          return unless @entity.valid?
-          draw_vector3d(view, @@last_point, @entity, @color_active, @transformations_active.first)
+          when Geom::Vector3d
+            # Vector3d
+            return unless entity.valid?
+            draw_vector3d(view, @@last_point, entity, @color_active, @transformations_active[entity].first)
 
-        when Sketchup::Edge, Sketchup::Curve, Sketchup::ArcCurve
-          # Edge
-          @transformations_active.each{ |t| draw_edges(view, @entity, @color_active, t) }
-          @transformations_inactive.each{ |t| draw_edges(view, @entity, @color_inactive, t) }
+          when Sketchup::Edge, Sketchup::Curve, Sketchup::ArcCurve
+            # Edge
+            @transformations_active[entity].each{ |t|   draw_edges(view, entity, @color_active,   t) }
+            @transformations_inactive[entity].each{ |t| draw_edges(view, entity, @color_inactive, t) }
 
-        when Sketchup::Face
-          # Face
-          @transformations_active.each{ |t| draw_face(view, @entity, @color_active, @color_active_transparent, t) }
-          @transformations_inactive.each{ |t| draw_face(view, @entity, @color_inactive, @color_inactive_transparent, t) }
+          when Sketchup::Face
+            # Face
+            @transformations_active[entity].each{ |t|   draw_face(view, entity, @color_active,   @color_active_transparent,   t) }
+            @transformations_inactive[entity].each{ |t| draw_face(view, entity, @color_inactive, @color_inactive_transparent, t) }
 
-        when Sketchup::Group, Sketchup::ComponentInstance, Sketchup::Image, Sketchup::ComponentDefinition, Geom::BoundingBox
-          # Group / Component / Image / Definition / BoundingBox
-          bounds = case @entity
-          when Sketchup::Group then
-            @entity.entities.parent.bounds
-          when Sketchup::ComponentDefinition then
-            @entity.bounds
-          when Geom::BoundingBox then
-            @entity
+          when Sketchup::Group, Sketchup::ComponentInstance, Sketchup::Image, Sketchup::ComponentDefinition, Geom::BoundingBox
+            # Group / Component / Image / Definition / BoundingBox
+            bounds = case entity
+            when Sketchup::Group then
+              entity.entities.parent.bounds
+            when Sketchup::ComponentDefinition then
+              entity.bounds
+            when Geom::BoundingBox then
+              entity
+            else
+              entity.definition.bounds
+            end
+            @transformations_active[entity].each{ |t|   draw_boundingbox(view, bounds, @color_active,   @color_active_transparent,   t) }
+            @transformations_inactive[entity].each{ |t| draw_boundingbox(view, bounds, @color_inactive, @color_inactive_transparent, t) }
+
           else
-            @entity.definition.bounds
+            if entity.is_a?(Sketchup::Drawingelement) && !(entity.is_a?(Sketchup::Text) && !entity.has_leader?)
+              # Anything else that is not a 2d screen space text (text without leader)
+              # For entities with undefined shape, draw a circle around them.
+              center = entity.bounds.center
+              # Diameter; consider a minimum for Drawingelements that have no diameter
+              diameter = [entity.bounds.diagonal/2.0, view.pixels_to_model(5, cp)].max
+              @transformations_active[entity].each{ |t|   draw_circle(center, diameter, @color_active,   t) }
+              @transformations_inactive[entity].each{ |t| draw_circle(center, diameter, @color_inactive, t) }
+            end
           end
-          @transformations_active.each { |t| draw_boundingbox(view, bounds, @color_active, @color_active_transparent, t) }
-          @transformations_inactive.each { |t| draw_boundingbox(view, bounds, @color_inactive, @color_inactive_transparent, t) }
-
-        else
-          if @entity.is_a?(Sketchup::Drawingelement) && !(@entity.is_a?(Sketchup::Text) && !@entity.has_leader?)
-            # Anything else that is not a 2d screen space text (text without leader)
-            # For entities with undefined shape, draw a circle around them.
-            center = @entity.bounds.center
-            # Diameter; consider a minimum for Drawingelements that have no diameter
-            diameter = [@entity.bounds.diagonal/2.0, view.pixels_to_model(5, cp)].max
-            @transformations_active.each { |t| draw_circle(center, diameter, @color_active, t) }
-            @transformations_inactive.each { |t| draw_circle(center, diameter, @color_inactive, t) }
-          end
-        end
+        }
       end
 
       private

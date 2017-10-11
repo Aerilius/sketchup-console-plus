@@ -315,7 +315,6 @@ table {
     left: 0;
     width: 100%;
     bottom: 0;
-    z-index: -1;
     /*border: 0;*/
 }
 

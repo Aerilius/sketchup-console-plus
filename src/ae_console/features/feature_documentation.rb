@@ -53,12 +53,17 @@ module AE
       end
 
       def initialize_documentation_browser
-        @documentation_browser = UI::HtmlDialog.new({
+        properties = {
             :dialog_title    => TRANSLATE['Documentation'],
             :scrollable      => false,
             :resizable       => true,
-            :style => UI::HtmlDialog::STYLE_DIALOG
-        })
+        }
+        if defined?(UI::HtmlDialog)
+          properties[:style] = UI::HtmlDialog::STYLE_DIALOG
+          @documentation_browser = UI::HtmlDialog.new(properties)
+        else
+          @documentation_browser = UI::WebDialog.new(properties)
+        end
 
         # Add a Bridge to handle JavaScript-Ruby communication.
         @documentation_browser = Bridge.decorate(@documentation_browser)

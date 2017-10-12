@@ -92,13 +92,8 @@ module AE
         p1.z = p2.z = 0
         vec  = p1.vector_to(p2)
         # Scale to a fixed screen space length.
-        vec.length = 100
+        vec.length = 200
         p2 = p1 + vec
-        # Alternatively, set a minimum length limit.
-        # if vec.length < 20
-        #   vec.length = 20
-        #   p2 = p1 + vec
-        # end
         # If the last viewed point is out of the viewport, take the viewport center.
         w    = view.vpwidth
         h    = view.vpheight
@@ -273,7 +268,11 @@ module AE
         when Geom::Vector3d
           # Vector3d
           return unless @entity.valid?
-          draw_vector3d(view, @@last_point, @entity, @color_active, @transformations_active.first)
+          if @entity.unitvector?
+            draw_unitvector3d(view, @@last_point, @entity, @color_active, @transformations_active.first)
+          else
+            draw_vector3d(view, @@last_point, @entity, @color_active, @transformations_active.first)
+          end
 
         when Sketchup::Edge, Sketchup::Curve, Sketchup::ArcCurve
           # Edge

@@ -43,6 +43,22 @@ module AE
           }
         }
 
+        dialog.on('highlight_multiple') { |action_context, elements_map|
+          entities = []
+          elements_map['entity'].each{ |id_string|
+            entities << id_string_to_entity(id_string) rescue RangeError
+          }
+          elements_map['point'].each{ |array_xyz, unit|
+            entities << coordinates_array_to_point(array_xyz, unit)
+          }
+          elements_map['vector'].each{ |array_xyz|
+            entities << coordinates_array_to_vector(array_xyz)
+          }
+          select_highlighter_tool{ |tool|
+            tool.highlight(*entities)
+          }
+        }
+
         dialog.on('highlight_stop') {
           deselect_highlighter_tool()
         }

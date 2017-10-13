@@ -274,19 +274,26 @@ module AE
         # This allows to run asynchronous code (external application etc.) and return
         # later the result to the JavaScript callback even if the dialog has continued
         # sending/receiving messages.
-        response = (request['expectsCallback']) ? ActionContext.new(@dialog, id) : @dialog
-        # Get the callback.
-        unless @handlers.include?(name)
-          error = ArgumentError.new("No registered callback `#{name}` for #{@dialog} found.")
-          response.reject(error)
-          raise(error)
-        end
-        handler = @handlers[name]
-        begin
-          handler.call(response, *parameters)
-        rescue Exception => error
-          response.reject(error)
-          raise(error)
+        if request['expectsCallback']
+          response = ActionContext.new(@dialog, id)
+          begin
+            # Get the callback.
+            unless @handlers.include?(name)
+              raise(ArgumentError.new("No registered callback `#{name}` for #{@dialog} found."))
+            end
+            handler = @handlers[name]
+            handler.call(response, *parameters)
+          rescue Exception => error
+            response.reject(error)
+            raise(error)
+          end
+        else
+          # Get the callback.
+          unless @handlers.include?(name)
+            raise(ArgumentError.new("No registered callback `#{name}` for #{@dialog} found."))
+          end
+          handler = @handlers[name]
+          handler.call(@dialog, *parameters)
         end
 
       rescue Exception => error

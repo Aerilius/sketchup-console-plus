@@ -86,6 +86,7 @@ module AE
           :binding        => 'global',
           :theme          => 'ace/theme/chrome',
           :reload_scripts => [],
+          :font_family    => ''
       })
       # Consoles
       @@consoles ||= []

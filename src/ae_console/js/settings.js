@@ -76,7 +76,11 @@ define(['jquery', './bridge'], function ($, Bridge) {
          * @returns {object}  The value
          */
         this.set = function (name, value) {
-            properties[name] && properties[name].setValue(value) || addProperty(name, value);
+            if (properties[name]) {
+                properties[name].setValue(value);
+            } else {
+                addProperty(name, value);
+            }
             return value;
         };
 
@@ -88,7 +92,11 @@ define(['jquery', './bridge'], function ($, Bridge) {
          * @returns {object}  The value
          */
         this.get = function (name, defaultValue) {
-            return properties[name] && properties[name].getValue() || defaultValue;
+            if (properties[name]) {
+                return properties[name].getValue();
+            } else {
+                return defaultValue;
+            }
         };
 
         /**

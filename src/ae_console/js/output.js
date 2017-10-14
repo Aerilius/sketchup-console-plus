@@ -12,6 +12,10 @@ define(['jquery', 'bootstrap'], function ($, _) {
             settings.getProperty('useWrapMode').bindAction('change', function (value) {
                 $outputElement.toggleClass('wrap_lines', value);
             });
+            // Set the font family from settings (uses default if null or "").
+            settings.getProperty('font_family').bindAction('change', function (value) {
+                $outputElement.css('font-family', value);
+            });
         }
 
         this.addListener = function (eventName, fn) {

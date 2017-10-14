@@ -28,6 +28,10 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
             aceEditor.session.setMode('ace/mode/ruby_sketchup');
             // This autoresizes the editor.
             aceEditor.setOption('maxLines', 1000);
+            // Set the font family from settings (uses default if null or "").
+            settings.getProperty('font_family').bindAction('change', function (value) {
+                aceEditor.setOptions({ 'fontFamily': value });
+            });
             // Inject a custom gutter renderer to set our own line numbers.
             // Or on every update of output: aceEditor.session.$firstLineNumber = lineNumber
             aceEditor.session.gutterRenderer = {

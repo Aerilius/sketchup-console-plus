@@ -173,6 +173,10 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
         function configureAce (aceEditor) {
             // Set the mode to Ruby.
             aceEditor.session.setMode('ace/mode/ruby_sketchup');
+            // Set the font family from settings (uses default if null or "").
+            settings.getProperty('font_family').bindAction('change', function (value) {
+                aceEditor.setOptions({ 'fontFamily': value });
+            });
             // Keyhandler to open a document.
             aceEditor.commands.addCommand({
                 name: 'Open',

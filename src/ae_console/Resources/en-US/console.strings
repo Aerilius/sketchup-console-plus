@@ -40,6 +40,7 @@
 "Find…"="Find…";
 "Find and replace…"="Find and replace…";
 "Go to line…"="Go to line…";
+"Saved"="Saved";
 "The file has been changed externally.\nOverwrite external changes and save the current file?"="The file has been changed externally.\nOverwrite external changes and save the current file?";
 "The file was changed externally."="The file was changed externally.";
 "Reload"="Reload";

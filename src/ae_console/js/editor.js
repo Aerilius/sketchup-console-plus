@@ -194,7 +194,9 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 name: 'Save',
                 bindKey: 'ctrl-s',
                 exec: function (aceEditor) {
-                    editor.save();
+                    editor.save().then(function() {
+                        alert(Translate.get('Saved'), 'success');
+                    });
                 },
                 readOnly: true
             });

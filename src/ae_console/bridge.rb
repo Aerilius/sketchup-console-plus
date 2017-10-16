@@ -208,8 +208,8 @@ module AE
           }
           @dialog.execute_script(
             <<-SCRIPT
+            (function(Bridge) {
             try {
-                var Bridge = #{JSMODULE};
                 new Bridge.Promise(function (resolve, reject) {
                     // The called function may immediately return a result or a Promise.
                     resolve(#{name}.apply(undefined, #{parameter_string}));
@@ -221,7 +221,7 @@ module AE
             } catch (error) {
                 Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
                 Bridge.error(error);
-            }
+            })(#{JSMODULE});
             SCRIPT
           )
         }
@@ -232,7 +232,7 @@ module AE
       # The namespace for prefixing internal callback names to avoid clashes with code using this library.
       NAMESPACE = 'Bridge'
       # The module path of the corresponding JavaScript implementation.
-      JSMODULE = 'requirejs("bridge")' # Here using requirejs, when using public javascript modules then 'Bridge'.
+      JSMODULE = 'Bridge'
       # Names that are used internally and not allowed to be used as callback handler names.
       RESERVED_NAMES = []
       attr_reader :dialog

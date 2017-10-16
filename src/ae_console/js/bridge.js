@@ -88,12 +88,14 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define([], factory);
+        //define([], factory);
+        root.Bridge = factory();
+        define([], root.Bridge);
     } else if (typeof exports === 'object') {
         // Node/CommonJS
-        module.exports = factory();
+        root.Bridge = module.exports = factory();
     } else {
-        // Browser globals
+        // Always register this module also as browser global (as endpoint for Ruby side)
         root.Bridge = factory();
     }
 }(this, function() {
@@ -103,7 +105,7 @@
     var self = {};
 
     /**
-     * The name space prepended to all action callbacks and all internal handlers.
+     * The namespace prepended to all action callbacks and all internal handlers.
      * It must match this module's path.
      * @constant {string}
      */

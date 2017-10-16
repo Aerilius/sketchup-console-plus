@@ -263,7 +263,7 @@ module AE
             request['id'].is_a?(Fixnum) &&
             request['name'].is_a?(String) &&
             request['parameters'].is_a?(Array)
-          raise(ArgumentError, "Bridge received invalid data: \n#{value}")
+          raise(BridgeInternalError, "Bridge received invalid data: \n#{value}")
         end
         id         = request['id']
         name       = request['name']
@@ -279,24 +279,27 @@ module AE
           begin
             # Get the callback.
             unless @handlers.include?(name)
-              raise(ArgumentError.new("No registered callback `#{name}` for #{@dialog} found."))
+              raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@dialog} found."))
             end
             handler = @handlers[name]
             handler.call(response, *parameters)
           rescue Exception => error
+            # Reject the promise.
             response.reject(error)
+            # Re-raise for logging.
             raise(error)
           end
         else
           # Get the callback.
           unless @handlers.include?(name)
-            raise(ArgumentError.new("No registered callback `#{name}` for #{@dialog} found."))
+            raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@dialog} found."))
           end
           handler = @handlers[name]
           handler.call(@dialog, *parameters)
         end
 
       rescue Exception => error
+        # Log the error in the console.
         ConsolePlugin.error(error)
       end
 
@@ -311,7 +314,7 @@ module AE
             request['id'].is_a?(Fixnum) &&
             request['name'].is_a?(String) &&
             request['parameters'].is_a?(Array)
-          raise(ArgumentError, "Bridge received invalid data: \n#{value}")
+          raise(BridgeInternalError, "Bridge received invalid data: \n#{value}")
         end
         id         = request['id']
         name       = request['name']
@@ -325,7 +328,7 @@ module AE
         response = (request['expectsCallback']) ? ActionContext.new(dialog, id) : dialog
         # Get the callback.
         unless @handlers.include?(name)
-          error = ArgumentError.new("No registered callback `#{name}` for #{dialog} found.")
+          error = BridgeRemoteError.new("No registered callback `#{name}` for #{dialog} found.")
           response.reject(error)
           raise(error)
         end
@@ -333,11 +336,14 @@ module AE
         begin
           handler.call(response, *parameters)
         rescue Exception => error
+          # Reject the promise.
           response.reject(error)
+          # Re-raise for logging.
           raise(error)
         end
 
       rescue Exception => e
+        # Log the error in the console.
         ConsolePlugin.error(e)
       ensure
         # Acknowledge that the message has been received and enable the bridge to send
@@ -442,7 +448,7 @@ module AE
           # As a workaround, we use `load`.
           load 'json.rb' unless defined?(JSON)
           # No support for option :quirks_mode ? Fallback to JSON implementation in this library.
-          raise unless JSON::VERSION_MAJOR >= 1 && JSON::VERSION_MINOR >= 6
+          raise(RuntimeError) unless JSON::VERSION_MAJOR >= 1 && JSON::VERSION_MINOR >= 6
 
           # Serializes an object.
           # @param  object [Object]

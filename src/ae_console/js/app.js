@@ -241,11 +241,11 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         $('#consoleToolbar').hide();
         $('#editorToolbar').show();
         if (immediate === true) {
-          $('#consoleContentWrapper').css({left: '-100%'});
-          $('#editorContentWrapper').css({left: 0});
+            $('#consoleContentWrapper').css({left: '-100%'});
+            $('#editorContentWrapper').css({left: 0});
         } else { // animate
-          $('#consoleContentWrapper').animate({left: '-100%'});
-          $('#editorContentWrapper').animate({left: 0});
+            $('#consoleContentWrapper').animate({left: '-100%'});
+            $('#editorContentWrapper').animate({left: 0});
         }
         editor.focus();
     }
@@ -256,11 +256,11 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         $('#consoleToolbar').show();
         $('#editorToolbar').hide();
         if (immediate === true) {
-          $('#consoleContentWrapper').css({left: 0});
-          $('#editorContentWrapper').css({left: '100%'});
+            $('#consoleContentWrapper').css({left: 0});
+            $('#editorContentWrapper').css({left: '100%'});
         } else { // animate
-          $('#consoleContentWrapper').animate({left: 0});
-          $('#editorContentWrapper').animate({left: '100%'});
+            $('#consoleContentWrapper').animate({left: 0});
+            $('#editorContentWrapper').animate({left: '100%'});
         }
         console.focus();
     }

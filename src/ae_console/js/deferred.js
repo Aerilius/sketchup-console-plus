@@ -1,4 +1,6 @@
-define(['promise'], function (Promise) {
+define(['es6-promise'], function (PromiseImplementation) {
+    PromiseImplementation.polyfill();
+
     var resolver, rejecter;
     this.promise = new Promise(function (_resolver, _rejecter) {
         resolver = _resolver;

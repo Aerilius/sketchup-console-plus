@@ -83,9 +83,10 @@
  *     alert(failureReason);
  *   });
  *
- * TODO: require('es6-promise').polyfill(); ?
  */
-define(['promise'], function (Promise) {
+define(['es6-promise'], function (PromiseImplementation) {
+    PromiseImplementation.polyfill();
+
     /**
      * @exports self as Bridge
      */

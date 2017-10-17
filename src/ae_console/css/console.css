@@ -297,7 +297,13 @@ table {
     font-size: inherit !important;
     font-style: inherit !important;
     font-weight: inherit !important;
-    width: 20em !important;
+    width: 20em;
+    max-width: inherit; /* Override bootstrap pixel dimensions */
+    font-size: inherit; /* Override bootstrap pixel dimensions */
+}
+
+.popover-title {
+    font-size: inherit; /* Override bootstrap pixel dimensions */
 }
 
 /* Make popover arrow match the popover title background-color (gray instead of default white). */

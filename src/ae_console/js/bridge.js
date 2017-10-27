@@ -91,6 +91,8 @@ define(['es6-promise'], function (PromiseImplementation) {
      * @exports self as Bridge
      */
     var self = {};
+    
+    self.Promise = Promise;
 
     /**
      * The namespace prepended to all action callbacks and all internal handlers.

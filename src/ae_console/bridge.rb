@@ -209,18 +209,19 @@ module AE
           @dialog.execute_script(
             <<-SCRIPT
             (function(Bridge) {
-            try {
-                new Bridge.Promise(function (resolve, reject) {
-                    // The called function may immediately return a result or a Promise.
-                    resolve(#{name}.apply(undefined, #{parameter_string}));
-                }).then(function (result) {
-                    Bridge.call('#{handler_name}', true, result);
-                }, function (error) {
+                try {
+                    new Bridge.Promise(function (resolve, reject) {
+                        // The called function may immediately return a result or a Promise.
+                        resolve(#{name}.apply(undefined, #{parameter_string}));
+                    }).then(function (result) {
+                        Bridge.call('#{handler_name}', true, result);
+                    }, function (error) {
+                        Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
+                    });
+                } catch (error) {
                     Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
-                });
-            } catch (error) {
-                Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
-                Bridge.error(error);
+                    Bridge.error(error);
+                }
             })(#{JSMODULE});
             SCRIPT
           )

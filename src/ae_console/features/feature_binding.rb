@@ -4,6 +4,8 @@ module AE
 
     class FeatureBinding
 
+      require(File.join(PATH, 'features', 'tokenresolver.rb'))
+
       def initialize(app)
         @app = app
         app.settings[:binding] ||= 'global'
@@ -13,7 +15,7 @@ module AE
         # Validate initial binding loaded from settings.
         begin
           string_to_binding(app.settings[:binding])
-        rescue StandardError
+        rescue TokenResolver::TokenResolverError
           app.settings[:binding] = 'global'
         end
       end
@@ -24,7 +26,7 @@ module AE
           begin
             console.instance_variable_set(:@binding, string_to_binding(string))
             action_context.resolve
-          rescue StandardError, Exception => e
+          rescue TokenResolver::TokenResolverError
             action_context.reject
           end
         }
@@ -41,11 +43,9 @@ module AE
           string = string[/(\$|@@?)?[^\!\"\'\`\@\$\%\|\&\/\(\)\[\]\{\}\,\;\?\<\>\=\+\-\*\/\#\~\\]+/] #"
           # Instead of `object = eval(string, TOPLEVEL_BINDING)`, use Autocompleter to resolve the expression.
           tokens = string.split(/\:\:|\.|\s/)
-          classification = Autocompleter.resolve_tokens(tokens, TOPLEVEL_BINDING)
-          object = (classification.is_a?(TokenClassificationByObject)) ? classification.object : nil
-          raise StandardError('Binding object could not be found') if object.nil?
+          classification = TokenResolver.resolve_tokens(tokens, TOPLEVEL_BINDING)
           # Get the binding of the object.
-          return self.class.object_binding(object)
+          return self.class.object_binding(classification.object)
         end
       end
 

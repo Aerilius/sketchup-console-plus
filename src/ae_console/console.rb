@@ -169,22 +169,23 @@ module AE
               :id     => @message_id.next!,
               :source => metadata['id']
           }
+          trigger(:eval, command, metadata)
           # Evaluate the command.
           result = @binding.eval(command, '(eval)', line_number)
           # Render the result to a string.
           result_string = result_to_string(result)
           # Return the result and metadata.
           new_metadata[:time] = Time.now.to_f
+          trigger(:result, result, new_metadata)
           action_context.resolve({:result => result_string, :metadata => new_metadata})
-          # Maybe trigger event :eval_result here.
         rescue Exception => exception
           remove_eval_internals_from_backtrace(exception.backtrace)
           message, _metadata = get_exception_metadata(exception)
           new_metadata.merge!(_metadata)
           new_metadata[:time] = Time.now.to_f
           new_metadata[:message] = message
+          trigger(:error, exception, new_metadata)
           action_context.reject(new_metadata)
-          # Maybe trigger event :eval_error here.
         end
       end
 

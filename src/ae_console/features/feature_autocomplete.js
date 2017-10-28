@@ -86,8 +86,8 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
                 while (true) {
                     currentToken = tokenIterator.stepBackward();
                     if (currentToken == null) return [];
-                    if (currentToken.value[0] == '"' || currentToken.value[0] == "'") {
-                        fullPrefix = currentToken.value.substring(1) + fullPrefix;
+                    if (currentToken.value.match(/^\s*?["']/)) {
+                        fullPrefix = currentToken.value.substring(RegExp.$_.length) + fullPrefix;
                         break;
                     }
                     fullPrefix = currentToken.value + fullPrefix;

@@ -177,18 +177,10 @@ module AE
             @binding.eval(command, '(eval)', line_number)
           }
           # Render the result to a string.
-          unless result.is_a?(String)
-            if defined?(awesome_inspect)
-              result = result.awesome_inspect({:plain=>true, :index=>false})
-            elsif defined?(pretty_inspect)
-              result = result.pretty_inspect.chomp # Remove new line that PrettyInspect adds at the end https://www.ruby-forum.com/topic/113429
-            else
-              result = result.inspect
-            end
-          end
+          result_string = result_to_string(result)
           # Return the result and metadata.
           new_metadata[:time] = Time.now.to_f
-          action_context.resolve(result, new_metadata)
+          action_context.resolve(result_string, new_metadata)
           # Maybe trigger event :eval_result here.
         rescue Exception => exception
           remove_eval_internals_from_backtrace(exception.backtrace)
@@ -219,6 +211,21 @@ module AE
           Sketchup.active_model.abort_operation
         end
         raise exception
+      end
+
+      # Render the result object to a string.
+      def result_to_string(object)
+        if object.is_a?(String) then
+          return object
+        else
+          if defined?(awesome_inspect)
+            return object.awesome_inspect({:plain=>true, :index=>false})
+          elsif defined?(pretty_inspect)
+            return object.pretty_inspect.chomp # Remove new line that PrettyInspect adds at the end https://www.ruby-forum.com/topic/113429
+          else
+            return object.inspect
+          end
+        end
       end
 
       # Create a hash from an exception object.

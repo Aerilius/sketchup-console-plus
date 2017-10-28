@@ -25,7 +25,7 @@ class Translate
     key = key.to_s if key.is_a?(Symbol)
     raise(ArgumentError, 'Argument "key" must be a String or an Array of Strings.') unless key.is_a?(String) || key.nil? || (key.is_a?(Array) && key.all?{ |k| k.is_a?(String) })
     return key.map{ |k| self.[](k, *si) } if key.is_a?(Array) # Allow batch translation of strings
-    puts("warning: key '#{key[0..20]}' not found for locale #{@locale} (#{self.class.name})\n#{caller.first}") unless @strings.include?(key)
+    puts("warning: key #{(key.length <= 20) ? key.inspect : key[0..20].inspect + '...'} not found for locale #{@locale} (#{self.class.name})\n#{caller.first}") unless @strings.include?(key)
     value = (@strings[key] || key).to_s.clone
     # Substitution of additional strings.
     si.compact.each_with_index{ |s, i|

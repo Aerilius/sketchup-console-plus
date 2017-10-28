@@ -13,7 +13,6 @@
 /* Console */
 "Console"="Console";
 "Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Appuyez la touche d'entrée pour évaluer l'entrée, et utilisez shift-entrée pour des sauts de ligne.";
-"Ruby Console %0 operation %1"="Opération %1 de la Console Ruby %0";
 "Clear"="Effacer";
 "Menu"="Menu";
 "Show shortcuts"="Afficher les raccourcis clavier";
@@ -92,3 +91,7 @@
 /* Select entity */
 "Select"="Sélectionner";
 "Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Cliquer pour sélectionner un objet. Cliquer-droit pour annuler. Appuyez sur Ctrl pour sélectionner des points. Appuyez sur Maj pour utiliser l'inférence.";
+
+/* Wrap in undo */
+"wrap_in_undo"="Envelopper dans une opération reversible";
+"Ruby Console operation %0"="Console Ruby opération %0";

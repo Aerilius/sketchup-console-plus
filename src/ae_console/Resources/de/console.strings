@@ -13,7 +13,6 @@
 /* Console */
 "Console"="Konsole";
 "Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Zum Ausführen der Eingabe die Eingabetaste drücken, und Umschalt- und Eingabetaste drücken für Zeilenwechsel.";
-"Ruby Console %0 operation %1"="Ruby-Konsole %0 Operation %1";
 "Clear"="Leeren";
 "Menu"="Menü";
 "Show shortcuts"="Tastenkürzel anzeigen";
@@ -92,3 +91,7 @@
 /* Select entity */
 "Select"="Auswählen";
 "Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Zum Auswählen eines Elements klicken. Zum Abbrechen rechtsklicken. Die Strg-Taste halten um Punkte auszuwählen. Die Umschalttaste halten zum Einrasten.";
+
+/* Wrap in undo */
+"wrap_in_undo"="rückgängigmachbare Operation";
+"Ruby Console operation %0"="Ruby-Konsole Operation %0";

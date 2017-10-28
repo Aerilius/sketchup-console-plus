@@ -13,7 +13,6 @@
 /* Console */
 "Console"="Console";
 "Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Press the enter key to evaluate the input, and use shift-enter for linebreaks.";
-"Ruby Console %0 operation %1"="Ruby Console %0 operation %1";
 "Clear"="Clear";
 "Menu"="Menu";
 "Show shortcuts"="Show shortcuts";
@@ -91,3 +90,7 @@
 /* Select entity */
 "Select"="Select";
 "Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing.";
+
+/* Wrap in undo */
+"wrap_in_undo"="Wrap in undoable operation";
+"Ruby Console operation %0"="Ruby Console operation %0";

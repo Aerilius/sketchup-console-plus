@@ -77,13 +77,17 @@ define(['jquery', 'bootstrap', './translate'], function ($, _, Translate) {
             // Checkbox
             $input = $('<input type="checkbox">').prop('checked', value);
         } else {
-            throw TypeError('unsupported property type');
+            throw TypeError('unsupported property type '+(typeof value)+' of '+JSON.stringify(value));
         }
         $input.attr('name', name);
         // Bind the property with the input.
         property.bindAction('change', function(newValue) {
             // This programmatical change of the input's value does not trigger the input's change event.
-            $input.val(newValue);
+            if (typeof value === 'boolean') {
+                $input.prop('checked', newValue);
+            } else {
+                $input.val(newValue);
+            }
         });
         $input.on('change', function () {
             if (typeof value === 'number') {

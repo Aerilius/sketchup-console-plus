@@ -120,8 +120,8 @@ requirejs(['app', 'bridge', 'translate'], function (app, Bridge, Translate) {
 
     app.console.addListener('eval', function (text, metadata, promise) {
         if (text != "") {
-            promise.then(function (result, resultMetadata) {
-                if (resultMetadata.source == metadata.id) {
+            promise.then(function (resultAndMetadata) {
+                if (resultAndMetadata.metadata.source == metadata.id) {
                     history.push(text);
                     Bridge.call('push_to_history', text);
                 }

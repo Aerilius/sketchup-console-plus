@@ -103,8 +103,9 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
             // Evaluate the command.
             var promise = Bridge.get('eval', text, lineNumber, inputMetadata);
             trigger('eval', text, inputMetadata, promise);
-            promise.then(function (result, resultMetadata) {
-                resultMetadata = $.extend({}, resultMetadata, {type: 'result', source: inputMetadata.id});
+            promise.then(function (resultAndMetadata) {
+                var result = resultAndMetadata.result;
+                var resultMetadata = $.extend({}, resultAndMetadata.metadata, {type: 'result', source: inputMetadata.id});
                 trigger('result', result, resultMetadata);
                 output.add(result, resultMetadata);
             }, function (errorMetadata) {

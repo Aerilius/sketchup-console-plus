@@ -113,8 +113,8 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
                 // Dispatch the code evaluation to allow the GUI to update (show the notification) 
                 // in case code evaluation freezes the GUI.
                 window.setTimeout(function() {
-                    Bridge.get('eval', editor.getContent()).then(function (result, metadata) {
-                        var successMessage = (result != 'nil') ? Translate.get('Code was run and returned: \n %0', $('<code>').text(result).html()) : Translate.get('Code was run successfully!');
+                    Bridge.get('eval', editor.getContent()).then(function (resultAndMetadata) {
+                        var successMessage = (resultAndMetadata.result != 'nil') ? Translate.get('Code was run and returned: \n %0', $('<code>').text(resultAndMetadata.result).html()) : Translate.get('Code was run successfully!');
                         notify.update({ message: successMessage, type: 'success', allow_dismiss: true, delay: 3000 });
                     }, function (errorMetadata) {
                         var errorMessage = Translate.get('Code failed with an error: \n %0', errorMetadata.message);

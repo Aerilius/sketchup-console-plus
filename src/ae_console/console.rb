@@ -180,7 +180,7 @@ module AE
           result_string = result_to_string(result)
           # Return the result and metadata.
           new_metadata[:time] = Time.now.to_f
-          action_context.resolve(result_string, new_metadata)
+          action_context.resolve({:result => result_string, :metadata => new_metadata})
           # Maybe trigger event :eval_result here.
         rescue Exception => exception
           remove_eval_internals_from_backtrace(exception.backtrace)

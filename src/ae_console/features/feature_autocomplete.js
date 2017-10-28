@@ -11,18 +11,18 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
 }                                                \
 /* Adjust size of autocompleter doc tooltip */   \
 .ace_doc-tooltip h3 {                            \
-  font-size: 10px;                               \
+  font-size: 11px;                               \
   margin: 0 0 3px 0;                             \
 }                                                \
 .ace_doc-tooltip p {                             \
-  font-size: 8px;                                \
+  font-size: 9px;                                \
   margin: 2px 0 2px 0;                           \
 }                                                \
 .ace_doc-tooltip ul {                            \
   list-style: square;                            \
 }                                                \
 .ace_doc-tooltip li {                            \
-  font-size: 8px;                                \
+  font-size: 9px;                                \
   margin-left: 3em;                              \
   text-indent: -3em;                             \
   list-style: square;                            \

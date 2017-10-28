@@ -84,7 +84,7 @@
  *   });
  *
  */
-define(['es6-promise'], function (PromiseImplementation) {
+define(['polyfills/es6-promise'], function (PromiseImplementation) {
     PromiseImplementation.polyfill();
 
     /**

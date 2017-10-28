@@ -8,7 +8,8 @@ var requirejs = {
         'bootstrap-filterlist': '../external/bootstrap-typeahead/bootstrap-filterlist',
         'bootstrap-typeahead': '../external/bootstrap-typeahead/bootstrap-typeahead',
         features: '../features',
-        jquery: '../external/jquery/jquery'
+        jquery: '../external/jquery/jquery',
+        polyfills: '../external/polyfills'
     },
     // Declare dependencies of legacy libraries that don't use define / requirejs.
     shim: {

@@ -82,10 +82,8 @@ module AE
       @@settings ||= Settings.new('AE/Console').load({
           :console_active => true,
           :wrap_lines     => true,
-          :wrap_in_undo   => false, # TODO: expose in UI or make true by default
           :binding        => 'global',
           :theme          => 'ace/theme/chrome',
-          :reload_scripts => [],
           :font_family    => ''
       })
       # Consoles

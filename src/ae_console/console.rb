@@ -30,9 +30,6 @@ module AE
         # The ids allow to track the succession of messages (which error/result was invoked by which input etc.)
         @message_id = '0'
 
-        # Counter for evaled code (only for display in undo stack).
-        @undo_counter = 0
-
         @binding = ::TOPLEVEL_BINDING
 
         initialize_ui
@@ -172,10 +169,8 @@ module AE
               :id     => @message_id.next!,
               :source => metadata['id']
           }
-          # Wrap it optionally into an operation.
-          result = wrap_in_undo(@settings[:wrap_in_undo]){
-            @binding.eval(command, '(eval)', line_number)
-          }
+          # Evaluate the command.
+          result = @binding.eval(command, '(eval)', line_number)
           # Render the result to a string.
           result_string = result_to_string(result)
           # Return the result and metadata.
@@ -191,26 +186,6 @@ module AE
           action_context.reject(new_metadata)
           # Maybe trigger event :eval_error here.
         end
-      end
-
-      # Wraps a block into an operation if parameter is true.
-      def wrap_in_undo(boolean, &block)
-        if boolean
-          @undo_counter += 1
-          operation_name = TRANSLATE['Ruby Console %0 operation %1', '', @undo_counter]
-          # TODO: In an MDI, this applies the operation only on the focussed model, but the ruby code could theoretically modify another model.
-          Sketchup.active_model.start_operation(operation_name, true)
-        end
-        result = block.call
-        if boolean
-          Sketchup.active_model.commit_operation
-        end
-        return result
-      rescue Exception => exception
-        if boolean
-          Sketchup.active_model.abort_operation
-        end
-        raise exception
       end
 
       # Render the result object to a string.

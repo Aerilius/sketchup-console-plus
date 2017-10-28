@@ -58,6 +58,7 @@
 "Go one command forward in the history."="Avance une commande dans l'histoire.";
 
 /* Reload Scripts */
+"reload_scripts"="Scripts surveillés";
 "%0 reloaded"="%0 rechargé";
 "Scripts reloaded"="Scripts rechargés";
 "Click to remove files from auto-loading"="Cliquez pour enlever des fichiers du chargement automatique";

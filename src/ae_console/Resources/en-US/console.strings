@@ -57,6 +57,7 @@
 "Go one command forward in the history."="Go one command forward in the history.";
 
 /* Reload Scripts */
+"reload_scripts"="Monitored scripts";
 "%0 reloaded"="%0 reloaded";
 "Scripts reloaded"="Scripts reloaded";
 "Click to remove files from auto-loading"="Click to remove files from auto-loading";

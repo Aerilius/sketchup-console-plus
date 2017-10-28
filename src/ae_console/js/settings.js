@@ -42,7 +42,7 @@ define(['jquery', './bridge'], function ($, Bridge) {
         };
 
         this.getValue = function (defaultValue) {
-            return value || defaultValue;
+            return (typeof value !== 'undefined') ? value : defaultValue;
         };
     }
 

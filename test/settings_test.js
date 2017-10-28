@@ -73,4 +73,13 @@ requirejs(['qunit', 'jquery', 'lib/settings'], function (QUnit, $, Settings) {
         assert.equal(property.getValue(), expectedValue);
     });
 
+    QUnit.test('get falsy value', function(assert) {
+        var initialValue = false;
+        var settings = new Settings();
+        var property = settings.getProperty('a_boolean', initialValue);
+        var fallbackValue = true;
+        var actual = property.getValue(fallbackValue);
+        assert.equal(actual, initialValue, 'If already initialized with a falsy value, this value should be returned instead of the (optional) fallback value.');
+    });
+
 });

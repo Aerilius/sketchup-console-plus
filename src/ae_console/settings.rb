@@ -115,7 +115,8 @@ module AE
         @name = name.to_sym
         read_value = Sketchup.read_default(@section.to_s, @name.to_s, initial_value)
         # Type validation. If values read from the registry have an incorrect type, it might cause unexpected behavior in the program.
-        @initial_value = (read_value.is_a?(initial_value.class)) ? read_value : initial_value
+        # Since booleans are distinct classes, we need to check if initial_value is a boolean that also read_value is any boolean.
+        @initial_value = (read_value.is_a?(initial_value.class) || ([initial_value, read_value]-[true, false]).empty?) ? read_value : initial_value
       end
 
       def get_name()

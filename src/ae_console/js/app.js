@@ -175,7 +175,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
             editor.aceEditor.commands.exec('find', editor.aceEditor);
         });
 
-        editorMenu.addItem('Find and Replace…', function(){
+        editorMenu.addItem('Find and replace…', function(){
             editor.aceEditor.commands.exec('replace', editor.aceEditor);
         });
 

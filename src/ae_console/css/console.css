@@ -530,3 +530,8 @@ table {
     position: fixed !important;
     top: 3em !important; /* .toolbar height */
 }
+
+/* Avoid text overflow in bootstrap notify plugin */
+.alert {
+    word-break: break-word;
+}

@@ -25,7 +25,7 @@ module AE
 
           dialog.on('readfile') { |action_context, filepath|
             filepath = File.expand_path(filepath)
-            action_context.reject unless File.file?(filepath)
+            action_context.reject('File does not exist.') unless File.file?(filepath)
             File.open(filepath, 'r'){ |file|
               action_context.resolve(file.read)
               file_observer.unregister_all # Don't observe previous file anymore.

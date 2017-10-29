@@ -86,17 +86,18 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
             settings.getProperty('console_active').setValue(true);
         });
 
-        $('#buttonEditorOpen').attr('title', Translate.get('Open'));
         $('#buttonEditorOpen').popover({
             placement: 'bottom',
             container: 'body',
             html: true,
             trigger: 'manual',
+            title: function () { return Translate.get('Open'); },
             content: createPopoverOpen
         }).on('click', function () {
             $(this).popover('toggle');
             $(this).data('bs.popover').$tip.find('input').focus();
         });
+        $('#buttonEditorOpen').attr('title', Translate.get('Open'));
 
         $('#buttonEditorRun').attr('title', Translate.get('Run'));
         $('#buttonEditorRun').on('click', function () {

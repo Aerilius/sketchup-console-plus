@@ -286,7 +286,7 @@ module AE
           '__' => 'b',
           '**' => 'b'
         }.map{ |markup, tagname|
-          regexp      = Regexp.new("#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}")
+          regexp      = Regexp.new("\\b#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}\\b")
           replacement = "<#{tagname}>\\1</#{tagname}>"
           [regexp, replacement]
         }] unless defined?(RDOC_TO_HTML_MAP)

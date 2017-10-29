@@ -61,7 +61,7 @@
 "reload_scripts"="Scripts surveillés";
 "%0 reloaded"="%0 rechargé";
 "Scripts reloaded"="Scripts rechargés";
-"Click to remove files from auto-loading"="Cliquez pour enlever des fichiers du chargement automatique";
+"Click to remove files from auto-loading"="Cliquez pour arrêter l'auto-rechargement";
 
 /* Autocomplete */
 "global_variable"="variable globale";

@@ -71,7 +71,7 @@ module AE
       end
 
       def test_changed
-        async = AsyncMiniTestHelper.new(self, 2, 2.0)
+        async = AsyncMiniTestHelper.new(self, 2, 4.0)
         File.open(@filename, "w"){ |f| f.puts("test") }
         @observer.register(@filename, :changed) { async.done() }
 

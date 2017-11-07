@@ -31,7 +31,7 @@ module AE
         exists                    = File.exists?(path)
         @observers[path][:exists] = exists
         if exists
-          @observers[path][:ctime] = File.stat(path).ctime.to_i
+          @observers[path][:mtime] = File.stat(path).mtime.to_i
         end
       end
 
@@ -66,15 +66,15 @@ module AE
         @observers.each { |path, hash|
           begin
             exists = File.exists?(path)
-            ctime = nil
+            mtime = nil
             if exists # whether it exists now
-              ctime = File.stat(path).ctime.to_i
+              mtime = File.stat(path).mtime.to_i
               if !hash[:exists] # whether it existed before
                 # File exists but did not exist before → created
                 hash[:created].call(path) if hash[:created]
               else
-                if hash[:ctime] < ctime
-                  # File exists and existed before and the ctime differs → changed
+                if hash[:mtime] < mtime
+                  # File exists and existed before and the mtime differs → changed
                   hash[:changed].call(path) if hash[:changed]
                 end
               end
@@ -86,7 +86,7 @@ module AE
             ConsolePlugin.error(e)
           ensure
             hash[:exists] = exists
-            hash[:ctime]  = ctime unless ctime.nil?
+            hash[:mtime]  = mtime unless mtime.nil?
           end
         }
       end

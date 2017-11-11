@@ -2,7 +2,7 @@ requirejs(['app', 'bridge', 'translate', 'menu'], function (app, Bridge, Transla
     var autoReloadFiles = app.settings.getProperty('reload_scripts', []);
     
     // Submenu for auto reload feature.
-    var autoReloadMenu = new Menu('<ul id="reload_scripts_dropdown" class="dropdown-menu menu" style="top: 0; left: -25em; width: 25em; min-height: 16em;">'); /* Workaround for missing submenu positioning: min-height */
+    var autoReloadMenu = new Menu('<ul id="reload_scripts_dropdown" class="dropdown-menu menu" style="top: 0; left: -25em; width: 25em; min-height: 18em;">'); /* Workaround for missing submenu positioning: min-height */
     app.consoleMenu.addSubmenu(autoReloadMenu, 'reload_scripts');
 
     function buildAutoReloadMenuItems (filepaths) {

@@ -149,14 +149,18 @@ module AE
           }
         }
 
-        if @dialog.respond_to?(:set_can_close)
+        if @dialog.respond_to?(:set_can_close) # UI::HtmlDialog
           @dialog.set_can_close {
             trigger(:before_close)
           }
         end
 
-        if @dialog.respond_to?(:set_on_closed)
+        if @dialog.respond_to?(:set_on_closed) # UI::HtmlDialog
           @dialog.set_on_closed {
+            trigger(:closed)
+          }
+        elsif @dialog.respond_to?(:set_on_close) # UI::WebDialog
+          @dialog.set_on_close {
             trigger(:closed)
           }
         end

@@ -81,7 +81,10 @@ module AE
       # Load settings
       @@settings ||= Settings.new('AE/Console').load({
           :console_active => true,
-          :wrap_lines     => true,
+          :fontSize       => 12,
+          :useWrapMode    => true,
+          :tabSize        => 2,
+          :useSoftTabs    => true,
           :binding        => 'global',
           :theme          => 'ace/theme/chrome',
           :font_family    => ''

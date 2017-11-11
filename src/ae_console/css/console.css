@@ -104,11 +104,12 @@ table {
 
 /*       General Styles Classes      */
 
-.unselectable:after {
-    /* CSS pseudo-element text is never included in selection ranges.
+.unselectable:after { /* This seems not to work in IE. */
+    /* CSS pseudo-element text is usually not included in selection ranges.
        By adding text through a data-text attribute, we can avoid that it 
        appears inbetween console commands when selecting and copying text. */
     content: attr(data-text);
+    user-select: none;
 }
 
 .active, .selected {

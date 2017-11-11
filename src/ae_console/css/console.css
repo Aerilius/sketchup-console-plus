@@ -403,7 +403,8 @@ table {
 #consoleOutput .message .gutter {
     position: absolute;
     /*width: 3em;  /* 1.75 em */
-    background-position: 50% -2px !important;
+    background-position: 90% -2px !important; /* Fallback for unsupported calc() */
+    background-position: right 10% top calc(0.5em - 9px) !important; /* Align image vertically at center of first row (minus half of image height) */
     background-repeat: no-repeat !important;
 }
 
@@ -481,11 +482,6 @@ table {
 .ace_folding-enabled > .ace_gutter-cell {
     padding-right: 40%;
 }
-
-#consoleOutput .message .gutter {
-    background-position: 90% -2px !important;
-}
-
 
 /* Reduce gutter width. */
 .ace_gutter-layer,

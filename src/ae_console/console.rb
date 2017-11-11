@@ -230,7 +230,7 @@ module AE
       # Removes traces below the first trace referring to eval.
       # This is useful to hide internals and for exceptions that do not originate in this file.
       def remove_eval_internals_from_backtrace(backtrace)
-        regexp = /^\(eval\)/
+        regexp = /^\(eval\)|^<main>/ # SketchUp 2017 | SketchUp 2014+
         line_number = backtrace.length
         until regexp =~ backtrace[line_number-1] || line_number == 0
           line_number -= 1

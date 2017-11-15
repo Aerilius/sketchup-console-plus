@@ -43,7 +43,8 @@ define(['jquery', 'bootstrap'], function ($, _) {
             if (!/input|result/.test(metadata.type) && 
                     nextMessageNewEntry && 
                     text !== '\n' &&
-                    text === previousText) {
+                    text === previousText &&
+                    $previousEntryElement) {
                 increaseCounter($previousEntryElement);
                 return;
             }
@@ -85,6 +86,9 @@ define(['jquery', 'bootstrap'], function ($, _) {
          */
         this.clear = function () {
             $outputElement.empty();
+            nextMessageNewEntry = true;
+            $previousEntryElement = null;
+            previousText = null;
         };
 
         /**

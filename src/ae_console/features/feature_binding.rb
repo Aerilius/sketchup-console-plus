@@ -87,5 +87,6 @@ end # module AE
 # @param object [Object]
 # @return [Binding]
 def (AE::ConsolePlugin::FeatureBinding).object_binding(object)
+  raise TokenResolver::TokenResolverError.new("Binding of model is disabled due to SU-38280") if object.is_a?(Sketchup::Model)
   object.instance_eval("binding")
 end

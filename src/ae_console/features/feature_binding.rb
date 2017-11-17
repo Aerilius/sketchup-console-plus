@@ -87,13 +87,5 @@ end # module AE
 # @param object [Object]
 # @return [Binding]
 def (AE::ConsolePlugin::FeatureBinding).object_binding(object)
-  return case object
-  when Class
-    eval("class #{object.name};binding;end")
-  when Module
-    eval("module #{object.name};binding;end")
-  else
-    AE::ConsolePlugin::FeatureBinding::ObjectPointer.value = object # Alternative to using a global variable
-    eval("class #{object.class.name}; ::AE::ConsolePlugin::FeatureBinding::ObjectPointer.value.instance_eval{binding}; end")
-  end
+  object.instance_eval("binding")
 end

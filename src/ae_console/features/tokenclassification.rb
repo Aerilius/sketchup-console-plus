@@ -23,8 +23,8 @@ module AE
 
       def initialize(token, type, namespace)
         @token = token
-        @type = type           # type of the token
-        @namespace = namespace # path of object/class before the token, leading to the token
+        @type = type                 # type of the token
+        @namespace = namespace || '' # path of object/class before the token, leading to the token
       end
 
       # Returns the class path and token.

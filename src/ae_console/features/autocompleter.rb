@@ -71,7 +71,7 @@ module AE
               completions.concat(modul.constants.grep(prefix_regexp).map{ |name|
                 return_value = modul.const_get(name)
                 type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-                TokenClassification.new(name, type, (modul != ::Object) ? modul.name : '')
+                TokenClassification.new(name, type, (modul != ::Object) ? modul.name : nil)
               })
             }
           when GLOBAL_VARIABLE

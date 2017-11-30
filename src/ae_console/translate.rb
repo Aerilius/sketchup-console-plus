@@ -13,7 +13,14 @@ class Translate
     if File.exists?(filepath)
       parse_strings(filepath)
     else
-      puts("#{self.class}: Localization for #{@locale} not found in #{filepath}")
+      fallback_locale = "en"
+      filepath = File.join(PATH, 'Resources', @locale, filename)
+      if File.exists?(filepath)
+        parse_strings(filepath)
+        @locale = fallback_locale
+      else
+        puts("#{self.class}: Localization for #{@locale} not found in #{filepath}")
+      end
     end
   end
 
@@ -25,8 +32,12 @@ class Translate
     key = key.to_s if key.is_a?(Symbol)
     raise(ArgumentError, 'Argument "key" must be a String or an Array of Strings.') unless key.is_a?(String) || key.nil? || (key.is_a?(Array) && key.all?{ |k| k.is_a?(String) })
     return key.map{ |k| self.[](k, *si) } if key.is_a?(Array) # Allow batch translation of strings
-    puts("warning: key #{(key.length <= 20) ? key.inspect : key[0..20].inspect + '...'} not found for locale #{@locale} (#{self.class.name})\n#{caller.first}") unless @strings.include?(key)
-    value = (@strings[key] || key).to_s.clone
+    if @strings.include?(key)
+      value = @strings[key].clone
+    else
+      Kernel.warn("warning: key #{(key.length <= 20) ? key.inspect : key[0..20].inspect + '...'} not found for locale #{@locale} (#{self.class.name})\n#{caller.first}")
+      value = key.to_s.clone
+    end
     # Substitution of additional strings.
     si.compact.each_with_index{ |s, i|
       value.gsub!(/\%#{i}/, s.to_s)

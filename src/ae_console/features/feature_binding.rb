@@ -35,12 +35,12 @@ module AE
       end
 
       def string_to_binding(string)
-        if string == 'global'
+        if string.empty? || string == 'global'
           return TOPLEVEL_BINDING
         else
           # Allow global, class and instance variables, also nested modules or classes ($, @@, @, ::).
           # Do not allow any syntactic characters like braces or operators etc.
-          string = string[/(\$|@@?)?[^\!\"\'\`\@\$\%\|\&\/\(\)\[\]\{\}\,\;\?\<\>\=\+\-\*\/\#\~\\]+/] #" || ""
+          string = string[/(\$|@@?)?[^\!\"\'\`\@\$\%\|\&\/\(\)\[\]\{\}\,\;\?\<\>\=\+\-\*\/\#\~\\]+/] || ""
           # Instead of `object = eval(string, TOPLEVEL_BINDING)`, use Autocompleter to resolve the expression.
           tokens = string.split(/\:\:|\.|\s/)
           classification = TokenResolver.resolve_tokens(tokens, TOPLEVEL_BINDING)

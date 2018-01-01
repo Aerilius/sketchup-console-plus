@@ -9,6 +9,7 @@ module AE
       def initialize(exports)
         exports.settings[:recently_opened_files] ||= []
         exports.settings[:recently_focused_lines] ||= {} # filename => line number
+        currently_writing_filepath = nil
 
         exports.plugin.on(:console_added){ |console|
           dialog = console.dialog
@@ -33,15 +34,19 @@ module AE
           }
 
           dialog.on('writefile') { |action_context, filepath, content|
+            currently_writing_filepath = filepath
             File.open(filepath, 'w') { |file|
               file.puts(content)
             }
+            currently_writing_filepath = nil
             action_context.resolve
           }
 
           dialog.on('observe_external_file_changes') { |action_context, filepath|
             file_observer.register(filepath, :changed) { |filepath|
-              action_context.resolve(filepath)
+              if filepath != currently_writing_filepath
+                action_context.resolve(filepath)
+              end
             }
           }
 

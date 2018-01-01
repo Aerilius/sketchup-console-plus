@@ -107,7 +107,7 @@ module AE
       def initialize_ui
         properties = {
             :dialog_title    => TRANSLATE['Ruby Console+'],
-            :preferences_key => "com.aerilius.console",
+            :preferences_key => 'com.aerilius.console',
             :scrollable      => false,
             :resizable       => true,
             :width           => 400,

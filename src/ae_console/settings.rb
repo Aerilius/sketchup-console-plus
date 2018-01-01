@@ -149,6 +149,6 @@ module AE
 
     end # class Property
 
-  end # module ConsolePlugin
+  end
 
-end # module AE
+end

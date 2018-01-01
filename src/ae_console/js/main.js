@@ -9,7 +9,7 @@ requirejs(['./app', './bridge', './console_api', 'jquery'], function (app, Bridg
     window.Console = API;
 
     // 4. Fallback for svg-resources to png images.
-    if (navigator.userAgent.match(/MSIE/i)) {
+    if (navigator.userAgent.match(/MSIE|Trident/i)) {
         // Internet Explorer (even if it can render svg, it does not scale them properly).
         $('img').each(function (index, img) {
             img.src = img.src.replace(/\.svg$/, '.png');

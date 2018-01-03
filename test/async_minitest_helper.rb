@@ -18,26 +18,26 @@ class AsyncMiniTestHelper
   def await()
     while @count < @accept_call_count
       if @timeout < Time.now
-        @testcase.assert_equal(@accept_call_count, @count, "Async test timed out. Either some calls to `async.done()` never occur or you should increase the timeout\n#{caller.first}")
+        @testcase.assert_equal(@accept_call_count, @count, "Async test timed out. Either some calls to `async.done()` never occur or you should increase the timeout\n#{caller.first}.")
         return nil
       end
       sleep(0.01)
       Thread.pass
     end
-    @testcase.assert(true, "It should call `async.done()´ #{@accept_call_count} times")
+    @testcase.assert(true, "It should call `async.done()´ #{@accept_call_count} times.")
     nil
   end
 
   def await_timeout()
     while @count < @accept_call_count
       if @timeout < Time.now
-        @testcase.assert(true, "It should timeout")
+        @testcase.assert(true, "It should timeout.")
         return nil
       end
       sleep(0.01)
       Thread.pass
     end
-    @testcase.assert(false, "It should never call `async.done()´")
+    @testcase.assert(false, "It should never call `async.done()´.")
     nil
   end
 

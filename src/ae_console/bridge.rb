@@ -343,9 +343,9 @@ module AE
           raise(error)
         end
 
-      rescue Exception => e
+      rescue Exception => error
         # Log the error in the console.
-        ConsolePlugin.error(e)
+        ConsolePlugin.error(error)
       ensure
         # Acknowledge that the message has been received and enable the bridge to send
         # the next message if available.

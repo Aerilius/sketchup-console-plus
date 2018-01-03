@@ -21,13 +21,17 @@ module AE
             @threads[id] = Thread.new{
               while @threads.include?(id)
                 sleep(duration)
-                block.call()
+                Thread.new{
+                  block.call()
+                }
               end
             }
           else
             @threads[id] = Thread.new{
               sleep(duration)
-              block.call()
+              Thread.new{
+                block.call()
+              }
             }
           end
           return id

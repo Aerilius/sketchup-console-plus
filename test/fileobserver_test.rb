@@ -46,6 +46,7 @@ module AE
       end # module UI
     end
 
+
     class TC_FileObserver < TestCase
       # This test suite fails when run in SketchUp because AsyncMiniTestHelper 
       # does not work with SketchUp's UI module's use of threading.
@@ -54,16 +55,16 @@ module AE
         dir = File.dirname(__FILE__)
         @filename = File.join(dir, "test")
         @filename2 = File.join(dir, "test2")
-        File.delete(@filename) if File.exists?(@filename)
-        File.delete(@filename2) if File.exists?(@filename2)
+        File.delete(@filename) if File.exist?(@filename)
+        File.delete(@filename2) if File.exist?(@filename2)
         @observer = FileObserver.new(0.01)
       end
 
       def shutdown
         @observer.unregister_all
         @observer = nil
-        File.delete(@filename) if File.exists?(@filename)
-        File.delete(@filename2) if File.exists?(@filename2)
+        File.delete(@filename) if File.exist?(@filename)
+        File.delete(@filename2) if File.exist?(@filename2)
       end
 
       def test_created

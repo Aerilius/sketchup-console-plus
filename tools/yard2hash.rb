@@ -57,7 +57,7 @@ class Yard2Hash
     YARD::Registry.clear
     if path[/\.yardoc[^\/\\]*$/]
       YARD::Registry.load(path)
-    elsif File.exists?(File.join(path, '.yardoc'))
+    elsif File.exist?(File.join(path, '.yardoc'))
       path = File.join(path, '.yardoc')
       YARD::Registry.load(path)
     else
@@ -292,7 +292,7 @@ class Yard2Hash
       end
 
       if output_file
-        if File.exists?(File.dirname(output_file))
+        if File.exist?(File.dirname(output_file))
           Yard2Hash.new(input_directory)
           .to_file(output_file, nodes, options)
         else

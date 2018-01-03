@@ -59,11 +59,11 @@ module AE
       end
 
       def relative_to_full_path(relpath)
-        return relpath if File.exists?(relpath)
+        return relpath if File.exist?(relpath)
         return $LOAD_PATH.map{ |base|
           File.join(base, relpath.to_s)
         }.find{ |path|
-          File.exists?(path)
+          File.exist?(path)
         }.to_s
       end
 

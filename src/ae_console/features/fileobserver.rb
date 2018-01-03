@@ -28,7 +28,7 @@ module AE
         # Register the event
         @observers[path]        ||= {}
         @observers[path][event]   = callback
-        exists                    = File.exists?(path)
+        exists                    = File.exist?(path)
         @observers[path][:exists] = exists
         if exists
           @observers[path][:mtime] = File.stat(path).mtime.to_i
@@ -65,7 +65,7 @@ module AE
       def check_files
         @observers.each { |path, hash|
           begin
-            exists = File.exists?(path)
+            exists = File.exist?(path)
             mtime = nil
             if exists # whether it exists now
               mtime = File.stat(path).mtime.to_i

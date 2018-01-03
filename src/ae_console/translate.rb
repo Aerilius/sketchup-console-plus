@@ -10,12 +10,12 @@ module AE
         @strings = {}
         @locale = Sketchup.get_locale
         filepath = File.join(PATH, 'Resources', @locale, filename)
-        if File.exists?(filepath)
+        if File.exist?(filepath)
           parse_strings(filepath)
         else
           fallback_locale = "en"
           filepath = File.join(PATH, 'Resources', @locale, filename)
-          if File.exists?(filepath)
+          if File.exist?(filepath)
             parse_strings(filepath)
             @locale = fallback_locale
           else

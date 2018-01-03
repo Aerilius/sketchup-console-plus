@@ -14,14 +14,14 @@ module AE
               # Windows
               path = ENV["APPDATA"]
               path = path.dup.force_encoding("UTF-8") if path.respond_to?(:force_encoding)
-              return path if File.exists?(path) && File.writable?(path)
+              return path if File.exist?(path) && File.writable?(path)
             elsif ENV["HOME"]
               # Free desktop standard
               path = File.join(ENV["HOME"], ".local", "share")
-              return path if File.exists?(path) && File.writable?(path)
+              return path if File.exist?(path) && File.writable?(path)
               # OSX
               path = File.join(ENV["HOME"], "Library", "Application Support")
-              return path if File.exists?(path) && File.writable?(path)
+              return path if File.exist?(path) && File.writable?(path)
             end
             # Plugins folder
             if File.writable?(DIR)
@@ -72,7 +72,7 @@ module AE
         end
 
         def read
-          if File.exists?(@path)
+          if File.exist?(@path)
             string = IO.read(@path)
             @data.clear.concat(string.split(SEPARATOR_REGEXP)) if string.is_a?(String)
           end

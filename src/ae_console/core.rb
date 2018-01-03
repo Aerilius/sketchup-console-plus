@@ -148,8 +148,8 @@ module AE
                 javascript_string = feature.get_javascript_string
               elsif feature.respond_to?(:get_javascript_path)
                 path = File.join(PATH, 'features', feature.get_javascript_path) # relative
-                path = feature.get_javascript_path unless File.exists?(path)    # absolute
-                if File.exists?(path)
+                path = feature.get_javascript_path unless File.exist?(path)    # absolute
+                if File.exist?(path)
                   javascript_string = File.read(path)
                 end
               end

@@ -64,7 +64,7 @@ module AE
         doc_info = get_info_for_docpath(classification.docpath)
         doc_info = get_info_for_docpath(classification.namespace+'#initialize') if doc_info.nil? && classification.token == 'new'
         doc_info = get_info_for_docpath(classification.namespace+'.new')        if doc_info.nil? && classification.token == 'initialize'
-        raise DocNotFoundError.new("Documentation not found for #{classification}") if doc_info.nil?
+        raise(DocNotFoundError, "Documentation not found for #{classification.inspect}") if doc_info.nil?
         # Generate HTML
         return nil unless doc_info[:description] && !doc_info[:description].empty?
         html = nil

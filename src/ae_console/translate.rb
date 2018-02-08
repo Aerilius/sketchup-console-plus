@@ -14,10 +14,10 @@ module AE
           parse_strings(filepath)
         else
           fallback_locale = "en"
-          filepath = File.join(PATH, 'Resources', @locale, filename)
+          filepath = File.join(PATH, 'Resources', fallback_locale, filename)
           if File.exist?(filepath)
-            parse_strings(filepath)
             @locale = fallback_locale
+            parse_strings(filepath)
           else
             puts("#{self.class}: Localization for #{@locale} not found in #{filepath}")
           end

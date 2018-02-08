@@ -62,7 +62,18 @@ module AE
 
     # TODO: refactor this somewhere else
     def self.error(*args)
-      unless PRIMARY_CONSOLE.value.nil?
+      if PRIMARY_CONSOLE.value.nil?
+        if args.first.is_a?(Exception)
+          $stderr.write(args.first.message + $/)
+          $stderr.write(args.first.backtrace.join($/) + $/)
+        else
+        puts
+          $stderr.write(args.first + $/)
+          if args[1].is_a?(Hash) && args[1][:backtrace]
+            $stderr.write(args[1][:backtrace].join($/) + $/)
+          end
+        end
+      else
         PRIMARY_CONSOLE.value.error(*args)
       end
     end

@@ -13,7 +13,7 @@ module AE
         if File.exist?(filepath)
           parse_strings(filepath)
         else
-          fallback_locale = "en"
+          fallback_locale = "en-US"
           filepath = File.join(PATH, 'Resources', fallback_locale, filename)
           if File.exist?(filepath)
             @locale = fallback_locale

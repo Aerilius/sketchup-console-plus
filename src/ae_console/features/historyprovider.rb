@@ -13,7 +13,6 @@ module AE
             if ENV["APPDATA"]
               # Windows
               path = ENV["APPDATA"]
-              path = path.dup.force_encoding("UTF-8") if path.respond_to?(:force_encoding)
               return path if File.exist?(path) && File.writable?(path)
             elsif ENV["HOME"]
               # Free desktop standard

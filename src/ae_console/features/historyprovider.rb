@@ -24,8 +24,8 @@ module AE
               return path if File.exist?(path) && File.writable?(path)
             end
             # Plugins folder
-            if File.writable?(DIR)
-              path = File.join(DIR, "data")
+            if File.writable?(PATH)
+              path = File.join(PATH, "data")
               return path if File.writable?(path)
             end
             # Fallback: user's folder.

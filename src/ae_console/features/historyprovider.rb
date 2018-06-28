@@ -10,31 +10,31 @@ module AE
         class << self
           # Find an existing and writable directory where to store user data.
           def get_data_dir
-            if ENV["APPDATA"]
+            if ENV['APPDATA']
               # Windows
-              path = ENV["APPDATA"]
+              path = ENV['APPDATA']
               return path if File.exist?(path) && File.writable?(path)
-            elsif ENV["HOME"]
+            elsif ENV['HOME']
               # Free desktop standard
-              path = File.join(ENV["HOME"], ".local", "share")
+              path = File.join(ENV['HOME'], '.local', 'share')
               return path if File.exist?(path) && File.writable?(path)
               # OSX
-              path = File.join(ENV["HOME"], "Library", "Application Support")
+              path = File.join(ENV['HOME'], 'Library', 'Application Support')
               return path if File.exist?(path) && File.writable?(path)
             end
-            # Plugins folder
+            # Fallback 1: Plugins folder
             if File.writable?(PATH)
-              path = File.join(PATH, "data")
+              path = File.join(PATH, 'data')
               return path if File.writable?(path)
             end
-            # Fallback: user's folder.
-            path = File.expand_path("~")
+            # Fallback 2: user's folder.
+            path = File.expand_path('~')
           end
           private :get_data_dir
         end
 
         @@instances = []
-        DATA_DIR = File.join(get_data_dir(), "SketchUp Ruby Console+") unless defined?(self::DATA_DIR)
+        DATA_DIR = File.join(get_data_dir(), 'SketchUp Ruby Console+') unless defined?(self::DATA_DIR)
         MAX_LENGTH = 100 unless defined?(self::MAX_LENGTH)
         SEPARATOR_STRING = "\n###SEPARATOR###\n" unless defined?(self::SEPARATOR_STRING)
         SEPARATOR_REGEXP = /\n(?:###SEPARATOR###|SEPARATOR_TO_BE_DETERMINED)\n/ unless defined?(self::SEPARATOR_REGEXP)
@@ -65,7 +65,7 @@ module AE
         alias_method :<<, :push
 
         def save
-          File.open(@path, "w"){ |file|
+          File.open(@path, 'w'){ |file|
             file.print(@data.join(SEPARATOR_STRING))
           }
         end

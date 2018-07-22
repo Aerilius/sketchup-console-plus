@@ -241,7 +241,7 @@ define(['polyfills/es6-promise'], function (PromiseImplementation) {
         var handlers = {};
 
         /**
-         * Remote calls a JavaScript success handler.
+         * The remote end-point calls a JavaScript success handler.
          * @param  {number} id           The id of the JavaScript-to-Ruby message.
          * @param  {...object} parameter Any amount of parameters.
          * @private                      (only for use by corresponding Remote)
@@ -267,7 +267,7 @@ define(['polyfills/es6-promise'], function (PromiseImplementation) {
         };
 
         /**
-         * Remote calls a JavaScript error handler.
+         * The remote end-point calls a JavaScript error handler.
          * @param  {number} id         The id of the JavaScript-to-Ruby message.
          * @param  {...reason} reason  Any amount of reasons or other parameters.
          * @private                    (only for use by corresponding Remote)

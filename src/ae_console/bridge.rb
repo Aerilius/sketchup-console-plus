@@ -211,7 +211,7 @@ module AE
             (function(Bridge) {
                 try {
                     new Bridge.Promise(function (resolve, reject) {
-                        // The called function may immediately return a result or a Promise.
+                        // The called function may either immediately return a result or a Promise.
                         resolve(#{name}.apply(undefined, #{parameter_string}));
                     }).then(function (result) {
                         Bridge.call('#{handler_name}', true, result);
@@ -520,19 +520,22 @@ module AE
 
           private
 
-          def normalize_object(o)
+          def self.normalize_object(o)
             if o.is_a?(Array)
-              o.each_with_index{ |v,i|
-                o[i] = (v.is_a?(Symbol)) ? v.to_s : normalize_object(v)
-              }
+              return o.map{ |v| normalize_object(v) }
             elsif o.is_a?(Hash)
-              o.clone.each{ |k,v|
-                o.delete(k)
-                o[k.to_s] = (v.is_a?(Symbol)) ? v.to_s : normalize_object(v)
+              o2 = {}
+              o.each{ |k, v|
+                o2[normalize_object(k)] = normalize_object(v)
               }
+              return o2
+            elsif o.is_a?(Symbol)
+              return o.to_s
+            else
+              return o
             end
-            return o
           end
+          private_class_method :normalize_object
 
         end
 

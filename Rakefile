@@ -9,6 +9,7 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
+desc 'Builds a SketchUp Extension package (.rbz)'
 task :build_rbz do
   # Get the version
   project_name = 'ae_console'

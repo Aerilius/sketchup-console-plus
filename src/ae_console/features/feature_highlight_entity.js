@@ -24,7 +24,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
     }
 
     var regexpEntity       = /#(?:<|&lt;|&#60;)Sketchup\:\:(?:Face|Edge|Curve|ArcCurve|Image|Group|ComponentInstance|ComponentDefinition|Text|Drawingelement|ConstructionLine|ConstructionPoint|Vertex)\:([0-9abcdefx]+)(?:>|&gt;|&#62;)/,
-        regexpBoundingBox  = /#(?:<|&lt;|&#60;)Geom\:\:(?:BoundingBox)\:([0-9abcdefx]+)(?:>|&gt;|&#62;)/,
+        regexpBoundingBox  = /#(?:<|&lt;|&#60;)Geom\:\:BoundingBox\:([0-9abcdefx]+)(?:>|&gt;|&#62;)/,
         regexpPoint        = /Point3d\(([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+)\)/,
         regexpPointString  = /(?!Point3d)\(([0-9\.\,\-eE]+)(?:m|\"|\'|cm|mm),[\s\u00a0]*([0-9\.\,\-eE]+)(?:m|\"|\'|cm|mm),[\s\u00a0]*([0-9\.\,\-eE]+)(m|\"|\'|cm|mm)\)/,
         regexpVector       = /Vector3d\(([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+)\)/,
@@ -42,7 +42,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                 $element.addClass(className)
                 .data('type', 'entity')
                 .data('identifier', idString)
-                .on('mouseover', function() { // Note: This can trigger repeatedly times!
+                .on('mouseover', function() { // Note: This can trigger repeatedly!
                     Bridge.get('highlight_entity', idString)['catch'](function () {
                         // If the entity isn't valid (deleted or GC), remove the highlight feature.
                         $element.removeClass(className);

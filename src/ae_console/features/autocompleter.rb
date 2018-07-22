@@ -61,7 +61,13 @@ module AE
           context = binding.eval('self')
           context_class = (context.is_a?(Module)) ? context : context.class
           completions = []
-          prefix_regexp = Regexp.new('^' + prefix)
+          begin
+            prefix_regexp = Regexp.new('^' + prefix)
+          rescue RegexpError
+            # For example when prefix contains characters invalid for the encoding.
+            # In that case, there are likely no completions anyways.
+            return []
+          end
           case prefix
           when CONSTANT
             # Resolve inheritance from outer module scopes.

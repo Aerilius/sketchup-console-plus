@@ -54,7 +54,14 @@ module AE
       def puts(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('Console.puts', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          @dialog.call('Console.puts',
+                       ensure_valid_encoding(arg.to_s),
+                       {
+                         :language => :ruby,
+                         :time => Time.now.to_f,
+                         :id => @message_id.next!,
+                         :backtrace => backtrace
+                       })
         }
         nil
       end
@@ -64,7 +71,14 @@ module AE
       def print(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('Console.print', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          @dialog.call('Console.print',
+                       ensure_valid_encoding(arg.to_s),
+                       {
+                         :language => :ruby,
+                         :time => Time.now.to_f,
+                         :id => @message_id.next!,
+                         :backtrace => backtrace
+                       })
         }
         nil
       end
@@ -177,7 +191,7 @@ module AE
           # Evaluate the command.
           result = @binding.eval(command, '(eval)', line_number)
           # Render the result to a string.
-          result_string = result_to_string(result)
+          result_string = ensure_valid_encoding(result_to_string(result))
           # Return the result and metadata.
           new_metadata[:time] = Time.now.to_f
           trigger(:result, result, new_metadata)
@@ -205,6 +219,17 @@ module AE
           else
             return object.inspect
           end
+        end
+      end
+
+      # Replace invalid bytes in a string (for display only!) so it can be included in UTF-8 JSON.
+      def ensure_valid_encoding(string)
+        if string.is_a?(String) && 
+           (!string.valid_encoding? ||
+            string.encoding == Encoding::BINARY && (string.unicode_normalize rescue true))
+          return string.encode(Encoding::UTF_8, {:invalid => :replace, :undef => :replace})
+        else
+          return string
         end
       end
 

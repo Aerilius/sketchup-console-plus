@@ -58,7 +58,7 @@ Run `rake test` to run the tests.
 
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version and push git commits and tags.
 
-`bundle exec rake --tasks build_rbz`
+To build a new installation package , run `bundle exec rake build_rbz`.
 
 ## License
 

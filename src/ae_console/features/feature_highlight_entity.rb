@@ -62,6 +62,17 @@ module AE
         dialog.on('highlight_stop') {
           deselect_highlighter_tool()
         }
+
+        dialog.on('get_color') { |action_context, id_string|
+          begin
+            entity = id_string_to_entity(id_string)
+            action_context.resolve entity.to_a
+            # RangeError if no entity found for given id,
+            # TypeError "Reference to deleted entity" if entity has been deleted.
+          rescue RangeError, TypeError => e
+            action_context.reject
+          end
+        }
       end
 
       def select_highlighter_tool(&action)

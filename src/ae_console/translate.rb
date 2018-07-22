@@ -8,13 +8,13 @@ module AE
       # @param filename [String] a name to identify the translation file.
       def initialize(filename)
         @strings = {}
-        @locale = Sketchup.get_locale
+        @locale  = Sketchup.get_locale
         filepath = File.join(PATH, 'Resources', @locale, filename)
         if File.exist?(filepath)
           parse_strings(filepath)
         else
-          fallback_locale = "en-US"
-          filepath = File.join(PATH, 'Resources', fallback_locale, filename)
+          fallback_locale = 'en-US'
+          filepath        = File.join(PATH, 'Resources', fallback_locale, filename)
           if File.exist?(filepath)
             @locale = fallback_locale
             parse_strings(filepath)
@@ -25,13 +25,13 @@ module AE
       end
 
       # Method to access a single translation.
-      # @param key [String]        original string in ruby script; % characters escaped by %%
-      # @param si  [Array<String>] optional strings for substitution of %0 ... %sn
-      # @return [String] translated string
-      def get(key, *si)
+      # @param key           [String]        original string in ruby script; % characters escaped by %%
+      # @param substitutions [Array<String>] optional strings for substitution of %0 ... %sn
+      # @return              [String]        translated string
+      def get(key, *substitutions)
         key = key.to_s if key.is_a?(Symbol)
-        raise(ArgumentError, 'Argument "key" must be a String or an Array of Strings.') unless key.is_a?(String) || key.nil? || (key.is_a?(Array) && key.all?{ |k| k.is_a?(String) })
-        return key.map{ |k| self.[](k, *si) } if key.is_a?(Array) # Allow batch translation of strings
+        raise(ArgumentError, 'Argument "key" must be a String or an Array of Strings.') unless key.is_a?(String) || key.nil? || (key.is_a?(Array) && key.all? { |k| k.is_a?(String) })
+        return key.map { |k| self.[](k, *substitutions) } if key.is_a?(Array) # Allow batch translation of strings
         if @strings.include?(key)
           value = @strings[key].clone
         else
@@ -39,10 +39,10 @@ module AE
           value = key.to_s.clone
         end
         # Substitution of additional strings.
-        si.compact.each_with_index{ |s, i|
-          value.gsub!(/\%#{i}/, s.to_s)
+        substitutions.compact.each_with_index { |substitution, i|
+          value.gsub!(/\%#{i}/, substitution.to_s)
         }
-        value.gsub!(/\%\%/, '%')
+        value.gsub!(/%%/, '%')
         return value.chomp
       end
       alias_method(:[], :get)
@@ -66,58 +66,58 @@ module AE
       private
 
       # Find translation file and parse it into a hash.
-      # @param [String] toolname a name to identify the translation file (plugin name)
-      # @param [String] locale the locale/language to look for
-      # @param [String] dir an optional directory path where to search, otherwise in this file's directory
+      # @param filepath [String]
       # @return [Boolean] whether the strings have been added
       def parse_strings(filepath)
         strings = {}
-        File.open(filepath, 'r'){ |file|
-          entry = ''
-          inComment = false
-          file.each{ |line|
-            if !line.include?('//')
+        File.open(filepath, 'r') { |file|
+          entry      = ''
+          in_comment = false
+          file.each { |line|
+            unless line.include?('//')
               if line.include?('/*')
-                inComment = true
+                in_comment = true
               end
-              if inComment==true
+              if in_comment
                 if line.include?('*/')
-                  inComment=false
+                  in_comment = false
                 end
               else
                 entry += line
               end
             end
             if entry.include?(';')
-              keyvalue = entry.strip.gsub(/^\s*\"|\"\s*;$/, '').split(/\"\s*=\s*\"/)
-              entry = ''
+              keyvalue = entry.strip.gsub(/^\s*"|"\s*;$/, '').split(/"\s*=\s*"/)
+              entry    = ''
               next unless keyvalue.length == 2
-              key = keyvalue[0].gsub(/\\\"/,'"').gsub(/\\\\/, '\\')
-              value = keyvalue[1].gsub(/\\\"/,'"').gsub(/\\\\/, '\\')
+              key          = keyvalue[0].gsub(/\\"/, '"').gsub(/\\\\/, '\\')
+              value        = keyvalue[1].gsub(/\\"/, '"').gsub(/\\\\/, '\\')
               strings[key] = value
             end
           }
         }
         @strings.merge!(strings)
-        return (strings.empty?)? false : true
+        return (strings.empty?) ? false : true
       end
 
       def to_json(obj)
         return unless obj.is_a?(Hash)
         # remove non-JSON objects
-        o = obj.reject{ |k, v|
+        o = obj.reject { |k, v|
           !k.is_a?(String) && !k.is_a?(Symbol) || !v.is_a?(String) && !v.is_a?(Symbol)
         }
         # Split at every even number of unescaped quotes.
         # If it's not a string then turn Symbols into String and replace => and nil.
-          json_string = o.inspect.split(/(\"(?:.*?(?:[\\][\\]+?|[^\\]))*?\")/).
-          map{ |s|
-            (s[0..0] != '"')?                        # If we are not inside a string
-            s.gsub(/\:(\S+?(?=\=>|\s))/, '"\\1"'). # Symbols to String
-              gsub(/=>/, ':').                       # Arrow to colon
-              gsub(/\bnil\b/, 'null') :              # nil to null
+        json_string = o.inspect.split(/(\"(?:.*?(?:[\\][\\]+?|[^\\]))*?\")/).
+        map { |s|
+          if s[0..0] != '"' # If we are not inside a string
+            s.gsub(/:(\S+?(?==>|\s))/, '"\\1"'). # Symbols to String
+              gsub(/=>/, ':'). # Arrow to colon
+              gsub(/\bnil\b/, 'null') # nil to null
+          else
             s
-          }.join()
+          end
+        }.join()
         return json_string
       end
 

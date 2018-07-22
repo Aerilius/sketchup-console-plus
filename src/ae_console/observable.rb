@@ -49,8 +49,8 @@ module AE
         nil
       end
 
-    end
+    end # module Observable
 
-  end # module ConsolePlugin
+  end
 
 end # module AE

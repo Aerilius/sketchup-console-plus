@@ -29,7 +29,8 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
         regexpPointString  = /(?!Point3d)\(([0-9\.\,\-eE]+)(?:m|\"|\'|cm|mm),[\s\u00a0]*([0-9\.\,\-eE]+)(?:m|\"|\'|cm|mm),[\s\u00a0]*([0-9\.\,\-eE]+)(m|\"|\'|cm|mm)\)/,
         regexpVector       = /Vector3d\(([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+)\)/,
         regexpVectorString = /\(([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+),[\s\u00a0]*([0-9\.\-eE]+)\)/,
-        regexpColor        = /Color\(([\s\u00a0]*[0-9\.]+,[\s\u00a0]*[0-9\.]+,[\s\u00a0]*[0-9\.]+)(,[\s\u00a0]*[0-9\.]+)?\)/;
+        regexpColor        = /Color\(([\s\u00a0]*[0-9\.]+,[\s\u00a0]*[0-9\.]+,[\s\u00a0]*[0-9\.]+)(,[\s\u00a0]*[0-9\.]+)?\)/,
+        regexpColorInspect = /#(?:<|&lt;|&#60;)Sketchup\:\:Color\:([0-9abcdefx]+)(?:>|&gt;|&#62;)/;
 
     function detectVisualizableElements(htmlElement) {
         $(htmlElement).find('.ace_sketchup').each(function(index, element) {
@@ -98,13 +99,32 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                 .on('mouseout', stop);
 
             } else if (regexpColor.test(text)) {
-                // Add highlight feature to Color (only HTML/JS)
-                var color = 'rgb(' + RegExp.$1 + ')';
+                // Add highlight feature to Color (only HTML/JS) 
+                // when color has been printed numeral color values
+                var colorString = 'rgb(' + RegExp.$1 + ')';
                 $element.addClass(className)
                 .on('mouseover', function() {
-                    $(this).css('background-color', color);
+                    $(this).css('background-color', colorString);
                 }).on('mouseout', function() {
-                    $(this).css('background-color', 'none');
+                    $(this).css('background-color', 'transparent');
+                });
+            } else if (regexpColorInspect.test(text)) {
+                // Add highlight feature to Color (only HTML/JS)
+                // when color has been printed as Ruby object with id
+                var idString = RegExp.$1;
+                Bridge.get('get_color', idString).then(function (colorArray) {
+                  var colorString = 'rgb(' + colorArray.slice(0, 3).join(',') + ')';
+                  $element.addClass(className)
+                  .on('mouseover', function() {
+                      $(this).css('background-color', colorString);
+                  }).on('mouseout', function() {
+                      $(this).css('background-color', 'transparent');
+                  });
+                }, function () {
+                    // If the entity isn't valid (deleted or GC), remove the highlight feature.
+                    $element.removeClass(className);
+                    $element.off('mouseover');
+                    $element.off('mouseout');
                 });
             }
         });

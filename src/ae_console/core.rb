@@ -87,6 +87,10 @@ module AE
     # We use this one as a lock variable. Must be accessible by ConsolePlugin::Console instances.
     self::PRIMARY_CONSOLE = Struct.new(:value).new(nil) unless defined?(self::PRIMARY_CONSOLE)
 
+    # When the Ruby console is subclassed, the caller of the 'write' method contains all nested calls of the subclassed methods.
+    # In order to get the original caller, we need to detect which calls come from subclasses.
+    self::IGNORED_CONSOLE_SUBCLASSERS = [/testup[\/\\]console\.rb/] unless defined?(self::IGNORED_CONSOLE_SUBCLASSERS)
+
     def self.initialize_plugin
       # Load settings
       @@settings ||= Settings.new('AE/Console').load({
@@ -105,7 +109,11 @@ module AE
       # Therefore replace the original stdout (SKETCHUP_CONSOLE) by a modified subclass.
       @@stdout_redirecter ||= ObjectReplacer.new('$stdout', Class.new($stdout.class){
         def write(*args)
-          PRIMARY_CONSOLE.value.print(*args, :backtrace => [caller.first]) unless PRIMARY_CONSOLE.value.nil?
+          # For write/puts, provide only the direct caller (script file), 
+          # not the complete backtrace.
+          # Ignore callers that are subclasses or intercepters of the console itself.
+          _caller = [caller.find{ |s| IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
+          PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless PRIMARY_CONSOLE.value.nil?
           super
         end
       }.new)

@@ -25,8 +25,12 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
 }                                \
     ")
 
-    function getBasename (filepath) {
-        return filepath.match(/(?:[^\\\/]+)?$/)[0];
+    function fileBaseName (filepath) {
+        return filepath.match(/[^\\\/]*$/)[0];
+    }
+
+    function uriToPath (uri) {
+        return decodeURI(uri).replace(/^file\:\//, '');
     }
 
     app.output.addListener('added', function (entryElement, text, metadata) {
@@ -43,10 +47,10 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
                 lineNumber = parseInt(match[2]);
                 var link = $('<a href="#">').on('click', function () {
                     app.editor.open(path, lineNumber);
-                    app.settings.getProperty('console_active').setValue(false); // app.switchToEditor();
+                    app.settings.getProperty('console_active').setValue(false); // == app.switchToEditor();
                 })
                 .addClass('trace unselectable')
-                .attr('data-text', getBasename(path) + ':' + lineNumber)
+                .attr('data-text', fileBaseName(path) + ':' + lineNumber)
                 .appendTo(entryElement);
             }
         } else if (/error|warn/.test(metadata.type)) {
@@ -54,20 +58,21 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
             $('.backtrace *', entryElement).each(function (index, traceElement) {
                 var path = $(traceElement).data('path');
                 var lineNumber = $(traceElement).data('line-number');
+                var columnNumber = $(traceElement).data('column-number');
                 if (path && lineNumber) {
-                    // Replace path:lineNumber by <a>path</a>:lineNumber
-                    $(traceElement).html( $(traceElement).html().replace(/^(.+)(\:\d+)/, '<a href="#">$1</a>$2') )
+                    // Replace path:lineNumber(:columnNumber) by <a>path</a>:lineNumber(:columnNumber)
+                    $(traceElement).html( $(traceElement).html().replace(path, '<a href="#">' + path + '</a>') )
                     // Add a clickable link.
                     .find('a').on('click', function () {
-                        app.editor.open(path, lineNumber);
-                        app.settings.getProperty('console_active').setValue(false); // app.switchToEditor();
+                        app.editor.open(uriToPath(path), lineNumber, columnNumber);
+                        app.settings.getProperty('console_active').setValue(false); // == app.switchToEditor();
                     });
                 }
             });
             // Add right of the message body a shortlink for first trace.
             if ($('.backtrace *', entryElement).length > 0) {
                 var traceElement = $('.backtrace *', entryElement)[0];
-                var path = $(traceElement).data('path');
+                var path = uriToPath($(traceElement).data('path'));
                 var lineNumber = $(traceElement).data('line-number');
                 if (path && lineNumber) {
                     var link = $('<a href="#">').on('click', function () {
@@ -75,7 +80,7 @@ requirejs(['app', 'ace/ace'], function (app, ace) {
                         app.settings.getProperty('console_active').setValue(false); // app.switchToEditor();
                     })
                     .addClass('trace unselectable')
-                    .attr('data-text', getBasename(path) + ':' + lineNumber)
+                    .attr('data-text', fileBaseName(path) + ':' + lineNumber)
                     .appendTo(entryElement);
                 }
             }

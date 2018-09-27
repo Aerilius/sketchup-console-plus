@@ -226,13 +226,16 @@ define(['jquery', 'bootstrap'], function ($, _) {
                 // Collapse long backtrace.
                 $.each(data.backtrace, function (index, trace) {
                     var $trace = $('<div>');
-                    var match = trace.match(/^(.+[\/\\].+)\:(\d+)(?:\:.+)?$/);
+                    //var match = trace.match(/^(.+[\/\\].+)\:(\d+)(?:\:.+)?$/);
+                    var match = trace.match(/(?:file\:\/\/\/)?((?:\w\:[\\\/]|\/)[^\:]+)\:(\d+)(?:\:(\d+))?/);
                     if (match) {
                         var fullpath = match[1];
                         var lineNumber = parseInt(match[2]);
+                        var columnNumber = parseInt(match[3]);
                         $trace.attr('title', fullpath)
                         .data('path', fullpath)
-                        .data('line-number', lineNumber);
+                        .data('line-number', lineNumber)
+                        .data('column-number', columnNumber);
                         if (data.backtrace_short) trace = data.backtrace_short[index];
                     }
                     $trace.text(trace)

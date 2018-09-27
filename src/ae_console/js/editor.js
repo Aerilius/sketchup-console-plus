@@ -105,10 +105,10 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
             });
         };
 
-        this.open = function (filepath, lineNumber) {
+        this.open = function (filepath, lineNumber, columnNumber) {
             // Do not load the file again if it is already opened.
             if (filepath == currentFilepath) {
-                if (lineNumber) aceEditor.gotoLine(lineNumber);
+                if (lineNumber) aceEditor.gotoLine(lineNumber, columnNumber || 0);
                 return Bridge.Promise.resolve(true); // Return a resolved promise
             }
             // Ask whether to save changes if there are unsaved changes.
@@ -128,7 +128,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                     }
                     // Try to jump to the line number where the file was last accessed.
                     if (!lineNumber) lineNumber = settings.get('recently_focused_lines', {})[filepath] || 1;
-                    aceEditor.gotoLine(lineNumber); // one-based
+                    aceEditor.gotoLine(lineNumber, columnNumber || 0); // one-based
                 }, function (error) {
                     // notification: File failed to open
                     alert('Failed to open file "' + filepath + '": \n' + error);

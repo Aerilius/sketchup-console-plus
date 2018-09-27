@@ -213,16 +213,22 @@ module AE
           command.small_icon  = command.large_icon = File.join(PATH, 'images', 'icon.svg')
         end
       else
-        command.small_icon    = File.join(PATH, 'images', 'icon_32.png')
-        command.large_icon    = File.join(PATH, 'images', 'icon_48.png')
+        command.small_icon = File.join(PATH, 'images', 'icon_32.png')
+        command.large_icon = File.join(PATH, 'images', 'icon_48.png')
       end
+      # Metadata
       command.tooltip         = TRANSLATE['An alternative Ruby Console with many useful features.']
       command.status_bar_text = TRANSLATE['Press the enter key to evaluate the input, and use shift-enter for linebreaks.']
-
-      # Menu
+      return command
+    end
+    private_class_method :create_command
+    
+    def self.register_menu(command)
       UI.menu('Window').add_item(command)
-
-      # Toolbar
+    end
+    private_class_method :register_menu
+    
+    def self.create_toolbar(command)
       toolbar = UI::Toolbar.new(TRANSLATE['Ruby Console+'])
       toolbar.add_item(command)
       # Show toolbar if it was open when we shutdown.
@@ -230,9 +236,16 @@ module AE
       # Per bug 2902434, adding a timer call to restore the toolbar. This
       # fixes a toolbar resizing regression on PC as the restore() call
       # does not seem to work as the script is first loading.
-      UI.start_timer(0.1, false) {
+      UI.start_timer(0.1, false){
         toolbar.restore
       }
+    end
+    private_class_method :create_toolbar
+
+    def self.initialize_ui
+      command = create_command()
+      register_menu(command)
+      create_toolbar(command)
     end
     private_class_method :initialize_ui
 

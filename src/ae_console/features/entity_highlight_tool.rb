@@ -131,14 +131,14 @@ module AE
         # Detect 2d bounding box, it needs only one face instead of 6 overlapping faces.
         if bounds.width == 0 || bounds.height == 0 || bounds.depth == 0
           if bounds.width == 0
-            ps  = [0, 1, 5, 4].map { |i| bounds.corner(i).transform!(t) }
-          elsif bounds.height == 0
-            ps  = [0, 1, 3, 2].map { |i| bounds.corner(i).transform!(t) }
-          elsif bounds.depth == 0
             ps  = [0, 2, 6, 4].map { |i| bounds.corner(i).transform!(t) }
+          elsif bounds.height == 0
+            ps  = [0, 1, 5, 4].map { |i| bounds.corner(i).transform!(t) }
+          elsif bounds.depth == 0
+            ps  = [0, 1, 3, 2].map { |i| bounds.corner(i).transform!(t) }
           end
           # Draw lines
-          view.draw2d(GL_LINES, ps.map { |p| view.screen_coords(p) })
+          view.draw2d(GL_LINE_LOOP, ps.map { |p| view.screen_coords(p) })
           # Draw polygons
           if Sketchup.version.to_i >= 8 # support of transparent color
             view.drawing_color = face_color

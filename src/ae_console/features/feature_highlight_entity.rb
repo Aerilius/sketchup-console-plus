@@ -19,14 +19,18 @@ module AE
         dialog.on('highlight_entity') { |action_context, id_string|
           begin
             entity = id_string_to_entity(id_string)
-            select_highlighter_tool{ |tool|
-              tool.highlight(entity)
-            }
-            # RangeError if no entity found for given id,
-            # TypeError "Reference to deleted entity" if entity has been deleted.
-          rescue RangeError, TypeError => e
+          rescue RangeError
+            # RangeError if no entity found for given id.
             action_context.reject
           end
+            select_highlighter_tool{ |tool|
+              begin
+                tool.highlight(entity)
+              rescue TypeError => e
+                # TypeError "Reference to deleted entity" if entity has been deleted.
+                action_context.reject(entity.inspect)
+              end
+            }
         }
 
         dialog.on('highlight_point') { |action_context, array_xyz, unit|
@@ -46,7 +50,13 @@ module AE
         dialog.on('highlight_multiple') { |action_context, elements_map|
           entities = []
           elements_map['entity'].each{ |id_string|
-            entities << id_string_to_entity(id_string) rescue RangeError
+            begin
+              entity = id_string_to_entity(id_string)
+              next if entity.respond_to?(:valid?) && !entity.valid?
+              entities << entity
+            rescue RangeError
+              next
+            end
           }
           elements_map['point'].each{ |array_xyz, unit|
             entities << coordinates_array_to_point(array_xyz, unit)

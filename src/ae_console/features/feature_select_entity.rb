@@ -16,19 +16,30 @@ module AE
           }
 
           dialog.on('select_entity') { |action_context, desired_name|
-            # This triggers the built-in select tool and once an entity is selected,
-            # a local variable is created in binding and its name is returned.
-            SelectEntityTool.select_tool.then(proc{ |selected|
-              #  Entity was selected and referenced by a variable with this name.
+            selection = Sketchup.active_model.selection
+            if !selection.empty?
+              # Directly use already selected entities without invoking select tool.
               binding = console.instance_variable_get(:@binding)
+              selected = (selection.length == 1) ? selection.first : selection.to_a
               name = create_reference_name(selected, binding, desired_name)
               create_reference(name, selected, binding)
               # Resolve the promise
               action_context.resolve(name)
-            }, proc{ |error|
-              # Tool was cancelled.
-              action_context.reject(error)
-            })
+            else
+              # This triggers the custom select tool and once an entity is selected,
+              # a local variable is created in binding and its name is returned.
+              SelectEntityTool.select_tool.then(proc{ |selected|
+                #  Entity was selected and referenced by a variable with this name.
+                binding = console.instance_variable_get(:@binding)
+                name = create_reference_name(selected, binding, desired_name)
+                create_reference(name, selected, binding)
+                # Resolve the promise
+                action_context.resolve(name)
+              }, proc{ |error|
+                # Tool was cancelled.
+                action_context.reject(error)
+              })
+            end
           }
 
           console.on(:closed) {
@@ -42,7 +53,7 @@ module AE
         if desired_name.is_a?(String) && desired_name[/^[^\!\"\'\`\@\$\%\|\&\/\(\)\[\]\{\}\,\;\?\<\>\=\+\-\*\/\#\~\\]+$/] #"
           return desired_name
         else
-          name = main_name = create_entity_name(object)
+          name = main_name = create_object_name(object)
           # If a reference with same name exists already, increment it.
           i = 0
           while binding.eval("defined?(#{name})") && object != binding.eval("#{name}")
@@ -53,7 +64,7 @@ module AE
         end
       end
 
-      def create_entity_name(entity)
+      def create_object_name(entity)
         case entity
           # Short names: (You can add more)
         when Sketchup::ComponentInstance
@@ -61,12 +72,33 @@ module AE
         when Geom::Point3d
           return 'p'
           # Or generic name:
-        else
-          if entity.respond_to?(:typename)
-            return entity.typename.downcase
+        when Array
+          if entity.length > 1
+            return create_array_name(entity)
           else
-            return entity.class.name.to_s[/[^\:]+$/].downcase
+            return create_entity_name(entity.first)
           end
+        else
+          return create_entity_name(entity)
+        end
+      end
+
+      def create_array_name(array)
+        if array.map(&:class).uniq.length == 1
+          return create_entity_name(array.first) + 's' # plural
+        else
+          closest_common_ancestor = array.reduce(array.first.class.ancestors) { |aggregate, object|
+            aggregate & object.class.ancestors
+          }.first
+          return closest_common_ancestor.name.to_s[/[^\:]+$/].downcase + 's' # plural
+        end
+      end
+
+      def create_entity_name(entity)
+        if entity.respond_to?(:typename)
+          return entity.typename.downcase
+        else
+          return entity.class.name.to_s[/[^\:]+$/].downcase
         end
       end
 
@@ -115,6 +147,7 @@ module AE
           @model = Sketchup.active_model
           @cursor = UI::create_cursor(IMG_CURSOR_SELECT_ENTITY, 10, 10)
           @ip = Sketchup::InputPoint.new
+          @point3d = nil
         end
 
         def activate
@@ -139,7 +172,8 @@ module AE
           if self.class.mode_pick_entity_instead_of_point
             @highlighter.highlight(pick_entity(view, x, y))
           else
-            @highlighter.highlight(pick_point(view, x, y))
+            @point3d = pick_point(view, x, y)
+            @highlighter.highlight(@point3d)
           end
         end
 
@@ -184,9 +218,20 @@ module AE
 
         def draw(view)
           @highlighter.draw(view)
+          # If point mode, draw the coordinates under the cursor.
+          if !self.class.mode_pick_entity_instead_of_point && @point3d
+            point2d = view.screen_coords(@point3d)
+            offset = [5, -5 - 15 * UI.scale_factor]
+            number_separator = (decimal_separator == ',') ? '; ' : ', '
+            view.draw_text(point2d + offset, @point3d.to_a.map(&:to_l).map(&:to_s).join(number_separator), {:size => 10 * UI.scale_factor})
+          end
         end
 
         private
+
+        def decimal_separator
+          return @@decimal_separator ||= 0.0.to_l.to_s[/[\.,]/]
+        end
 
         def deselect_tool
           Sketchup.active_model.tools.pop_tool # assuming active model is not changed # TODO

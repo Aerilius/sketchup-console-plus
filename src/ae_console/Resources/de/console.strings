@@ -9,10 +9,14 @@
 "useWrapMode"="Zeilen umbrechen";
 "editMode"="Programmiersprache";
 "theme"="Thema";
+"evaluationKeyBinding"="Tastenkürzel zum Ausführen";
+"shift"="Umschalt";
+"ctrl"="Strg";
+"enter"="Eingabe";
 
 /* Console */
 "Console"="Konsole";
-"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Zum Ausführen der Eingabe die Eingabetaste drücken, und Umschalt- und Eingabetaste drücken für Zeilenwechsel.";
+"Press the %0 key to evaluate the input, and use %1 for linebreaks."="Zum Ausführen der Eingabe die %0-Taste drücken, und %1 drücken für Zeilenwechsel.";
 "Clear"="Leeren";
 "Menu"="Menü";
 "Show shortcuts"="Tastenkürzel anzeigen";

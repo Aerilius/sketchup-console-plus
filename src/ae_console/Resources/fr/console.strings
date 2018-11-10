@@ -9,10 +9,14 @@
 "useWrapMode"="Retour automatique à la ligne";
 "editMode"="Language";
 "theme"="Thème";
+"evaluationKeyBinding"="Raccourci pour évaluer";
+"shift"="Maj";
+"ctrl"="Ctrl";
+"enter"="Entrée";
 
 /* Console */
 "Console"="Console";
-"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Appuyez la touche d'entrée pour évaluer l'entrée, et utilisez shift-entrée pour des sauts de ligne.";
+"Press the %0 key to evaluate the input, and use %1 for linebreaks."="Appuyez la touche %0 pour évaluer l'entrée, et utilisez %1 pour des sauts de ligne.";
 "Clear"="Effacer";
 "Menu"="Menu";
 "Show shortcuts"="Afficher les raccourcis clavier";

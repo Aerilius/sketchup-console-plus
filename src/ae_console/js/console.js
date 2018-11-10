@@ -43,20 +43,22 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
                 }
             };
 
-            // Keyhandler to submit code for evaluation if Enter is pressed.
-            aceEditor.commands.addCommand({
-                name: 'Evaluate code',
-                bindKey: 'enter',
-                exec: function (editor) {
-                    // Get the input.
-                    var command = console.getContent();
-                    // Submit it.
-                    console.submit(command);
-                    // Clear the input field.
-                    console.clearInput();
-                    consoleInput.scrollIntoView();
-                },
-                readOnly: true // false if this command should not apply in readOnly mode
+            settings.getProperty('evaluationKeyBinding').bindAction('change', function (value) {
+                // Keyhandler to submit code for evaluation if Enter is pressed.
+                aceEditor.commands.addCommand({
+                    name: 'Evaluate code',
+                    bindKey: value,
+                    exec: function (editor) {
+                        // Get the input.
+                        var command = console.getContent();
+                        // Submit it.
+                        console.submit(command);
+                        // Clear the input field.
+                        console.clearInput();
+                        consoleInput.scrollIntoView();
+                    },
+                    readOnly: true // false if this command should not apply in readOnly mode
+                });
             });
             // Keyhandler to clear the output
             aceEditor.commands.addCommand({

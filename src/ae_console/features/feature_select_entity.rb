@@ -147,6 +147,7 @@ module AE
           @model = Sketchup.active_model
           @cursor = UI::create_cursor(IMG_CURSOR_SELECT_ENTITY, 10, 10)
           @ip = Sketchup::InputPoint.new
+          @point3d = nil
         end
 
         def activate
@@ -171,7 +172,8 @@ module AE
           if self.class.mode_pick_entity_instead_of_point
             @highlighter.highlight(pick_entity(view, x, y))
           else
-            @highlighter.highlight(pick_point(view, x, y))
+            @point3d = pick_point(view, x, y)
+            @highlighter.highlight(@point3d)
           end
         end
 
@@ -216,9 +218,20 @@ module AE
 
         def draw(view)
           @highlighter.draw(view)
+          # If point mode, draw the coordinates under the cursor.
+          if !self.class.mode_pick_entity_instead_of_point && @point3d
+            point2d = view.screen_coords(@point3d)
+            offset = [5, -5 - 15 * UI.scale_factor]
+            number_separator = (decimal_separator == ',') ? '; ' : ', '
+            view.draw_text(point2d + offset, @point3d.to_a.map(&:to_l).map(&:to_s).join(number_separator), {:size => 10 * UI.scale_factor})
+          end
         end
 
         private
+
+        def decimal_separator
+          return @@decimal_separator ||= 0.0.to_l.to_s[/[\.,]/]
+        end
 
         def deselect_tool
           Sketchup.active_model.tools.pop_tool # assuming active model is not changed # TODO

@@ -72,11 +72,14 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
         .data('type', 'entity')
         .data('identifier', idString)
         .on('mouseover', function() { // Note: This can trigger repeatedly!
-            Bridge.get('highlight_entity', idString)['catch'](function () {
+            Bridge.get('highlight_entity', idString)['catch'](function (newStringRepresentation) {
                 // If the entity isn't valid (deleted or GC), remove the highlight feature.
                 $element.removeClass(className);
                 $element.off('mouseover');
                 $element.off('mouseout');
+                if (newStringRepresentation) {
+                  $element.text(newStringRepresentation);
+                }
             });
         })
         .on('mouseout', stop);

@@ -179,13 +179,17 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
             currentElement = nextElement;
         }
         if (arrayElements.length != 0) {
+            var container = $('<span>').addClass(className);
+            container.on('mouseenter', function () {
+                Bridge.get('highlight_multiple', dataToHighlight)['catch'](function () {
+                    // If one of the entities isn't valid (deleted or GC), remove the highlight feature.
+                    container.removeClass(className);
+                    container.off('mouseover');
+                    container.off('mouseout');
+                });
+            }).on('mouseout', stop);
             var contents = arrayStart.parent().contents(); // Includes text nodes
-            contents.slice(contents.index(arrayStart), contents.index(arrayEnd)+1).wrapAll(
-                $('<span>').addClass(className)
-                .on('mouseenter', function() {
-                    Bridge.call('highlight_multiple', dataToHighlight);
-                }).on('mouseout', stop)
-            );
+            contents.slice(contents.index(arrayStart), contents.index(arrayEnd)+1).wrapAll(container);
         }
     }
 

@@ -46,7 +46,13 @@ module AE
         dialog.on('highlight_multiple') { |action_context, elements_map|
           entities = []
           elements_map['entity'].each{ |id_string|
-            entities << id_string_to_entity(id_string) rescue RangeError
+            begin
+              entity = id_string_to_entity(id_string)
+              next if entity.respond_to?(:valid?) && !entity.valid?
+              entities << entity
+            rescue RangeError
+              next
+            end
           }
           elements_map['point'].each{ |array_xyz, unit|
             entities << coordinates_array_to_point(array_xyz, unit)

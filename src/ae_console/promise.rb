@@ -223,7 +223,7 @@ module AE
         # @return          [nil]
         def reject(*reasons)
           raise Exception.new("A once resolved promise can not be rejected later") if @state == State::RESOLVED
-          raise Exception.new("A rejected promise can not be rejected again with different reason") if @state == State::REJECTED && reasons != @values
+          raise Exception.new("A rejected promise can not be rejected again with a different reason (#{@values}, #{reasons})") if @state == State::REJECTED && reasons != @values
           return nil unless @state == State::PENDING
 
           # If this promise is rejected with another promise, the final reasons are not yet

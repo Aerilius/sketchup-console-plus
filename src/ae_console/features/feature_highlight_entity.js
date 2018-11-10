@@ -35,7 +35,18 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
         regexpColorInspect = /#(?:<|&lt;|&#60;)Sketchup\:\:Color\:([0-9abcdefx]+)(?:>|&gt;|&#62;)/;
 
     function detectVisualizableElements(htmlElement) {
-        $(htmlElement).find('.ace_sketchup').each(function(index, element) {
+        var sketchupTokens = $(htmlElement).find('.ace_sketchup');
+        if (sketchupTokens.length == 0) {
+            var regexps = [regexpEntity, regexpBoundingBox, regexpPoint, regexpPointString, regexpVector, regexpVectorString, regexpColor, regexpColorInspect];
+            for (var i = 0; i < regexps.length; i++) {
+                var oldHtml = $(htmlElement).html();
+                var globalRegexp = new RegExp(regexps[i].source, 'g');
+                var newHtml = oldHtml.replace(globalRegexp, function (match) { return '<span class="ace_sketchup">' + match + '</span>'; });
+                $(htmlElement).html(newHtml);
+            }
+            sketchupTokens = $(htmlElement).find('.ace_sketchup');
+        }
+        sketchupTokens.each(function (index, element) {
             var $element = $(element);
             var text = $element.text();
             if (regexpEntity.test(text) || regexpBoundingBox.test(text)) {

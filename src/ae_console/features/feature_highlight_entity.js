@@ -85,7 +85,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
 
     function addPointWithUnitsHighlight($element, regExp) {
         // Add highlight feature to Point3d string with units
-        var coordinates = $([regExp.$1, regExp.$2, regExp.$3]).map(function(coordinate){
+        var coordinates = $([regExp.$1, regExp.$2, regExp.$3]).map(function(index, coordinate){
             return parseFloat(coordinate.replace(/\,(?=[\d])/, '.'));
         });
         var units = regExp.$4;

@@ -16,19 +16,30 @@ module AE
           }
 
           dialog.on('select_entity') { |action_context, desired_name|
-            # This triggers the built-in select tool and once an entity is selected,
-            # a local variable is created in binding and its name is returned.
-            SelectEntityTool.select_tool.then(proc{ |selected|
-              #  Entity was selected and referenced by a variable with this name.
+            selection = Sketchup.active_model.selection
+            if !selection.empty?
+              # Directly use already selected entities without invoking select tool.
               binding = console.instance_variable_get(:@binding)
+              selected = (selection.length == 1) ? selection.first : selection.to_a
               name = create_reference_name(selected, binding, desired_name)
               create_reference(name, selected, binding)
               # Resolve the promise
               action_context.resolve(name)
-            }, proc{ |error|
-              # Tool was cancelled.
-              action_context.reject(error)
-            })
+            else
+              # This triggers the custom select tool and once an entity is selected,
+              # a local variable is created in binding and its name is returned.
+              SelectEntityTool.select_tool.then(proc{ |selected|
+                #  Entity was selected and referenced by a variable with this name.
+                binding = console.instance_variable_get(:@binding)
+                name = create_reference_name(selected, binding, desired_name)
+                create_reference(name, selected, binding)
+                # Resolve the promise
+                action_context.resolve(name)
+              }, proc{ |error|
+                # Tool was cancelled.
+                action_context.reject(error)
+              })
+            end
           }
 
           console.on(:closed) {
@@ -42,7 +53,7 @@ module AE
         if desired_name.is_a?(String) && desired_name[/^[^\!\"\'\`\@\$\%\|\&\/\(\)\[\]\{\}\,\;\?\<\>\=\+\-\*\/\#\~\\]+$/] #"
           return desired_name
         else
-          name = main_name = create_entity_name(object)
+          name = main_name = create_object_name(object)
           # If a reference with same name exists already, increment it.
           i = 0
           while binding.eval("defined?(#{name})") && object != binding.eval("#{name}")
@@ -53,7 +64,7 @@ module AE
         end
       end
 
-      def create_entity_name(entity)
+      def create_object_name(entity)
         case entity
           # Short names: (You can add more)
         when Sketchup::ComponentInstance
@@ -61,12 +72,33 @@ module AE
         when Geom::Point3d
           return 'p'
           # Or generic name:
-        else
-          if entity.respond_to?(:typename)
-            return entity.typename.downcase
+        when Array
+          if entity.length > 1
+            return create_array_name(entity)
           else
-            return entity.class.name.to_s[/[^\:]+$/].downcase
+            return create_entity_name(entity.first)
           end
+        else
+          return create_entity_name(entity)
+        end
+      end
+
+      def create_array_name(array)
+        if array.map(&:class).uniq.length == 1
+          return create_entity_name(array.first) + 's' # plural
+        else
+          closest_common_ancestor = array.reduce(array.first.class.ancestors) { |aggregate, object|
+            aggregate & object.class.ancestors
+          }.first
+          return closest_common_ancestor.name.to_s[/[^\:]+$/].downcase + 's' # plural
+        end
+      end
+
+      def create_entity_name(entity)
+        if entity.respond_to?(:typename)
+          return entity.typename.downcase
+        else
+          return entity.class.name.to_s[/[^\:]+$/].downcase
         end
       end
 

@@ -49,7 +49,8 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
             'useSoftTabs': true,
             'useWrapMode': true,
             'editMode': 'ace/mode/ruby_sketchup',
-            'theme': 'ace/theme/chrome'
+            'theme': 'ace/theme/chrome',
+            'evaluationKeyBinding': 'enter'
         });
     }
 
@@ -75,6 +76,12 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         consoleMenu.addProperty(settings.getProperty('useSoftTabs'));
 
         consoleMenu.addProperty(settings.getProperty('useWrapMode'));
+
+        var evaluationKeyBindings = ['enter', 'ctrl-enter', 'shift-enter'];
+        var evaluationKeyBindingNames = $.map(evaluationKeyBindings, function (keyString) {
+            return $.map(keyString.split('-'), function (key) { return Translate.get(key); }).join('-');
+        });
+        consoleMenu.addAlternativesProperty(settings.getProperty('evaluationKeyBinding'), evaluationKeyBindings, evaluationKeyBindingNames);
 
         addThemeListToMenu(consoleMenu);
     }

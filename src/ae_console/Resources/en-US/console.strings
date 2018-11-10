@@ -9,10 +9,14 @@
 "useWrapMode"="Wrap lines";
 "editMode"="Programming language";
 "theme"="Theme";
+"evaluationKeyBinding"="Shortcut to run code";
+"shift"="Shift";
+"ctrl"="Ctrl";
+"enter"="Enter";
 
 /* Console */
 "Console"="Console";
-"Press the enter key to evaluate the input, and use shift-enter for linebreaks."="Press the enter key to evaluate the input, and use shift-enter for linebreaks.";
+"Press the %0 key to evaluate the input, and use %1 for linebreaks."="Press the %0 key to evaluate the input, and use %1 for linebreaks.";
 "Clear"="Clear";
 "Menu"="Menu";
 "Show shortcuts"="Show shortcuts";

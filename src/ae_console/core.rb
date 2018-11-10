@@ -102,7 +102,8 @@ module AE
           :useSoftTabs    => true,
           :binding        => 'global',
           :theme          => 'ace/theme/chrome',
-          :font_family    => ''
+          :font_family    => '',
+          :evaluationKeyBinding => 'enter', # or 'ctrl-enter' or 'shift-enter'
       })
       # Consoles
       @@consoles ||= []
@@ -218,8 +219,10 @@ module AE
         command.large_icon = File.join(PATH, 'images', 'icon_48.png')
       end
       # Metadata
-      command.tooltip         = TRANSLATE['An alternative Ruby Console with many useful features.']
-      command.status_bar_text = TRANSLATE['Press the enter key to evaluate the input, and use shift-enter for linebreaks.']
+      command.tooltip = TRANSLATE['An alternative Ruby Console with many useful features.']
+      evaluation_key_binding_name = @@settings.get('evaluationKeyBinding').split('-').map{ |key| TRANSLATE[key] }.join('-')
+      linebreak_key_binding_name = (@@settings.get('evaluationKeyBinding') == 'enter') ? "#{TRANSLATE['shift']}-#{TRANSLATE['enter']}" : TRANSLATE['enter']
+      command.status_bar_text = TRANSLATE['Press the %0 key to evaluate the input, and use %1 for linebreaks.', evaluation_key_binding_name, linebreak_key_binding_name]
       return command
     end
     private_class_method :create_command

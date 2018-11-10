@@ -56,12 +56,12 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
     function initializeConsoleUI (console, settings) {
         // Toolbar buttons
-        $('#buttonConsoleSwitchToEditor').attr('title', Translate.get('Editor'));
+        $('#buttonConsoleSwitchToEditor').attr('title', Translate.get('Editor')+' ('+Translate.get('ctrl')+'-Tab)');
         $('#buttonConsoleSwitchToEditor').on('click', function () {
             settings.getProperty('console_active').setValue(false);
         });
 
-        $('#buttonConsoleClear').attr('title', Translate.get('Clear')+' (Ctrl+L)');
+        $('#buttonConsoleClear').attr('title', Translate.get('Clear')+' ('+Translate.get('ctrl')+'-L)');
         $('#buttonConsoleClear').on('click', function () {
             console.clearOutput();
         });
@@ -88,7 +88,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
     function initializeEditorUI (editor, settings) {
         // Toolbar buttons
-        $('#buttonEditorSwitchToConsole').attr('title', Translate.get('Console'));
+        $('#buttonEditorSwitchToConsole').attr('title', Translate.get('Console')+' ('+Translate.get('ctrl')+'-Tab)');
         $('#buttonEditorSwitchToConsole').on('click', function () {
             settings.getProperty('console_active').setValue(true);
         });
@@ -245,6 +245,9 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     }
 
     function switchToEditor (immediate) {
+        if (settings.get('console_active')) {
+            settings.set('console_active', false);
+        }
         if ($('#editorToolbar').is(':visible')) immediate = true;
         $('#consoleToolbar').hide();
         $('#editorToolbar').show();
@@ -259,6 +262,9 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     }
 
     function switchToConsole (immediate) {
+        if (!settings.get('console_active')) {
+            settings.set('console_active', true);
+        }
         if ($('#consoleToolbar').is(':visible')) immediate = true;
         $('#buttonEditorOpen').popover('hide');
         $('#consoleToolbar').show();
@@ -373,6 +379,14 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         aceEditor.commands.removeCommand('goToPreviousError'); // Alt-Shift-E, Ctrl-Shift-E
         aceEditor.commands.removeCommand('showSettingsMenu');  // Ctrl-, This is cool, but fails in IE due to unsupported JavaScript addEventListener. Check if there are polyfills.
         aceEditor.commands.removeCommand('foldOther');         // This conflicts with keyboard layouts that use AltGr+0 for "}"
+        // Add keyhandler to switch between console and editor
+        aceEditor.commands.addCommand({
+            name: 'Switch between console and editor',
+            bindKey: 'ctrl-tab',
+            exec: function (editor) {
+                settings.getProperty('console_active').setValue(!settings.get('console_active'));
+            }
+        });
 
         // When settings are loaded from Ruby, we will bind them to actions.
         settings.getProperty('fontSize').bindAction('change', function (value) {

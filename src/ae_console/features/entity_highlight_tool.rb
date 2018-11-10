@@ -11,13 +11,11 @@ module AE
         view.drawing_color = line_color unless line_color.nil?
         view.draw2d(GL_LINE_STRIP, points)
         # Draw an arrow at the end of the edge/curve/arc to indicate its orientation.
-        p1 = points.last
-        vec = p1.vector_to(points[-2])
-        return unless vec.valid?
-        vec.length = 5
-        side = vec * Z_AXIS
-        arrow = [p1, p1+vec+vec+side, p1+vec+vec-side]
-        view.draw2d(GL_POLYGON, arrow)
+        p1 = points[-2]
+        p2 = points.last
+        draw_arrow2d(view, p1, p2)
+      rescue Exception => e
+        puts e
       end
 
       def draw_face(view, face, line_color, face_color, t=IDENTITY)
@@ -47,7 +45,7 @@ module AE
         # Round it to pixels.
         point.x = point.x.to_i; point.y = point.y.to_i; point.z = point.z.to_i
         # Draw a cross with radius r.
-        r = 3
+        r = 3 * UI.scale_factor
         view.draw2d(GL_LINES, point + [r, r, 0], point + [-r, -r, 0], point + [r, -r, 0], point + [-r, r, 0])
       end
 
@@ -75,13 +73,7 @@ module AE
         p2 = Geom.intersect_line_line([p1, vec], [[0, 0, 0], X_AXIS]) || p2 if p2.y < 0
         p2 = Geom.intersect_line_line([p1, vec], [[0, h, 0], X_AXIS]) || p2 if p2.y > h
         # Draw the vector direction.
-        view.drawing_color = color unless color.nil?
-        view.draw2d(GL_LINE_STRIP, p1, p2)
-        # Draw an arrow at the end of the vector.
-        vec.length = 9 # pixels
-        side       = vec * Z_AXIS
-        arrow      = [p2, p2-vec-vec+side, p2-vec-vec-side]
-        view.draw2d(GL_POLYGON, arrow)
+        draw_arrow2d(view, p1, p2, color)
       end
 
       def draw_unitvector3d(view, p, vector, color=nil, t=IDENTITY)
@@ -107,13 +99,19 @@ module AE
         p2 = Geom.intersect_line_line([p1, vec], [[0, 0, 0], X_AXIS]) || p2 if p2.y < 0
         p2 = Geom.intersect_line_line([p1, vec], [[0, h, 0], X_AXIS]) || p2 if p2.y > h
         # Draw the vector direction.
+        draw_arrow2d(view, p1, p2, color)
+      end
+
+      def draw_arrow2d(view, p1, p2, color=nil)
+        vec = p1.vector_to(p2)
+        return unless vec.valid?
         view.drawing_color = color unless color.nil?
         view.draw2d(GL_LINE_STRIP, p1, p2)
         # Draw an arrow at the end of the vector.
-        vec.length = 9 # pixels
-        side       = vec * Z_AXIS
-        arrow      = [p2, p2-vec-vec+side, p2-vec-vec-side]
-        view.draw2d(GL_POLYGON, arrow)
+        vec.length = 9 * UI.scale_factor# pixels
+        side = vec * Z_AXIS
+        tip = [p2+vec, p2-vec+side, p2-vec-side]
+        view.draw2d(GL_POLYGON, tip)
       end
 
       def draw_component_group(view, group, line_color, face_color, t=IDENTITY)

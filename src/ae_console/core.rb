@@ -200,11 +200,12 @@ module AE
 
     ### User interface
 
-    def self.initialize_ui
+    def self.create_command()
       # Command
       command = UI::Command.new(TRANSLATE['Ruby Console+']) {
         ConsolePlugin.open
       }
+      # Icons
       if Sketchup.version.to_i >= 16
         if RUBY_PLATFORM =~ /darwin/
           command.small_icon  = command.large_icon = File.join(PATH, 'images', 'icon.pdf')

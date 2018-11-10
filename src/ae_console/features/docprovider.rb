@@ -132,13 +132,15 @@ module AE
       # @return [Array<String>]
       # @private
       def self.extract_return_types(doc_info)
+        # doc_info[:return] is a tuple of an array of string of comma separated 
+        # class names (in Yard type syntax) and a description string.
         return [] unless doc_info[:return] && doc_info[:return].first
         return_types = doc_info[:return].first # Array
         return parse_return_types(return_types, doc_info[:namespace])
       end
 
       def self.parse_return_types(return_types, self_type='NilClass')
-        return [] unless return_types
+        return [] unless return_types.is_a?(String) || return_types.is_a?(Array)
         return return_types.map{ |s| parse_return_types(s, self_type) }.flatten if return_types.is_a?(Array)
         # Parse the yardoc type string
         # Remove nested types

@@ -295,7 +295,7 @@ module AE
           # method
           path = @returned_namespace + ((@is_instance) ? '#' : '.') + token
           doc_info = DocProvider.get_info_for_docpath(path)
-          if doc_info && doc_info[:return]
+          if doc_info && doc_info[:return] && doc_info[:return].first
             returned_types = DocProvider.extract_return_types(doc_info)
             classifications = returned_types.map{ |returned_type|
               type = (@type == :module) ? :module_function : (@is_instance) ? :instance_method : :class_method
@@ -309,8 +309,10 @@ module AE
             }
             if classifications.length == 1
               return classifications.first
-            else
+            elsif classifications.length > 1
               return MultipleTokenClassification.new(classifications)
+            else
+              raise TokenNotResolvedError.new("Failed to determine return types by documentation for '#{path}.")
             end
           else
             if COMMON_KNOWLEDGE.include?(token)

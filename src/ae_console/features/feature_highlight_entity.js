@@ -10,6 +10,8 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
     ace.require('ace/lib/dom').importCssString("\
 .highlight_entity {             \
     border: 1px solid #eeeeee;  \
+    border-color: rgba(200, 200, 200, 0.3);\
+    margin: -1px;               \
     display: inline-block;      \
 }                               \
                                 \

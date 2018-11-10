@@ -20,6 +20,7 @@
 "Clear"="Clear";
 "Menu"="Menu";
 "Show shortcuts"="Show shortcuts";
+"Switch between console and editor"="Switch between console and editor";
 
 /* Editor */
 "Editor"="Editor";

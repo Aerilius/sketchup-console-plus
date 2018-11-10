@@ -20,6 +20,7 @@
 "Clear"="Effacer";
 "Menu"="Menu";
 "Show shortcuts"="Afficher les raccourcis clavier";
+"Switch between console and editor"="Changer entre console et éditeur";
 
 /* Editor */
 "Editor"="Éditeur";

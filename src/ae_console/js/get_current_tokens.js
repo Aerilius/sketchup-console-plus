@@ -11,6 +11,30 @@ define(['ace/ace'], function (ace) {
         indexAccessor = /^[\[\]]$/;
 
     /**
+     * Get the current token from token iterator and correct it if necessary.
+     * Ace's Ruby tokenizer incorrectly splits some tokens, for example methods ending with question marks or exclamation marks. 
+     */
+    function getCorrectedCurrentToken (tokenIterator) {
+        // Check the next token to make sure we have the complete current token.
+        // Detecting setter methods however is ambiguous to distinguish from local variable assignments.
+        var currentToken = tokenIterator.getCurrentToken(); // An object {type: string, value: string, index: number, start: number}
+        if (currentToken == null) return null;
+        var tokenString = currentToken.value;
+        var nextToken = tokenIterator.stepForward();
+        if (nextToken != null) {
+            switch (nextToken.value) {
+                case '?':  tokenString += '?'; break;
+                case '?.': tokenString += '?'; break;
+                case '!':  tokenString += '!'; break;
+                case '!.': tokenString += '!'; break;
+                default: break; // null or non-matching
+            }
+        }
+        tokenIterator.stepBackward(); // again the old currentToken
+        return tokenString;
+    }
+
+    /**
      * Get a list of continuous tokens preceding the given position in the editor.
      * The token list includes – if possible – all tokens needed for a valid object/class/module or chained methods.
      * @returns {Array<string>} - An array of string.
@@ -20,28 +44,14 @@ define(['ace/ace'], function (ace) {
         var tokenIterator = new TokenIterator(aceEditor.getSession(), position.row, position.column);
         var tokens = [];
         var bracketStack = [];
-        var currentToken = tokenIterator.getCurrentToken(); // An object {type: string, value: string, index: number, start: number}
-        if (currentToken == null) return tokens;
-        // Ace's Ruby tokenizer incorrectly splits some tokens. 
-        // Check the next token to make sure we have the complete current token.
-        // Detecting setter methods however is ambiguous to distinguish from local variable assignments.
-        var token = currentToken.value;
-        var nextToken = tokenIterator.stepForward();
-        if (nextToken != null) {
-            switch (nextToken.value) {
-                case '?':  token += '?'; break;
-                case '?.': token += '?'; break;
-                case '!':  token += '!'; break;
-                case '!.': token += '!'; break;
-                default: break; // null or non-matching
-            }
-        }
-        tokenIterator.stepBackward(); // again the old currentToken
+        var token = getCorrectedCurrentToken(tokenIterator);
+        if (token == null) return tokens;
         tokens.unshift(token);
         if (bracketClose.test(token)) {
             bracketStack.push(token);
         }
         // Walk from the caret position backwards and collect tokens. Skip everything within brackets.
+        var currentToken; // An object {type: string, value: string, index: number, start: number}
         while (true) {
             currentToken = tokenIterator.stepBackward();
             if (currentToken == null) break;

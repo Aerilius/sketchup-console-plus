@@ -62,7 +62,7 @@ module AE
           context_class = (context.is_a?(Module)) ? context : context.class
           completions = []
           begin
-            prefix_regexp = non_verbose{ Regexp.new('^' + prefix) }
+            prefix_regexp = non_verbose{ Regexp.new('^' + Regexp.quote(prefix)) }
           rescue RegexpError
             # For example when prefix contains characters invalid for the encoding.
             # In that case, there are likely no completions anyways.

@@ -166,7 +166,7 @@ module AE
       end
 
       def get_completions(prefix)
-        prefix_regexp = Regexp.new('^' + prefix)
+        prefix_regexp = Regexp.new('^' + Regexp.quote(prefix))
         completions = []
         returned_is_instance = !@returned_object.is_a?(Module)
         if returned_is_instance
@@ -237,7 +237,7 @@ module AE
       end
 
       def get_completions(prefix)
-        prefix_regexp = Regexp.new('^' + prefix)
+        prefix_regexp = Regexp.new('^' + Regexp.quote(prefix))
         completions = []
         if @is_instance
           completions.concat(@returned_class.instance_methods.grep(prefix_regexp).map{ |method|
@@ -325,7 +325,7 @@ module AE
       end
 
       def get_completions(prefix)
-        prefix_regexp = Regexp.new('^' + prefix)
+        prefix_regexp = Regexp.new('^' + Regexp.quote(prefix))
         completions = DocProvider.get_infos_for_docpath_prefix(@returned_namespace).select{ |doc_info|
           prefix_regexp =~ doc_info[:name]
         }.map{ |doc_info|

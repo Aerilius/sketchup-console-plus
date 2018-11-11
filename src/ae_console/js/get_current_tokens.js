@@ -3,6 +3,8 @@ define(['ace/ace'], function (ace) {
     var TokenIterator = ace.require('ace/token_iterator').TokenIterator;
 
     var space = /^\s+$/,
+        comma = /^,\s*$/,
+        semicolon = /^;\s*$/,
         bracketOpen = /^[\(\[\{]$/,
         bracketClose = /^[\)\]\}]$/,
         bracketMatching = {'(': ')', ')': '(',  '[': ']', ']': '[', '{': '}', '}': '{'},
@@ -66,7 +68,9 @@ define(['ace/ace'], function (ace) {
                 } else {
                     break;
                 }
-            } else if (space.test(token)) {
+            } else if (space.test(token) || 
+                       comma.test(token) || 
+                       semicolon.test(token)) {
                 break;
             } else if (bracketStack.length == 0) {
                 // TODO: add [] methods? Does it handle []=, \w= ?

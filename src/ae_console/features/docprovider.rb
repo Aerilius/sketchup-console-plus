@@ -341,7 +341,7 @@ module AE
           raise ArgumentError.new("Prefix must have at least one character") if prefix.empty?
           # Prefix is the lowest prefix for which all greater or equal items are desired.
           # The lowest prefix for which all greater or equal items are not desired
-          prefix_succ = prefix[0...-1] + (prefix[-1].ord+1).chr
+          prefix_succ = prefix[0...-1] + (prefix[-1].ord+1).chr(Encoding::UTF_8)
           if block_given?
             first_index      = binary_search_lowest_index(array){ |item| prefix      <= get_attribute.call(item) }
             after_last_index = binary_search_lowest_index(array){ |item| prefix_succ <= get_attribute.call(item) }

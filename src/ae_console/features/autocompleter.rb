@@ -62,7 +62,7 @@ module AE
           context_class = (context.is_a?(Module)) ? context : context.class
           completions = []
           begin
-            prefix_regexp = Regexp.new('^' + prefix)
+            prefix_regexp = non_verbose{ Regexp.new('^' + prefix) }
           rescue RegexpError
             # For example when prefix contains characters invalid for the encoding.
             # In that case, there are likely no completions anyways.
@@ -120,6 +120,15 @@ module AE
           return DocProvider.get_infos_for_token_prefix(prefix).map{ |doc_info|
             TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])
           }
+        end
+
+        def non_verbose(&block)
+          # Warnings possible, but should not be visible in console.
+          previous_verbosity = $VERBOSE
+          $VERBOSE = nil
+          result = block.call()
+          $VERBOSE = previous_verbosity
+          return result
         end
 
       end # class << self

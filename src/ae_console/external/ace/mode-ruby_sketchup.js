@@ -37,24 +37,27 @@ var RubySketchUpHighlightRules = function() {
     this.$keywords    = rubyHighlightRules.getKeywords();
     this.$rules       = rubyHighlightRules.getRules();
 
+    var float = "-?(?:[1-9][0-9]+|[0-9])(?:\\.[0-9]+(?:[eE]-?[0-9]+)?)?";
+    var space = "[\\s\\u00a0]*";
+    var unit = "(?:m|\\\'|\\\"|cm|mm)";
     this.$rules["start"].unshift({
             token: "sketchup.entity",
             regex: "#<[^\\>]+>"
         },{
             token: "sketchup.point3d",
-            regex: "Point3d\\([0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+\\)"
+            regex: "Point3d\\(" + float + "," + space + "," + float + "," + space + "\\)"
         },{
             token: "sketchup.point3d",
-            regex: "\\([0-9\\.\\,\\-eE]+(?:m|\\\'|\\\"|cm|mm),[\\s\\u00a0]*[0-9\\.\\,\\-eE]+(?:m|\\\'|\\\"|cm|mm),[\\s\\u00a0]*[0-9\\.\\,\\-eE]+(?:m|\\\'|\\\"|cm|mm)\\)"
+            regex: "\\(" + float + unit + "," + space + float + unit + "," + space + float + unit + "\\)"
         },{
             token: "sketchup.vector3d",
-            regex: "Vector3d\\([0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+\\)"
+            regex: "Vector3d\\(" + float + "," + space + "," + float + "," + space + "\\)"
         },{
             token: "sketchup.vector3d",
-            regex: "\\([0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+,[\\s\\u00a0]*[0-9\\.\\-eE]+\\)"
+            regex: "\\(" + float + "," + space + float + "," + space + float + "\\)"
         },{
             token: "sketchup.color",
-            regex: "Color\\([\\s\\u00a0]*[0-9\\.]+,[\\s\\u00a0]*[0-9\\.]+,[\\s\\u00a0]*[0-9\\.]+(?:,[\\s\\u00a0]*[0-9\\.]+)?\\)"
+            regex: "Color\\(" + space + float +"," + space + float + "," + space + float + "(?:," + space + float + ")?\\)"
     });
 
 };

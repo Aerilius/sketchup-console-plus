@@ -5,6 +5,8 @@ define(['ace/ace'], function (ace) {
     var space = /^\s+$/,
         comma = /^,\s*$/,
         semicolon = /^;\s*$/,
+        endOfLineComment = /^#/,
+        isString = /^\"(?:\\"|[^"])*\"$|^\'(?:\\'|[^'])*\'$/,
         bracketOpen = /^[\(\[\{]$/,
         bracketClose = /^[\)\]\}]$/,
         bracketMatching = {'(': ')', ')': '(',  '[': ']', ']': '[', '{': '}', '}': '{'},
@@ -46,6 +48,10 @@ define(['ace/ace'], function (ace) {
         var bracketStack = [];
         var token = getCorrectedCurrentToken(tokenIterator);
         if (token == null) return tokens;
+        // Abort if the token is not autocompletable.
+        if (endOfLineComment.test(token) || isString.test(token)) {
+            return tokens;
+        }
         tokens.unshift(token);
         if (bracketClose.test(token)) {
             bracketStack.push(token);
@@ -80,7 +86,8 @@ define(['ace/ace'], function (ace) {
                 }
             } else if (space.test(token) || 
                        comma.test(token) || 
-                       semicolon.test(token)) {
+                       semicolon.test(token) ||
+                       endOfLineComment.test(token)) {
                 break;
             } else if (bracketStack.length == 0) {
                 // TODO: add [] methods? Does it handle []=, \w= ?

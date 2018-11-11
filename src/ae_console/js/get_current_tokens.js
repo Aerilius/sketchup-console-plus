@@ -5,6 +5,7 @@ define(['ace/ace'], function (ace) {
     var space = /^\s+$/,
         comma = /^,\s*$/,
         semicolon = /^;\s*$/,
+        assignment = /^=$/,
         endOfLineComment = /^#/,
         isString = /^\"(?:\\"|[^"])*\"$|^\'(?:\\'|[^'])*\'$/,
         bracketOpen = /^[\(\[\{]$/,
@@ -87,6 +88,7 @@ define(['ace/ace'], function (ace) {
             } else if (space.test(token) || 
                        comma.test(token) || 
                        semicolon.test(token) ||
+                       assignment.test(token) ||
                        endOfLineComment.test(token)) {
                 break;
             } else if (bracketStack.length == 0) {

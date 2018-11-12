@@ -34,7 +34,7 @@ module AE
             :value   => filepath,
             :meta    => :filepath,
             # Score the completion by alphabetic index.
-            :score   => completions.length - index
+            :score   => (2000 + completions.length - index) + ((filepath[-1] == '/') ? 1000 : 0)
           }
         }
         action_context.resolve completions

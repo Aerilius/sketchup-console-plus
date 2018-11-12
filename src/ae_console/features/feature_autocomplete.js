@@ -99,7 +99,6 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
                 for (var i = 0; i < completions.length; i++) {
                     // Restore the completion to match the prefix only, not the looked-up string.
                     completions[i].value = completions[i].value.substring(prefixStart);
-                    completions[i].score = 2000;
                 }
                 callback(null, completions);
             });

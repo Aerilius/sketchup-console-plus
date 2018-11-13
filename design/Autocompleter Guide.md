@@ -29,15 +29,15 @@ typed, introspection cannot provide the return types).</dd>
 ## Backtracking Resolver
 
 This approach tries to guess the most likely type starting from the last token.
-Tree of possibilities, but is narrowed down by matches for previous tokens.
+Since a token can be member of multiple classes or objects this results in a tree of possibilities, but it can be narrowed down by matches for the previous tokens.
  
     … → previous token → last token
 
 1. last token  
    ↓
-2. Which types respond to that token?  
+2. Which types (previous token) respond to that token?  
    ↓
-3. Which of these types can be returned by previous token?
+3. Which of these types can be returned by previous previous token?
 
 Usually already with two tokens, the possibilities can be reduced to one.
 

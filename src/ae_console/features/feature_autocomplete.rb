@@ -46,13 +46,22 @@ module AE
       def autocomplete_token_list(action_context, tokens, prefix, binding)
         # May raise Autocompleter::AutocompleterException
         completions = Autocompleter.complete(tokens, prefix, binding)
+        # Score the completions
         completions.map!{ |classification|
+          confidence_score = 3 - classification.inherited
+          score = 1000 * confidence_score
+          doc_html = begin
+            DocProvider.get_documentation_html(classification)
+          rescue DocProvider::DocNotFoundError
+            nil
+          end
           {
             :caption => classification.token,
             :value   => classification.token, # the full token insert
             :meta    => classification.namespace, # TRANSLATE[classification.type.to_s],
-            :score   => (classification.docpath[/Sketchup|Geom|UI/]) ? 1000 : 100,
-            :docHTML => (begin;DocProvider.get_documentation_html(classification);rescue DocProvider::DocNotFoundError;nil;end)
+            :score   => score,
+            :docHTML => doc_html,
+            :docpath => classification.docpath # custom attribute, not part of ace
           }
         }
         action_context.resolve completions

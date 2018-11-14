@@ -97,26 +97,26 @@ module AE
               object = context.const_get(token)
               namespace = (context == ::Object) ? '' : context.name
               type = (object.is_a?(Class)) ? :class : (object.is_a?(Module)) ? :module : :constant
-              return TokenClassificationByObject.new(token, type, namespace, object)
+              return TokenClassificationByObject.new(token, type, namespace, 0, object)
             when GLOBAL_VARIABLE
               raise TokenResolverError.new("No global variable found for `#{token}`") unless Kernel.global_variables.include?(token.to_sym)
               object = TOPLEVEL_BINDING.eval(token)
-              return TokenClassificationByObject.new(token, :global_variable, '', object)
+              return TokenClassificationByObject.new(token, :global_variable, '', 0, object)
             when INSTANCE_VARIABLE
               raise TokenResolverError.new("No instance variable found for `#{token}`") unless context.instance_variable_defined?(token)
               object = context.instance_variable_get(token)
               namespace = context.class.name
-              return TokenClassificationByObject.new(token, :instance_variable, namespace, object)
+              return TokenClassificationByObject.new(token, :instance_variable, namespace, 0, object)
             when CLASS_VARIABLE
               context = context.class unless context.is_a?(Module)
               raise TokenResolverError.new("No class variable found for `#{token}`") unless context.class_variable_defined?(token)
               object = context.class_variable_get(token)
               namespace = (context == ::Object) ? '' : context.name
-              return TokenClassificationByObject.new(token, :class_variable, namespace, object)
+              return TokenClassificationByObject.new(token, :class_variable, namespace, 0, object)
             else # Local variable or method
               if binding.eval('local_variables').include?(token.to_sym)
                 object = binding.eval(token.to_s)
-                return TokenClassificationByObject.new(token, :local_variable, '', object)
+                return TokenClassificationByObject.new(token, :local_variable, '', 0, object)
               elsif context.methods.include?(token.to_sym) || Kernel.methods.include?(token.to_sym)
                 raise TokenResolverError.new("Unresolvable because `#{token}` is a method → Get type from docs")
               else
@@ -142,9 +142,9 @@ module AE
               begin
                 # Try to resolve the returned type to a class in object space, which then allows introspection.
                 returned_class = resolve_module_path(returned_type)
-                TokenClassificationByClass.new(token, doc_info[:type], doc_info[:namespace], returned_class, true) # is_instance = true, assume the method returns not a Class
+                TokenClassificationByClass.new(token, doc_info[:type], doc_info[:namespace], 0, returned_class, true) # is_instance = true, assume the method returns not a Class
               rescue NameError
-                TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:namespace], returned_type, true) # is_instance = true, assume the method returns not a Class
+                TokenClassificationByDoc.new(token, doc_info[:type], doc_info[:namespace], 0, returned_type, true) # is_instance = true, assume the method returns not a Class
               end
             }
             if classifications.length == 1
@@ -201,7 +201,7 @@ module AE
             next unless doc_info[:return]
             returned_types = DocProvider.extract_return_types(doc_info)
             returned_types.each{ |returned_type|
-              classifications << TokenClassificationByDoc.new(first_token, doc_info[:type], doc_info[:namespace], returned_type, true)
+              classifications << TokenClassificationByDoc.new(first_token, doc_info[:type], doc_info[:namespace], 0, returned_type, true)
             }
           }
           if classifications.empty?

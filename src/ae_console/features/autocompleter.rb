@@ -73,41 +73,42 @@ module AE
             # Resolve inheritance from outer module scopes.
             nesting = binding.eval('Module.nesting').reverse # includes context_class at the beginning (unless context_class == Object)
             nesting << Object # class of <main>
-            nesting.each{ |modul|
+            nesting.reverse.each_with_index{ |modul, index_from_inside|
               completions.concat(modul.constants.grep(prefix_regexp).map{ |name|
                 return_value = modul.const_get(name)
                 type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-                TokenClassification.new(name, type, (modul != ::Object) ? modul.name : nil)
+                inherited = index_from_inside
+                TokenClassification.new(name, type, (modul != ::Object) ? modul.name : nil, inherited)
               })
             }
           when GLOBAL_VARIABLE
             completions.concat(Kernel.global_variables.grep(prefix_regexp).map{ |name|
-              TokenClassification.new(name, :global_variable, '')
+              TokenClassification.new(name, :global_variable, '', 0)
             })
           when INSTANCE_VARIABLE
             completions.concat(context.instance_variables.grep(prefix_regexp).map{ |name|
-              TokenClassification.new(name, :instance_variable, context_class.name)
+              TokenClassification.new(name, :instance_variable, context_class.name, 0)
             })
           when CLASS_VARIABLE
             completions.concat(context_class.class_variables.grep(prefix_regexp).map{ |name|
-              TokenClassification.new(name, :class_variable, context_class.name)
+              TokenClassification.new(name, :class_variable, context_class.name, 0)
             })
           else # Local variable
             completions.concat(binding.eval('local_variables').grep(prefix_regexp).map{ |name|
-              TokenClassification.new(name, :local_variable, context_class.name)
+              TokenClassification.new(name, :local_variable, context_class.name, 0)
             })
             # Local methods
             # Take the method from the correct module if it comes from an included module.
-            context_class.included_modules.each{ |modul|
-              completions.concat(modul.methods.grep(prefix_regexp).map{ |method|
-                TokenClassification.new(method, :instance_method, modul.name)
+            context_class.included_modules.each_with_index{ |modul, inherited|
+              completions.concat(modul.methods(false).grep(prefix_regexp).map{ |method|
+                TokenClassification.new(method, :instance_method, modul.name, inherited)
               })
             }
             # Methods defined in this class/module
             is_instance = !context.is_a?(Module)
             type = (is_instance) ? :instance_method : (context.is_a?(Class)) ? :class_method : :module_function
             completions.concat((context.methods.concat(context.private_methods)).grep(prefix_regexp).map{ |name|
-              TokenClassification.new(name, type , context_class.name)
+              TokenClassification.new(name, type, context_class.name, 0)
             })
           end
           if completions.empty?
@@ -118,7 +119,7 @@ module AE
 
         def get_completions_any_token_matches(prefix)
           return DocProvider.get_infos_for_token_prefix(prefix).map{ |doc_info|
-            TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])
+            TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace], 10)
           }
         end
 

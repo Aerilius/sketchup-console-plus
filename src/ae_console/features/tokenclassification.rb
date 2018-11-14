@@ -19,12 +19,13 @@ module AE
 
       class TokenNotResolvedError < StandardError; end
 
-      attr_reader :token, :type, :namespace
+      attr_reader :token, :type, :namespace, :inherited
 
-      def initialize(token, type, namespace)
+      def initialize(token, type, namespace, inherited=0)
         @token = token
         @type = type                 # type of the token
         @namespace = namespace || '' # path of object/class before the token, leading to the token
+        @inherited = inherited
       end
 
       # Returns the class path and token.
@@ -130,8 +131,8 @@ module AE
     # The next token can be looked up by reflection.
     class TokenClassificationByObject < TokenClassification
 
-      def initialize(token, type, namespace, returned_object)
-        super(token, type, namespace)
+      def initialize(token, type, namespace, inherited, returned_object)
+        super(token, type, namespace, inherited)
         @returned_object = returned_object # object identified or returned by the token
       end
 
@@ -144,22 +145,23 @@ module AE
         if @returned_object.is_a?(Module) && @returned_object.constants.include?(token.to_sym)
           return_value = @returned_object.const_get(token.to_sym)
           type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-          return TokenClassificationByObject.new(token, type, @returned_object.name, return_value)
+          return TokenClassificationByObject.new(token, type, @returned_object.name, 0, return_value)
         # Class constructor method
         elsif @returned_object.is_a?(Class) && token == 'new'
           namespace = @returned_object.name
           returned_class = @returned_object
-          return TokenClassificationByClass.new(token, :class_method, namespace, returned_class, true)
+          return TokenClassificationByClass.new(token, :class_method, namespace, 0, returned_class, true)
         # Module/Class method, instance method
         elsif @returned_object.respond_to?(token)
           returned_is_instance = !@returned_object.is_a?(Module)
           returned_class = (returned_is_instance) ? @returned_object.class : @returned_object
           # Take the method from the correct module if it comes from an included module.
-          returned_class = returned_class.included_modules.find{ |modul|
-            modul.instance_methods.include?(token.to_sym)
-          } || returned_class
-          returned_namespace = returned_class.name
-          return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, returned_is_instance).resolve(token)
+          inherited_class = returned_class.included_modules.find{ |modul|
+            modul.instance_methods(false).include?(token.to_sym)
+          }
+          inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+          returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+          return TokenClassificationByDoc.new(@token, @type, @namespace, inherited, returned_namespace, returned_is_instance).resolve(token)
         else
           raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for object #{@returned_object.inspect[0..100]}")
         end
@@ -171,21 +173,31 @@ module AE
         returned_is_instance = !@returned_object.is_a?(Module)
         if returned_is_instance
           completions.concat(@returned_object.methods.grep(prefix_regexp).map{ |method|
+            returned_class = @returned_object.class
             # Take the method from the correct module if it comes from an included module.
-            returned_class = @returned_object.class.included_modules.find{ |modul|
-              modul.instance_methods.include?(method)
-            } || @returned_object.class
-            TokenClassification.new(method, :instance_method, returned_class.name)
+            inherited_class = returned_class.included_modules.find{ |modul|
+              modul.instance_methods(false).include?(method)
+            }
+            inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+            returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+            TokenClassification.new(method, :instance_method, returned_namespace, inherited)
           })
         else
           completions.concat(@returned_object.constants.grep(prefix_regexp).map{ |constant|
             return_value = @returned_object.const_get(constant)
             type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-            TokenClassification.new(constant, type, @returned_object.name)
+            TokenClassification.new(constant, type, @returned_object.name, 0)
           })
           type = (@returned_object.is_a?(Class)) ? :class_method : :module_function
           completions.concat(@returned_object.methods.grep(prefix_regexp).map{ |method|
-            TokenClassification.new(method, type, @returned_object.name)
+            returned_class = @returned_object
+            # Take the method from the correct module if it comes from an included module.
+            inherited_class = returned_class.included_modules.find{ |modul|
+              modul.methods(false).include?(method)
+            }
+            inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+            returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+            TokenClassification.new(method, type, returned_namespace, inherited)
           })
         end
         return completions
@@ -197,8 +209,8 @@ module AE
     # The next token can be looked up by reflection.
     class TokenClassificationByClass < TokenClassification
 
-      def initialize(token, type, namespace, returned_class, returned_is_instance=true)
-        super(token, type, namespace)
+      def initialize(token, type, namespace, inherited, returned_class, returned_is_instance=true)
+        super(token, type, namespace, inherited)
         @returned_class = returned_class # Class of the object identified or returned by the token.
         @is_instance = returned_is_instance # Whether the object identified or returned by the token is an instance
       end
@@ -210,27 +222,35 @@ module AE
             return_value = @returned_class.const_get(token)
             if return_value.is_a?(Module)
               type = (return_value.is_a?(Class)) ? :class : :module
-              return TokenClassificationByClass.new(token, type, @returned_class.name, return_value)
+              return TokenClassificationByClass.new(token, type, @returned_class.name, 0, return_value, false)
             else # return_value is an object
-              return TokenClassificationByObject.new(token, :constant, @returned_class.name, return_value)
+              return TokenClassificationByObject.new(token, :constant, @returned_class.name, 0, return_value)
             end
           # Class constructor method
           elsif token == 'new'
             # @returned_class stays the same, @is_instance = true
-            return TokenClassificationByClass.new(token, :class_method, @returned_class.name, @returned_class, true)
+            return TokenClassificationByClass.new(token, :class_method, @returned_class.name, 0, @returned_class, true)
           # Module/Class method
           else
-            returned_namespace = @returned_class.name
-            return TokenClassificationByDoc.new(@token, @type, @namespace, returned_namespace, @is_instance).resolve(token)
+            returned_class = @returned_class
+            # Take the method from the correct module if it comes from an included module.
+            inherited_class = returned_class.included_modules.find{ |modul|
+              modul.methods(false).include?(token.to_sym)
+            }
+            inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+            returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+            return TokenClassificationByDoc.new(@token, @type, @namespace, inherited, returned_namespace, @is_instance).resolve(token)
           end
         # instance method
         elsif @returned_class.instance_methods.include?(token.to_sym)
+          returned_class = @returned_class
           # Take the method from the correct module if it comes from an included module.
-          returned_class = @returned_class.included_modules.find{ |modul|
-            modul.instance_methods.include?(token.to_sym)
-          } || @returned_class
-          returned_namespace = returned_class.name
-          return TokenClassificationByDoc.new(@token, :instance_method, @namespace, returned_namespace, @is_instance).resolve(token)
+          inherited_class = returned_class.included_modules.find{ |modul|
+            modul.instance_methods(false).include?(token.to_sym)
+          }
+          inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+          returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+          return TokenClassificationByDoc.new(@token, :instance_method, @namespace, inherited, returned_namespace, @is_instance).resolve(token)
         else
           raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_class.name}")
         end
@@ -241,21 +261,31 @@ module AE
         completions = []
         if @is_instance
           completions.concat(@returned_class.instance_methods.grep(prefix_regexp).map{ |method|
+            returned_class = @returned_class
             # Take the method from the correct module if it comes from an included module.
-            returned_class = @returned_class.included_modules.find{ |modul|
-              modul.instance_methods.include?(method)
-            } || @returned_class
-            TokenClassification.new(method, :instance_method, returned_class.name)
+            inherited_class = returned_class.included_modules.find{ |modul|
+              modul.instance_methods(false).include?(method)
+            }
+            inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+            returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+            TokenClassification.new(method, :instance_method, returned_namespace, inherited)
           })
         else
           completions.concat(@returned_class.constants.grep(prefix_regexp).map{ |constant|
             return_value = @returned_class.const_get(constant)
             type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
-            TokenClassification.new(constant, type, @returned_class.name)
+            TokenClassification.new(constant, type, @returned_class.name, 0)
           })
           type = (@returned_class.is_a?(Class)) ? :class_method : :module_function
           completions.concat(@returned_class.methods.grep(prefix_regexp).map{ |method|
-            TokenClassification.new(method, type, @returned_class.name)
+            returned_class = @returned_class
+            # Take the method from the correct module if it comes from an included module.
+            inherited_class = returned_class.included_modules.find{ |modul|
+              modul.methods(false).include?(method)
+            }
+            inherited = (inherited_class.nil?) ? 0 : returned_class.ancestors.index(inherited_class)
+            returned_namespace = (inherited_class.nil?) ? returned_class.name : inherited_class.name
+            TokenClassification.new(method, type, returned_namespace, inherited)
           })
         end
         return completions
@@ -267,8 +297,8 @@ module AE
     # The next token can only be looked up in documentation (e.g. type of return value from methods).
     class TokenClassificationByDoc < TokenClassification
 
-      def initialize(token, type, namespace, returned_namespace, returned_is_instance=true)
-        super(token, type, namespace)
+      def initialize(token, type, namespace, inherited, returned_namespace, returned_is_instance=true)
+        super(token, type, namespace, inherited)
         @returned_namespace = returned_namespace # path of object identified or returned by the token
         @is_instance = returned_is_instance # Whether the object identified or returned by the token is an instance
       end
@@ -281,16 +311,21 @@ module AE
           returned_namespace = @returned_namespace + '::' + token #returned_namespace = doc_info[:path] # TODO: is this still correct
           begin
             returned_class = resolve_module_path(returned_namespace)
-            TokenClassificationByClass.new(token, type, @returned_namespace, returned_class, false)
+            TokenClassificationByClass.new(token, type, @returned_namespace, 0, returned_class, false)
           rescue NameError
             is_instance = false # assume the constant is a Class or Module
-            #return TokenClassificationByDoc.new(token, type, doc_info[:path], returned_namespace, is_instance)
-            return TokenClassificationByDoc.new(token, type, @returned_namespace, returned_namespace, is_instance)
+            #return TokenClassificationByDoc.new(token, type, doc_info[:path], 0, returned_namespace, is_instance)
+            return TokenClassificationByDoc.new(token, type, @returned_namespace, 0, returned_namespace, is_instance)
           end
         # Class constructor method
         elsif @is_instance == false && token == 'new'
           # @returned_namespace stays the same, @is_instance = true
-          return TokenClassificationByDoc.new(token, :class_method, @returned_namespace, @returned_namespace, true)
+          begin
+            returned_class = resolve_module_path(@returned_namespace)
+            TokenClassificationByClass.new(token, :class_method, @returned_namespace, 0, returned_class, true)
+          rescue NameError
+            return TokenClassificationByDoc.new(token, :class_method, @returned_namespace, 0, @returned_namespace, true)
+          end
         else
           # method
           path = @returned_namespace + ((@is_instance) ? '#' : '.') + token
@@ -302,9 +337,9 @@ module AE
               begin
                 # Try to resolve the returned type to a class in object space, which then allows introspection.
                 returned_class = resolve_module_path(returned_type)
-                TokenClassificationByClass.new(token, type, @returned_namespace, returned_class, true) # is_instance = true, assume the method returns not a Class
+                TokenClassificationByClass.new(token, type, @returned_namespace, 0, returned_class, true) # is_instance = true, assume the method returns not a Class
               rescue NameError
-                TokenClassificationByDoc.new(token, type, @returned_namespace, returned_type, true) # is_instance = true, assume the method returns not a Class
+                TokenClassificationByDoc.new(token, type, @returned_namespace, 0, returned_type, true) # is_instance = true, assume the method returns not a Class
               end
             }
             if classifications.length == 1
@@ -316,7 +351,7 @@ module AE
             end
           else
             if COMMON_KNOWLEDGE.include?(token)
-              return TokenClassificationByDoc.new(token, :instance_method, @returned_namespace, COMMON_KNOWLEDGE[token], true)
+              return TokenClassificationByDoc.new(token, :instance_method, @returned_namespace, 0, COMMON_KNOWLEDGE[token], true)
             else
               raise TokenNotResolvedError.new("Failed to resolve token '#{token}' for #{@is_instance ? 'an instance of' : ''} class #{@returned_namespace} through documentation")
             end
@@ -329,7 +364,8 @@ module AE
         completions = DocProvider.get_infos_for_docpath_prefix(@returned_namespace).select{ |doc_info|
           prefix_regexp =~ doc_info[:name]
         }.map{ |doc_info|
-          TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace])
+          inherited = 0 # Currently not supporting look up of inherited methods and depth of inheritence.
+          TokenClassification.new(doc_info[:name], doc_info[:type], doc_info[:namespace], inherited)
         }
         return completions
       end

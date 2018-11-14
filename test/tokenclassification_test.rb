@@ -37,52 +37,52 @@ module AE
 
       def test_docpath
         d = 'The docpath of a toplevel module should be the module name'
-        actual = TokenClassification.new('ModuleName', :module, '').docpath
+        actual = TokenClassification.new('ModuleName', :module, '', 0).docpath
         assert_equal('ModuleName', actual, d)
-        actual = TokenClassification.new('ClassName', :class, '').docpath
+        actual = TokenClassification.new('ClassName', :class, '', 0).docpath
         assert_equal('ClassName', actual, d)
-        actual = TokenClassification.new('TOPLEVEL_CONSTANT', :constant, '').docpath
+        actual = TokenClassification.new('TOPLEVEL_CONSTANT', :constant, '', 0).docpath
         assert_equal('TOPLEVEL_CONSTANT', actual, d)
 
         d = 'The docpath of a module should be the separated by "::"'
-        actual = TokenClassification.new('ModuleName', :module, 'Namespace').docpath
+        actual = TokenClassification.new('ModuleName', :module, 'Namespace', 0).docpath
         assert_equal('Namespace::ModuleName', actual, d)
-        actual = TokenClassification.new('ClassName', :class, 'Namespace').docpath
+        actual = TokenClassification.new('ClassName', :class, 'Namespace', 0).docpath
         assert_equal('Namespace::ClassName', actual, d)
-        actual = TokenClassification.new('CONSTANT_NAME', :constant, 'Namespace').docpath
+        actual = TokenClassification.new('CONSTANT_NAME', :constant, 'Namespace', 0).docpath
         assert_equal('Namespace::CONSTANT_NAME', actual, d)
 
         d = 'The docpath of a class should be the separated by "."'
-        actual = TokenClassification.new('module_function_name', :module_function, 'ModuleName').docpath
+        actual = TokenClassification.new('module_function_name', :module_function, 'ModuleName', 0).docpath
         assert_equal('ModuleName.module_function_name', actual, d)
-        actual = TokenClassification.new('class_method_name', :class_method, 'ClassName').docpath
+        actual = TokenClassification.new('class_method_name', :class_method, 'ClassName', 0).docpath
         assert_equal('ClassName.class_method_name', actual, d)
-        actual = TokenClassification.new('instance_method_name', :instance_method, 'ClassName').docpath
+        actual = TokenClassification.new('instance_method_name', :instance_method, 'ClassName', 0).docpath
         assert_equal('ClassName#instance_method_name', actual, d)
       end
 
       def test_token_classification_by_object
-        classification = TokenClassificationByObject.new('ClassA', :class, '', ClassA)
+        classification = TokenClassificationByObject.new('ClassA', :class, '', 0, ClassA)
         do_resolve_on_a_class(classification)
         do_get_completions(classification)
 
-        classification = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', ClassA::ModuleB)
+        classification = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', 0, ClassA::ModuleB)
         do_resolve_on_a_module(classification)
 
-        classification = TokenClassificationByObject.new('object', :local_variable, 'ClassA', ClassA.new)
+        classification = TokenClassificationByObject.new('object', :local_variable, 'ClassA', 0, ClassA.new)
         do_resolve_on_an_instance(classification)
         do_get_completions(classification)
       end
 
       def test_token_classification_by_class
-        classification = TokenClassificationByClass.new('ClassA', :class, '', ClassA, false)
+        classification = TokenClassificationByClass.new('ClassA', :class, '', 0, ClassA, false)
         do_resolve_on_a_class(classification)
         do_get_completions(classification)
         
-        classification = TokenClassificationByClass.new('ModuleB', :module, 'ClassA', ClassA::ModuleB, false)
+        classification = TokenClassificationByClass.new('ModuleB', :module, 'ClassA', 0, ClassA::ModuleB, false)
         do_resolve_on_a_module(classification)
         
-        classification = TokenClassificationByClass.new('ClassA', :local_variable, '', ClassA, true)
+        classification = TokenClassificationByClass.new('ClassA', :local_variable, '', 0, ClassA, true)
         do_resolve_on_an_instance(classification)
         do_get_completions(classification)
       end
@@ -104,14 +104,14 @@ module AE
         @docprovider.stub_data('ClassA#yy', { :return => [['ClassD'], 'description'], :type => :instance_method })
         @docprovider.stub_data('ClassA#yz', { :return => [['ClassD'], 'description'], :type => :instance_method })
 
-        classification = TokenClassificationByDoc.new('ClassA', :class, '', 'ClassA', false)
+        classification = TokenClassificationByDoc.new('ClassA', :class, '', 0, 'ClassA', false)
         do_resolve_on_a_class(classification)
         do_get_completions(classification)
 
-        classification = TokenClassificationByDoc.new('ModuleB', :module, 'ClassA', 'ClassA::ModuleB', false)
+        classification = TokenClassificationByDoc.new('ModuleB', :module, 'ClassA', 0, 'ClassA::ModuleB', false)
         do_resolve_on_a_module(classification)
 
-        classification = TokenClassificationByDoc.new('ClassA', :class, '', 'ClassA', true)
+        classification = TokenClassificationByDoc.new('ClassA', :class, '', 0, 'ClassA', true)
         do_resolve_on_an_instance(classification)
         do_get_completions(classification)
 
@@ -119,15 +119,15 @@ module AE
       end
 
       def test_multiple_token_classification
-        class_a  = TokenClassificationByObject.new('ClassA', :class, '', ClassA)
-        class_a1 = TokenClassificationByObject.new('ClassA', :class, '', ClassA1)
-        class_a2 = TokenClassificationByObject.new('ClassA', :class, '', ClassA2)
-        module_b  = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', ClassA::ModuleB)
-        module_b1 = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', ClassA::ModuleB1)
-        module_b2 = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', ClassA::ModuleB2)
-        instance_a  = TokenClassificationByObject.new('object', :local_variable, '', ClassA.new)
-        instance_a1 = TokenClassificationByObject.new('object', :local_variable, '', ClassA1.new)
-        instance_a2 = TokenClassificationByObject.new('object', :local_variable, '', ClassA2.new)
+        class_a  = TokenClassificationByObject.new('ClassA', :class, '', 0, ClassA)
+        class_a1 = TokenClassificationByObject.new('ClassA', :class, '', 0, ClassA1)
+        class_a2 = TokenClassificationByObject.new('ClassA', :class, '', 0, ClassA2)
+        module_b  = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', 0, ClassA::ModuleB)
+        module_b1 = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', 0, ClassA::ModuleB1)
+        module_b2 = TokenClassificationByObject.new('ModuleB', :module, 'ClassA', 0, ClassA::ModuleB2)
+        instance_a  = TokenClassificationByObject.new('object', :local_variable, '', 0, ClassA.new)
+        instance_a1 = TokenClassificationByObject.new('object', :local_variable, '', 0, ClassA1.new)
+        instance_a2 = TokenClassificationByObject.new('object', :local_variable, '', 0, ClassA2.new)
 
         # Multiple classifications of which only one resolves the given token
         d = 'A MultipleTokenClassification of two classes should resolve to a single classification if only one matches the token'
@@ -172,14 +172,14 @@ module AE
 
         # Normal classification with method that returns multiple types, should resolve to MultipleTokenClassification
         d = 'Resolving a method that can return multiple types should return a MultipleTokenClassification'
-        classification = TokenClassificationByDoc.new('object', :local_variable, '', 'ClassC', true)
+        classification = TokenClassificationByDoc.new('object', :local_variable, '', 0, 'ClassC', true)
         actual = classification.resolve('returns_different_types')
         assert_kind_of(MultipleTokenClassification, actual, d)
         assert_equal(3, actual.classifications.length, d)
 
         # A multiple token classification of which one token resolves again to a multiple token classification
         d = 'Resolved classifications and MultipleTokenClassifications should be flattened'
-        classification = TokenClassificationByDoc.new('object', :local_variable, '', 'ClassC', true)
+        classification = TokenClassificationByDoc.new('object', :local_variable, '', 0, 'ClassC', true)
         classification = MultipleTokenClassification.new([classification])
         actual = classification.resolve('returns_different_types')
         assert_kind_of(MultipleTokenClassification, actual, d)

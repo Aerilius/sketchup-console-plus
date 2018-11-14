@@ -56,6 +56,17 @@ requirejs(['app', 'bridge', 'translate', 'ace/ace', 'get_current_tokens'], funct
                 for (var i = 0; i < completions.length; i++) {
                     // Restore the completion to match the prefix only, not the looked-up string.
                     completions[i].value = completions[i].value.substring(prefixStart);
+                    // We provide a custom insertMatch function to override the Ace built-in one.
+                    // We notify the API usage counter and then call the original Ace insertMatch implementation.
+                    completions[i].completer = {
+                      insertMatch: function (editor, data) {
+                        if (data.docpath) {
+                          Bridge.call('autocompletion_inserted', data.docpath);
+                        }
+                        delete data.completer;
+                        editor.completer.insertMatch(data);
+                      }
+                    };
                 }
                 callback(null, completions);
             });

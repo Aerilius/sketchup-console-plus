@@ -49,7 +49,8 @@ module AE
         # Score the completions
         completions.map!{ |classification|
           confidence_score = 3 - classification.inherited
-          score = 1000 * confidence_score
+          alphabetical_score = 1 - string_to_positional_fraction(classification.token.to_s)
+          score = 1000 * confidence_score + alphabetical_score
           doc_html = begin
             DocProvider.get_documentation_html(classification)
           rescue DocProvider::DocNotFoundError
@@ -68,6 +69,16 @@ module AE
       rescue Exception => e
         ConsolePlugin.error(e)
         action_context.reject
+      end
+
+      def string_to_positional_fraction(string)
+        return string.split(//).each_with_index.map{ |char, position|
+          if char == ' '
+            0
+          else
+            [0, [(char.upcase.ord - 65) / 26.0, 1].min].max * 10**(-position)
+          end
+        }.reduce(0, &:+)
       end
 
       def get_javascript_path

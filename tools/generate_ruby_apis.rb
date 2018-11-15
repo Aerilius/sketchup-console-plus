@@ -22,7 +22,7 @@ end
 
 def main(ruby_version)
   # Parameters
-  api_dir         = "../src/ae_console/apis"
+  api_dir         = "../src/ae_console/data/apis"
   source_dir      = "~/.rvm/src/ruby-#{ruby_version}"
   # Since the Ruby source directly contains source files in the directory root besides many unrelated folders, we include only .c and .h files.
   core_includes   = %w'*.c'  # *.h

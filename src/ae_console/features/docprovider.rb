@@ -8,7 +8,7 @@ module AE
     module DocProvider
 
       # The directory where Marshal dumps generated with Yard2Hash are stored.
-      API_PATH = File.join(PATH, 'apis') unless defined?(self::API_PATH)
+      API_PATH = File.join(PATH, 'data', 'apis') unless defined?(self::API_PATH)
 
       # [Hash<String,Hash>] docpath => doc_info
       @apis ||= {}

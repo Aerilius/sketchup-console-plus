@@ -20,7 +20,7 @@ end
 
 def main(*argv)
   # Parameters
-  api_dir         = "../src/ae_console/apis"
+  api_dir         = "../src/ae_console/data/apis"
   source_dir      = "~/Programmierung/Repos/ruby-api-stubs/SketchUp"
   
   # SketchUp

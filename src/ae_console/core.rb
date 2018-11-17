@@ -163,19 +163,20 @@ module AE
         self.on(:console_added){ |console|
           console.on(:shown){ |dialog|
             @@registered_features.each{ |feature|
-              javascript_string = nil
+              # Load into webdialog. The javascript should use `requirejs(['app'], function(){});` to access the API.
               if feature.respond_to?(:get_javascript_string)
                 javascript_string = feature.get_javascript_string
+                console.dialog.execute_script(
+                  "var element = document.createElement('script');
+                  element.innerHTML = #{javascript_string.inspect};
+                  document.head.appendChild(element);")
               elsif feature.respond_to?(:get_javascript_path)
                 path = File.join(PATH, 'features', feature.get_javascript_path) # relative
-                path = feature.get_javascript_path unless File.exist?(path)    # absolute
-                if File.exist?(path)
-                  javascript_string = File.read(path)
-                end
-              end
-              if javascript_string
-                # Load into webdialog. The javascript string should use `requirejs(['app'], function(){});` to access the API.
-                console.dialog.execute_script(javascript_string)
+                path = feature.get_javascript_path unless File.exist?(path)     # absolute
+                console.dialog.execute_script(
+                  "var element = document.createElement('script'); 
+                  element.src = #{path.inspect}; 
+                  document.head.appendChild(element);")
               end
             }
           }

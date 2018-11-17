@@ -401,6 +401,84 @@ table {
     zoom: 1; /* makes layout */
 }
 
+#consoleOutput .message .content.formatted, #consoleOutput.wrap_lines .message .content.formatted {
+    white-space: normal;
+    font-family: sans-serif;
+    word-wrap: break-word;
+}
+
+.formatted h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.formatted h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.formatted h3 {
+  font-size: 1.25em;
+  font-weight: bold;
+}
+
+.formatted kbd {
+    background-color: #fff;
+    border: 1px solid #ececec;
+    border-radius: 3px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2),0 0 0 1px #fff inset;
+    background: #fafafa;
+    border: 1px solid #ccc;
+    border-bottom-color: rgb(204, 204, 204);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom: medium none #fff;
+    color: #444;
+    display: inline-block;
+    font-size: .8706em;
+    line-height: 1.4;
+    margin: 0 0.1em;
+    padding: 0.1em 0.6em;
+    min-width: 1.5em;
+    text-align: center;
+}
+
+.formatted blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 12px;
+    border-left: 5px solid #ececec;
+    background-color: #f9f9f9;
+    clear: both;
+    font-size: 1em;
+}
+
+.formatted pre {
+    padding: 0.1em;
+    background: #f8f8f8;
+}
+
+.formatted pre code {
+    display: block;
+    word-wrap: normal;
+    color: #444;
+    max-height: 500px;
+    overflow: auto;
+    tab-size: 2;
+}
+
+.formatted p > code, .formatted p > tt, .formatted li > code, .formatted pre > code {
+    background: #f4f4f4;
+}
+
+.formatted code, .formatted tt, .formatted pre, .formatted samp {
+    font-family: monospace, monospace;
+    border-radius: 3px;
+    font-size: 85%;
+    margin: 0;
+    padding: .2em .4em;
+}
+
 #consoleOutput .message .gutter {
     position: absolute;
     /*width: 3em;  /* 1.75 em */

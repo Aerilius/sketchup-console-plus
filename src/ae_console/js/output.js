@@ -150,6 +150,11 @@ define(['jquery', 'bootstrap'], function ($, _) {
                 // TODO: if error was in console input, find the input entryElement and highlight the error.
 
             // Puts / print as text.
+            } else if (/html/.test(data.type)) { // && (/puts|print/.test(metadata.type))
+                if (!data.html) data.html = data.text;
+                addHtml($entryElement, data);
+
+            // Puts / print as text.
             } else { // if (/puts|print/.test(metadata.type))
                 addText($entryElement, data);
             }
@@ -203,6 +208,18 @@ define(['jquery', 'bootstrap'], function ($, _) {
             .addClass('content')
             .text(data.text)
             .appendTo($entryElement);
+        }
+
+        function addHtml ($entryElement, data) {
+            var entryElement = $('<div>')
+            .addClass('content formatted')
+            .html(data.html)
+            .appendTo($entryElement);
+            if (typeof output.highlight === 'function') {
+                $entryElement.find('code').each(function () {
+                    $(this).html(output.highlight($(this).text()));
+                });
+            }
         }
 
         function addError ($entryElement, data) {

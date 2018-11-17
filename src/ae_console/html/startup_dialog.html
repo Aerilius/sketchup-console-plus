@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome in Ruby Console+</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="MSThemeCompatible" content="Yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+            height: 100%;
+            background-color: Window;
+            color: WindowText;
+            font: message-box; /* use system font */
+            font-size: 80% !important; /* This overrides the font-size contained in the system font if it does not follow dpi settings. */
+            cursor: default;
+            overflow: hidden;
+            margin: 0;
+        }
+        
+        .horizontally-centered {
+            text-align: center;
+        }
+        
+        .columns {
+            width: 100%;
+        }
+        
+        .columns td {
+            width: 33%;
+            text-align: center;
+        }
+        
+        .columns button {
+            min-height: 3em;
+            min-width: 10em;
+        }
+    </style>
+    <script type="text/javascript" src="../js/config.js"></script>
+    <script type="text/javascript" src="../external/requirejs/require.js" charset="utf-8"></script>
+</head>
+<body scroll="no" class="unselectable horizontally-centered">
+    <h3>Welcome!</h3>
+    <table class="columns">
+        <tr>
+            <td>
+                <img src="../images/ruby_logo.svg" height="32"/>
+            </td>
+            <td>
+                <img src="../images/sketchup_logo.svg" height="32"/>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <select id="available_tutorials">
+                </select>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button id="button_start_tryruby">Start with<br/>Ruby in 30 minutes</button>
+            </td>
+            <td>
+                <button id="button_start_tutorial">Start learning<br/>Ruby in SketchUp</button>
+            </td>
+            <td>
+                <button id="button_no">No, thanks!</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <small style="color: gray">(Credits to Ivo Herweijer and TryRuby.org)</small>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+    <div>You can access the tutorials later again in Ruby Console+ in the menu button.</div>
+<script type="text/javascript">
+requirejs(['bridge', 'translate'], function (Bridge, Translate) { Bridge.call('translate'); });
+
+requirejs(['jquery', 'bridge'], function ($, Bridge) {
+
+    $(function () { // on DOMContentLoaded
+
+        Bridge.get('get_tutorials').then(function (tutorialData) {
+            for (var i = 0; i < tutorialData.length; i++) {
+                var tutorialItem = tutorialData[i];
+                $('#available_tutorials').append(
+                    $('<option>')
+                    .val(tutorialItem.filename)
+                    .text(tutorialItem.display_name)
+                );
+            }
+        });
+
+        $('#button_start_tryruby').on('click', function (event) {
+            Bridge.call('start_tryruby');
+        });
+
+        $('#button_start_tutorial').on('click', function (event) {
+            Bridge.call('start_tutorial', $('#available_tutorials').val());
+        });
+
+        $('#button_no').on('click', function (event) {
+            Bridge.call('close');
+        });
+
+    });
+});
+</script>
+</body>
+</html>

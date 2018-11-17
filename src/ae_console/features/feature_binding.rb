@@ -82,7 +82,7 @@ JAVASCRIPT
 
 end # module AE
 
-# Get an object's binding with correct the nesting, as if 'binding' was called
+# Get an object's binding with correct nesting, as if 'binding' was called
 # in the original class definition.
 # @param object [Object]
 # @return [Binding]

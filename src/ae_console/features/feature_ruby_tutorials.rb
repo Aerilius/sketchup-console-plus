@@ -145,8 +145,8 @@ module AE
           @original_wrap_in_undo = @console_instance.instance_variable_get(:@settings)[:wrap_in_undo]
           @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = true # TODO: Does this update setting in dialog? No
           # Listen for result
-          @console_instance.on(:result, &method(:on_result))
-          @console_instance.on(:error, &method(:on_error))
+          @console_instance.on(:result_printed, &method(:on_result))
+          @console_instance.on(:error_printed, &method(:on_error))
           # Go to first step
           next_step
         end
@@ -167,8 +167,8 @@ module AE
 
         def quit
           # Remove listeners for result
-          @console_instance.off(:result, &method(:on_result))
-          @console_instance.off(:error, &method(:on_error))
+          @console_instance.off(:result_printed, &method(:on_result))
+          @console_instance.off(:error_printed, &method(:on_error))
           # Change execution context back to original
           @console_instance.instance_variable_set(:@binding, @original_binding)
           # Set wrap in undo back to original
@@ -217,27 +217,27 @@ module AE
           }
         end
 
-        def on_result(result, metadata)
+        def on_result(result, result_string, metadata)
           # Check if output matches the defined answer regexp.
           # and print status message
           valid = nil
           if @current_item[:answer] && !@current_item[:answer].empty?
             # TODO: instead of stringified result, tryruby needs access to all the concatenated stdout since user input.
-            valid = !result.inspect.chomp.match(@current_item[:answer]).nil?
+            valid = !result_string.chomp.match(@current_item[:answer]).nil?
           elsif @current_item[:answer_code] && !@current_item[:answer_code].empty?
             valid = !!eval("proc{ |result| #{@current_item[:answer_code]} }").call(result)
           end
           case valid
           when true
             # Defer action so that result is printed first.
-            delay(0.1) {
+            delay(0) {
               show_message(@current_item[:ok])
               delay(1) {
                 next_step
               }
             }
           when false
-            delay {
+            delay(0) {
               show_message(@current_item[:error])
             }
           else
@@ -245,19 +245,19 @@ module AE
           end
         end
 
-        def on_error(exception, metadata)
+        def on_error(exception, message, metadata)
           # Check if output matches the defined answer regexp.
           # and print status message
           valid = nil
           if @current_item[:answer] && !@current_item[:answer].empty?
-            valid = !metadata[:message].chomp.match(@current_item[:answer]).nil?
+            valid = !message.chomp.match(@current_item[:answer]).nil?
           elsif @current_item[:answer_code] && !@current_item[:answer_code].empty?
             valid = !!eval("proc{ |result| #{@current_item[:answer_code]} }").call(exception)
           end
           case valid
           when true
             # Defer action so that result is printed first.
-            delay(0.1) {
+            delay(0) {
               show_message(@current_item[:ok])
               delay(1) {
                 next_step

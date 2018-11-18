@@ -196,6 +196,7 @@ module AE
           new_metadata[:time] = Time.now.to_f
           trigger(:result, result, new_metadata)
           action_context.resolve({:result => result_string, :metadata => new_metadata})
+          trigger(:result_printed, result, result_string, new_metadata)
         rescue Exception => exception
           remove_eval_internals_from_backtrace(exception.backtrace)
           message, _metadata = get_exception_metadata(exception)
@@ -204,6 +205,7 @@ module AE
           new_metadata[:message] = message
           trigger(:error, exception, new_metadata)
           action_context.reject(new_metadata)
+          trigger(:error_printed, exception, message, new_metadata)
         end
       end
 

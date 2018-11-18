@@ -22,6 +22,20 @@ requirejs(['app', 'bridge', 'translate', 'menu'], function (app, Bridge, Transla
     }
     
     function addHtmlToOutput (html) {
+        var insertCodeOnDblClick = function (event, args) {
+            var element = args[0];
+            $('pre code', element).click(function () {
+                var codeElement = $(this).get(0);
+                var code = codeElement.innerText;
+                insertInConsoleEditor(code);
+                app.console.aceEditor.focus();
+            }).hover(function () {
+              $(this).css('cursor', 'pointer');
+            }, function () {
+              $(this).css('cursor', null);
+            });
+        };
+        $(app.output).one('added', insertCodeOnDblClick);
         app.output.add(html, { type: 'puts html'});
         app.console.aceEditor.container.scrollIntoView();
     }

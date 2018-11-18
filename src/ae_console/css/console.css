@@ -380,7 +380,9 @@ table {
 }
 
 #consoleOutput .message.input,
-.message.result + .message,
+#consoleOutput .message.result + .message,
+#consoleOutput .message.puts.html,
+#consoleOutput .message.puts.html + .message,
 #consoleInput,
 #editorInput {
     border-top: 1px #ddd solid;
@@ -405,6 +407,10 @@ table {
     white-space: normal;
     font-family: sans-serif;
     word-wrap: break-word;
+}
+
+.formatted {
+    padding: 0.5em!important;
 }
 
 .formatted h1 {
@@ -455,7 +461,7 @@ table {
 
 .formatted pre {
     padding: 0.1em;
-    background: #f8f8f8;
+    background: #f4f4f4;
 }
 
 .formatted pre code {

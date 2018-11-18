@@ -162,7 +162,12 @@ module AE
           @current_item = @steps[@current_step]
           eval(@current_item[:preparation_code]) if @current_item[:preparation_code]
           show_message(@current_item[:text]) if @current_item[:text]
-          load_code(@current_item[:load_code]) if @current_item[:load_code]
+          if @current_item[:load_code]
+            code = URI.decode(@current_item[:load_code])
+            # TODO: support prev
+            # item.load_code = prev_code + item.load_code[4..999999] if item.load_code && !item.load_code.empty? && item.load_code[0..3] == 'prev'
+            load_code(code)
+          end
         end
 
         def quit
@@ -232,7 +237,7 @@ module AE
             # Defer action so that result is printed first.
             delay(0) {
               show_message(@current_item[:ok])
-              delay(1) {
+              delay(2) {
                 next_step
               }
             }
@@ -241,7 +246,9 @@ module AE
               show_message(@current_item[:error])
             }
           else
-            next_step
+            delay(0) {
+              next_step
+            }
           end
         end
 
@@ -259,7 +266,7 @@ module AE
             # Defer action so that result is printed first.
             delay(0) {
               show_message(@current_item[:ok])
-              delay(1) {
+              delay(2) {
                 next_step
               }
             }
@@ -268,7 +275,9 @@ module AE
               show_message(@current_item[:error])
             }
           else
-            next_step
+            delay(0) {
+              next_step
+            }
           end
         end
 
@@ -287,7 +296,9 @@ module AE
           end
 
           def go!
-            @tutorial.next_step
+            delay(0) {
+              @tutorial.next_step
+            }
             nil # TODO: avoid that nil is printed to the console?
           end
           alias_method :skip, :go!

@@ -84,7 +84,7 @@
         "title": "Hey, Summary #1 Already",
         "chapter": "Y",
         "answer": "^NoMethodError(.*)$",
-        "ok": "Nope, it is not possible to reverse a number. Press <kbd>Enter</kbd> to proceed.",
+        "ok": "Nope, it is not possible to reverse a number.",
         "error": "",
         "text": "<p>Let&rsquo;s look at what you&rsquo;ve learned in the first minute.</p>\n\n<h3>The editor</h3>\n\n<p>Typing code into the editor and evaluating it gives you an answer in the ouput section.\n(Almost) all code gives an answer.</p>\n\n<h3>Numbers and strings</h3>\n\n<p>Numbers and strings are Ruby&rsquo;s math and text objects.</p>\n\n<h3>Methods</h3>\n\n<p>You&rsquo;ve used English-language methods like reverse and length. And symbolic methods like the\nmultiplication method: *<br>\n<strong>Methods mean action!</strong></p>\n\n<p>This is the essence of your learning. Taking simple things, toying with them and turning them into\nnew things. Feeling comfortable yet? I promise you are.</p>\n\n<h2>Okay,</h2>\n\n<p>let&rsquo;s do something uncomfortable. Try reversing a number:</p>\n\n<pre><code>40.reverse</code></pre>\n",
         "load_code": ""
@@ -147,7 +147,7 @@
         "ok": "Restored!",
         "error": "",
         "text": "<p>Now, type:</p>\n\n<pre><code>ticket</code></pre>\n",
-        "load_code": "ticket%20=%20[12,%2047,%2035]"
+        "load_code": "ticket = [12, 47, 35]"
     },
     "16": {
         "lang": "EN",
@@ -157,7 +157,7 @@
         "ok": "You've sorted the list",
         "error": "",
         "text": "<p>You&rsquo;ve hung on to your lotto numbers, tucking them away inside a <strong>variable</strong> called ticket.\nBut any other name, like <em>jimmyslist</em>, would have been fine to.</p>\n\n<p>Programming, you will discover, is mostly about working with variables.</p>\n\n<p>Let&rsquo;s put your lotto numbers in order, how about?</p>\n\n<p>Use: </p>\n\n<pre><code>ticket.sort!</code></pre>\n\n<p>You had a list. You sorted the list. The ticket variable is now changed.<br>\nDid you notice that the <em>sort!</em> method has a big, bright exclamation at the end?<br>\nA lot of times Ruby methods shout like that if they alter the variable for good.\nIt&rsquo;s nothin special, just a mark.</p>\n",
-        "load_code": "ticket%20=%20[12,%2047,%2035]"
+        "load_code": "ticket = [12, 47, 35]"
     },
     "17": {
         "lang": "EN",
@@ -167,7 +167,7 @@
         "ok": "Ok",
         "error": "Almost",
         "text": "<p>So we stored our lotto numbers inside variable ticket. How to get &lsquo;em out again?</p>\n\n<p>We already saw that we can get the highest number with <strong>max</strong>. Similarly you can\nget the <strong>first</strong> or the <strong>last</strong> element of the list.\nBut what if you want a specific element?</p>\n\n<h3>[ ]</h3>\n\n<p>Ruby uses the square brackets [ ] to target an element.\nThe square brackets are very common in Ruby.\nThey are like sights used to line up a target. Exactly.\nThese brackets mean, &ldquo;I am looking for ____&rdquo; Ready, aim.</p>\n\n<p>Let&rsquo;s get all of our lotto numbers:</p>\n\n<pre><code>puts ticket[0]\nputs ticket[1]\nputs ticket[2]</code></pre>\n\n<p>Why do we use [0], [1], [2]?</p>\n\n<p>And not [1], [2] and [3]? Is that some kind of Japanese Zen thing?\nNo, we computer people just like to begin counting from zero. It&rsquo;s not just a Ruby thing,\nthis <em>zero based indexing</em> is used in most programming languages.</p>\n",
-        "load_code": "ticket%20=%20[12,%2047,%2035]"
+        "load_code": "ticket = [12, 47, 35]"
     },
     "18": {
         "lang": "EN",
@@ -177,7 +177,7 @@
         "ok": "Does it rhyme?",
         "error": "",
         "text": "<p>Now, look how your second minute went:</p>\n\n<h3>Errors</h3>\n\n<p>If you try to reverse a number or do anything fishy, Ruby will tell you so.</p>\n\n<h3>Arrays</h3>\n\n<p>Arrays are lists for storing things in some order.\nWe also know how to create array&rsquo;s and get items from array&rsquo;s.</p>\n\n<h3>Variables</h3>\n\n<p>Variables save a thing and give it a name. You used the equals sign to do this. Like:\nticket = [14, 37, 18].</p>\n\n<h3>2/8</h3>\n\n<p>In all there are eight sections. You are two-eighths of the way there! This is simple stuff,\ndon&rsquo;t you think? Good stuff up ahead.</p>\n\n<p>Let&rsquo;s change directions for a moment. I&rsquo;ve stuffed a bit of poetry for you in a certain variable.\nTake a look. Type:</p>\n\n<pre><code>puts poem</code></pre>\n",
-        "load_code": "poem%20=%20%22My%20toast%20has%20flown%20from%20my%20hand%5CnAnd%20my%20toast%20has%20gone%20to%20the%20moon.%5CnBut%20when%20I%20saw%20it%20on%20television,%5CnPlanting%20our%20flag%20on%20Halley's%20comet,%5CnMore%20still%20did%20I%20want%20to%20eat%20it.%5Cn%22"
+        "load_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\n\""
     },
     "19": {
         "lang": "EN",
@@ -237,7 +237,7 @@
         "ok": "Yes that's a new review",
         "error": "Use one of splendid, quite_good, mediocre, quite_not_good, abysmal. Don't forget the colon",
         "text": "<p>You&rsquo;ve made an empty <strong>hash</strong>. A hash is like an array, only every one of its elements has a name.</p>\n\n<p>We&rsquo;re going to stuff some miniature book reviews in our new hash. Here&rsquo;s our rating system:</p>\n\n<ul>\n<li>:splendid &rarr; a masterpiece</li>\n<li>:quite_good &rarr; enjoyed, sure, yes</li>\n<li>:mediocre &rarr; equal parts great and terrible</li>\n<li>:quite_not_good &rarr; notably bad</li>\n<li>:abysmal &rarr; steaming wreck</li>\n</ul>\n\n<p>To rate a book, put the title in square brackets and put the rating after the equals. For example:</p>\n\n<pre><code>books[&quot;Gravitys Rainbow&quot;] = :splendid</code></pre>\n\n<blockquote>\n<p>By now I think it is only fair to tell you that all lessons in TryRuby are separate from each other.\nSo if you go crazy typing book reviews here, you can only use &lsquo;em in this lesson.<br>\nIf you want to use your reviews in the next lesson you should copy/paste them.<br>\nDon&rsquo;t worry about this too much, each lesson has plenty of predefined stuff for you to play around with.</p>\n</blockquote>\n",
-        "load_code": "books%20=%20%7B%7D"
+        "load_code": "books = {}"
     },
     "25": {
         "lang": "EN",
@@ -247,7 +247,7 @@
         "ok": "See, the length method works on strings, array's and hashes.",
         "error": "",
         "text": "<p>Keep going, fill it up with reviews. And, if you want to see the whole list, just type: <strong>puts books</strong></p>\n\n<p>Again, the ratings are: :splendid, :quite_good, :mediocre, :quite_not_good and :abysmal.</p>\n\n<p>These ratings are not strings. When you place a colon in front of a simple word, you get a <strong>symbol</strong>.\nSymbols are cheaper than strings (in terms of computer memory.) If you use a word over and over in your program,\nuse a symbol. Rather than having thousands of copies of that word in memory, the computer will store the symbol only\n<strong>once</strong>.</p>\n\n<p>More importantly, a symbol tells you that is not just any old word but has a meaning within your program.</p>\n\n<p>Enter 2 more bookreviews, use <strong>books.length</strong> to see how many reviews there are in the hash:</p>\n\n<pre><code>books[&quot;The deep end&quot;]  = :abysmal\nbooks[&quot;Living colors&quot;] = :mediocre\n\nputs books\n\nputs books.length</code></pre>\n",
-        "load_code": "books%20=%20%7B%22Gravitys%20Rainbow%22%20=%3E%20:splendid%7D"
+        "load_code": "books = {\"Gravitys Rainbow\" => :splendid}"
     },
     "26": {
         "lang": "EN",
@@ -257,7 +257,7 @@
         "ok": "I liked it a lot",
         "error": "",
         "text": "<p>One great thing about Ruby is that names are often reused, which means fewer names you need to remember.</p>\n\n<p>Remember how we retrieved items from an array using a number:<br>\n<strong>puts ticket[1]</strong>.</p>\n\n<p>For a hash this works the same way, except we don&rsquo;t use a number to get an element but a name.</p>\n\n<p>So, if you&rsquo;d like to look up one of your old reviews, again put the title in the square. But leave off the equals.\nJust like this:</p>\n\n<pre><code>puts books[&quot;Gravitys Rainbow&quot;]</code></pre>\n",
-        "load_code": "books%20=%20%7B%22Gravitys%20Rainbow%22%20=%3E%20:splendid,%20%22The%20deep%20end%22%20=%3E%20:abysmal,%20%22Living%20colors%22%20=%3E%20:mediocre%7D"
+        "load_code": "books = {\"Gravitys Rainbow\" => :splendid, \"The deep end\" => :abysmal, \"Living colors\" => :mediocre}"
     },
     "27": {
         "lang": "EN",
@@ -277,7 +277,7 @@
         "ok": "Great, wow! You've made a scorecard of your ratings",
         "error": "",
         "text": "<p>So are you giving out harsh, unfair reviews? Let&rsquo;s keep score with a new hash <strong>ratings</strong>:</p>\n\n<p>Then, okay, now let&rsquo;s count up your reviews. Just stay with me. Type:</p>\n\n<pre><code>ratings = Hash.new {0}\n\nbooks.values.each { |rate|\n  ratings[rate] += 1\n}\n\nputs ratings</code></pre>\n\n<p>The straight line in the code is the pipe character, probably located right above the Enter key\non your keyboard.</p>\n\n<p>That <em>+= 1</em> line means: increase the value by 1.</p>\n\n<p>Don&rsquo;t worry if you don&rsquo;t understand everything that is going on here. It will be revealed later.</p>\n",
-        "load_code": "books%20=%20%7B%22Gravitys%20Rainbow%22%20=%3E%20:splendid,%20%22The%20deep%20end%22%20=%3E%20:abysmal,%20%22Living%20colors%22%20=%3E%20:mediocre,%20%22Bumblebees%22%20=%3E%20:mediocre%7D"
+        "load_code": "books = {\"Gravitys Rainbow\" => :splendid, \"The deep end\" => :abysmal, \"Living colors\" => :mediocre, \"Bumblebees\" => :mediocre}"
     },
     "29": {
         "lang": "EN",
@@ -317,7 +317,7 @@
         "ok": "",
         "error": "",
         "text": "<p>One other little thing we haven&rsquo;t really talked about openly: method arguments.\nRemember when we changed the poem a little bit? We used:\n<strong>poem.gsub(&ldquo;toast&rdquo;, &ldquo;honeydew&rdquo;)</strong></p>\n\n<p>The gsub method needs 2 arguments, which we passed to gsub by including two strings between\nparenthesis. <em>Arguments tell the method exactly what to do.</em></p>\n\n<h3>Parenthesis</h3>\n\n<p>Actually, most of the time Ruby doesn&rsquo;t mind if you omit the parenthesis. So this would have\nworked too:\n<strong>poem.gsub &ldquo;toast&rdquo;, &ldquo;honeydew&rdquo;</strong></p>\n\n<p>We have already used another method with a parameter. Many times in fact, though it was not very\nobvious:</p>\n\n<pre><code>puts &quot;Hello&quot;\nputs(&quot;Hello&quot;)</code></pre>\n\n<p>Yes <strong>puts</strong> is also a method. Using puts with or without parenthesis is the same to Ruby, but the\nversion without parenthesis is a bit easier to read. And it saves you valuable typing time!</p>\n\n<blockquote>\n<p>So I guess the conclusion is that you can do whatever you like with parenthesis as long as your\ncode reads nicely.</p>\n</blockquote>\n\n<h3>to (be) or not to (be)</h3>\n\n<p>So if <em>to</em> is a method and <em>be</em> is an argument we now know the answer to this age old question.\nIt is really just a matter of preference whether you want <em>to be</em> or <em>to(be)</em>.</p>\n\n<p>Are you in the mood for more Shakespeare? Read on.</p>\n",
-        "load_code": "poem%20=%20%22My%20toast%20has%20flown%20from%20my%20hand%5CnAnd%20my%20toast%20has%20gone%20to%20the%20moon.%5CnYada%20yada%20yada%5Cn%22"
+        "load_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nYada yada yada\n""
     },
     "33": {
         "lang": "EN",
@@ -347,7 +347,7 @@
         "ok": "That'll show those shrews",
         "error": "",
         "text": "<p>A new method is born. Let us use it now: </p>\n\n<pre><code>tame 5</code></pre>\n",
-        "load_code": "def%20tame(number_of_shrews);number_of_shrews.times%7Bputs%20%22Tamed%20a%20shrew%22%7D;end;"
+        "load_code": "def tame(number_of_shrews);number_of_shrews.times{puts \"Tamed a shrew\"};end;"
     },
     "36": {
         "lang": "EN",
@@ -377,7 +377,7 @@
         "ok": "Good. Bit difficult to read.",
         "error": "",
         "text": "<p>So far we have been running programs that only use things that we have typed ourselves.\nWhich is nice, I mean that <em>Odelaying</em> was epic, but this the internet era so it is about\ntime we included the rest of the world in our programming efforts.</p>\n\n<p>Many, many, many websites are available that you can ask for information. For instance\nthis link will give you all current <a href=\"http://news.google.com/news/section?q=ruby&output=rss\" target=\"_blank\">Google news feeds</a>\nabout Ruby.</p>\n\n<p>Your web browser will probably display it quite nicely for you. If you look at the source\n(type: control-U) you will see a long string of strangely formatted text. In the Google example\nit is in the <strong>rss</strong> format.</p>\n\n<h3>Formats</h3>\n\n<p>There are many other formats, with strange names, available and used on the web, like:\nhtml, xml and json. Yes, even this very website uses a couple of these.</p>\n\n<p>I have prepared a method for you that will fetch a list of the complete works of William\nShakespeare from the internet.\n(Don&rsquo;t worry it actually comes from the same server that this website runs on, so\nwe&rsquo;re not bothering anyone.)</p>\n\n<p>Get the data with:</p>\n\n<pre><code>get_shakey</code></pre>\n",
-        "load_code": "def%20get_shakey;JSON.parse(%22%7B%5C%22William%20Shakespeare%5C%22:%20%7B%5C%221%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Two%20Gentlemen%20of%20Verona%5C%22,%20%5C%22finished%5C%22:%201591%7D,%5C%222%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Taming%20of%20the%20Shrew%5C%22,%20%5C%22finished%5C%22:%201591%7D,%5C%223%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20VI,%20Part%202%5C%22,%20%5C%22finished%5C%22:%201591%7D,%5C%224%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20VI,%20Part%203%5C%22,%20%5C%22finished%5C%22:%201591%7D,%5C%225%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20VI,%20Part%201%5C%22,%20%5C%22finished%5C%22:%201592%7D,%5C%226%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Titus%20Andronicus%5C%22,%20%5C%22finished%5C%22:%201592%7D,%5C%227%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Richard%20III%5C%22,%20%5C%22finished%5C%22:%201593%7D,%5C%228%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Edward%20III%5C%22,%20%5C%22finished%5C%22:%201593%7D,%5C%229%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Comedy%20of%20Errors%5C%22,%20%5C%22finished%5C%22:%201594%7D,%5C%2210%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Love's%20Labour's%20Lost%5C%22,%20%5C%22finished%5C%22:%201595%7D,%5C%2211%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Love's%20Labour's%20Won%5C%22,%20%5C%22finished%5C%22:%201596%7D,%5C%2212%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Richard%20II%5C%22,%20%5C%22finished%5C%22:%201595%7D,%5C%2213%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Romeo%20and%20Juliet%5C%22,%20%5C%22finished%5C%22:%201595%7D,%5C%2214%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22A%20Midsummer%20Night's%20Dream%5C%22,%20%5C%22finished%5C%22:%201595%7D,%5C%2215%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22King%20John%5C%22,%20%5C%22finished%5C%22:%201596%7D,%5C%2216%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Merchant%20of%20Venice%5C%22,%20%5C%22finished%5C%22:%201597%7D,%5C%2217%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20IV,%20Part%201%5C%22,%20%5C%22finished%5C%22:%201597%7D,%5C%2218%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Merry%20Wives%20of%20Windsor%5C%22,%20%5C%22finished%5C%22:%201597%7D,%5C%2219%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20IV,%20Part%202%5C%22,%20%5C%22finished%5C%22:%201598%7D,%5C%2220%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Much%20Ado%20About%20Nothing%5C%22,%20%5C%22finished%5C%22:%201599%7D,%5C%2221%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20V%5C%22,%20%5C%22finished%5C%22:%201599%7D,%5C%2222%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Julius%20Caesar%5C%22,%20%5C%22finished%5C%22:%201599%7D,%5C%2223%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22As%20You%20Like%20It%5C%22,%20%5C%22finished%5C%22:%201600%7D,%5C%2224%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Hamlet%5C%22,%20%5C%22finished%5C%22:%201601%7D,%5C%2225%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Twelfth%20Night%5C%22,%20%5C%22finished%5C%22:%201601%7D,%5C%2226%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Troilus%20and%20Cressida%5C%22,%20%5C%22finished%5C%22:%201602%7D,%5C%2227%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Sir%20Thomas%20More%5C%22,%20%5C%22finished%5C%22:%201604%7D,%5C%2228%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Measure%20for%20Measure%5C%22,%20%5C%22finished%5C%22:%201604%7D,%5C%2229%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Othello%5C%22,%20%5C%22finished%5C%22:%201604%7D,%5C%2230%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22All's%20Well%20That%20Ends%20Well%5C%22,%20%5C%22finished%5C%22:%201605%7D,%5C%2231%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22King%20Lear%5C%22,%20%5C%22finished%5C%22:%201606%7D,%5C%2232%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Timon%20of%20Athens%5C%22,%20%5C%22finished%5C%22:%201606%7D,%5C%2233%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Macbeth%5C%22,%20%5C%22finished%5C%22:%201606%7D,%5C%2234%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Antony%20and%20Cleopatra%5C%22,%20%5C%22finished%5C%22:%201606%7D,%5C%2235%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Pericles,%20Prince%20of%20Tyre%5C%22,%20%5C%22finished%5C%22:%201608%7D,%5C%2236%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Coriolanus%5C%22,%20%5C%22finished%5C%22:%201608%7D,%5C%2237%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Winter's%20Tale%5C%22,%20%5C%22finished%5C%22:%201611%7D,%5C%2238%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Cymbeline%5C%22,%20%5C%22finished%5C%22:%201610%7D,%5C%2239%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Tempest%5C%22,%20%5C%22finished%5C%22:%201611%7D,%5C%2240%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Cardenio%5C%22,%20%5C%22finished%5C%22:%201613%7D,%5C%2241%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22Henry%20VIII%5C%22,%20%5C%22finished%5C%22:%201613%7D,%5C%2242%5C%22:%20%7B%5C%22title%5C%22:%20%5C%22The%20Two%20Noble%20Kinsmen%5C%22,%20%5C%22finished%5C%22:%201614%7D%7D%7D%22);end;"
+        "load_code": "def get_shakey;JSON.parse(\"{\\\"William Shakespeare\\\": {\\\"1\\\": {\\\"title\\\": \\\"The Two Gentlemen of Verona\\\", \\\"finished\\\": 1591},\\\"2\\\": {\\\"title\\\": \\\"The Taming of the Shrew\\\", \\\"finished\\\": 1591},\\\"3\\\": {\\\"title\\\": \\\"Henry VI, Part 2\\\", \\\"finished\\\": 1591},\\\"4\\\": {\\\"title\\\": \\\"Henry VI, Part 3\\\", \\\"finished\\\": 1591},\\\"5\\\": {\\\"title\\\": \\\"Henry VI, Part 1\\\", \\\"finished\\\": 1592},\\\"6\\\": {\\\"title\\\": \\\"Titus Andronicus\\\", \\\"finished\\\": 1592},\\\"7\\\": {\\\"title\\\": \\\"Richard III\\\", \\\"finished\\\": 1593},\\\"8\\\": {\\\"title\\\": \\\"Edward III\\\", \\\"finished\\\": 1593},\\\"9\\\": {\\\"title\\\": \\\"The Comedy of Errors\\\", \\\"finished\\\": 1594},\\\"10\\\": {\\\"title\\\": \\\"Love's Labour's Lost\\\", \\\"finished\\\": 1595},\\\"11\\\": {\\\"title\\\": \\\"Love's Labour's Won\\\", \\\"finished\\\": 1596},\\\"12\\\": {\\\"title\\\": \\\"Richard II\\\", \\\"finished\\\": 1595},\\\"13\\\": {\\\"title\\\": \\\"Romeo and Juliet\\\", \\\"finished\\\": 1595},\\\"14\\\": {\\\"title\\\": \\\"A Midsummer Night's Dream\\\", \\\"finished\\\": 1595},\\\"15\\\": {\\\"title\\\": \\\"King John\\\", \\\"finished\\\": 1596},\\\"16\\\": {\\\"title\\\": \\\"The Merchant of Venice\\\", \\\"finished\\\": 1597},\\\"17\\\": {\\\"title\\\": \\\"Henry IV, Part 1\\\", \\\"finished\\\": 1597},\\\"18\\\": {\\\"title\\\": \\\"The Merry Wives of Windsor\\\", \\\"finished\\\": 1597},\\\"19\\\": {\\\"title\\\": \\\"Henry IV, Part 2\\\", \\\"finished\\\": 1598},\\\"20\\\": {\\\"title\\\": \\\"Much Ado About Nothing\\\", \\\"finished\\\": 1599},\\\"21\\\": {\\\"title\\\": \\\"Henry V\\\", \\\"finished\\\": 1599},\\\"22\\\": {\\\"title\\\": \\\"Julius Caesar\\\", \\\"finished\\\": 1599},\\\"23\\\": {\\\"title\\\": \\\"As You Like It\\\", \\\"finished\\\": 1600},\\\"24\\\": {\\\"title\\\": \\\"Hamlet\\\", \\\"finished\\\": 1601},\\\"25\\\": {\\\"title\\\": \\\"Twelfth Night\\\", \\\"finished\\\": 1601},\\\"26\\\": {\\\"title\\\": \\\"Troilus and Cressida\\\", \\\"finished\\\": 1602},\\\"27\\\": {\\\"title\\\": \\\"Sir Thomas More\\\", \\\"finished\\\": 1604},\\\"28\\\": {\\\"title\\\": \\\"Measure for Measure\\\", \\\"finished\\\": 1604},\\\"29\\\": {\\\"title\\\": \\\"Othello\\\", \\\"finished\\\": 1604},\\\"30\\\": {\\\"title\\\": \\\"All's Well That Ends Well\\\", \\\"finished\\\": 1605},\\\"31\\\": {\\\"title\\\": \\\"King Lear\\\", \\\"finished\\\": 1606},\\\"32\\\": {\\\"title\\\": \\\"Timon of Athens\\\", \\\"finished\\\": 1606},\\\"33\\\": {\\\"title\\\": \\\"Macbeth\\\", \\\"finished\\\": 1606},\\\"34\\\": {\\\"title\\\": \\\"Antony and Cleopatra\\\", \\\"finished\\\": 1606},\\\"35\\\": {\\\"title\\\": \\\"Pericles, Prince of Tyre\\\", \\\"finished\\\": 1608},\\\"36\\\": {\\\"title\\\": \\\"Coriolanus\\\", \\\"finished\\\": 1608},\\\"37\\\": {\\\"title\\\": \\\"The Winter's Tale\\\", \\\"finished\\\": 1611},\\\"38\\\": {\\\"title\\\": \\\"Cymbeline\\\", \\\"finished\\\": 1610},\\\"39\\\": {\\\"title\\\": \\\"The Tempest\\\", \\\"finished\\\": 1611},\\\"40\\\": {\\\"title\\\": \\\"Cardenio\\\", \\\"finished\\\": 1613},\\\"41\\\": {\\\"title\\\": \\\"Henry VIII\\\", \\\"finished\\\": 1613},\\\"42\\\": {\\\"title\\\": \\\"The Two Noble Kinsmen\\\", \\\"finished\\\": 1614}}}\");end;"
     },
     "39": {
         "lang": "EN",
@@ -477,7 +477,7 @@
         "ok": "My first Blurb",
         "error": "",
         "text": "<p>Hey, good class, man. You&rsquo;ve got a new Blurb<sup>TM</sup> class.</p>\n\n<p>In the class definition, you used a method called attr_accessor.\nThere are many <strong>attr</strong>ibute methods like this which add little settings to classes.\nThese attributes are just variables attached to a class.</p>\n\n<p>Think of it this way. A class is like a person. That star-shaped human thing out there.\nAnd the attributes are the dangling limbs, the different parts that make up a body and\nother people can shake hands with.</p>\n\n<h3>Now</h3>\n\n<p>To create a Blurb<sup>TM</sup> and set the content:</p>\n\n<pre><code>blurb1 = Blurb.new\nputs blurb1\nblurb1.content = &quot;Today Mount Hood Was Stolen!&quot;</code></pre>\n",
-        "load_code": "class%20Blurb;attr_accessor%20:content,:time,:mood;end"
+        "load_code": "class Blurb;attr_accessor :content,:time,:mood;end"
     },
     "49": {
         "lang": "EN",
@@ -487,7 +487,7 @@
         "ok": "Blurb updated",
         "error": "",
         "text": "<p>Go ahead and set the Blurb<sup>TM</sup> time and mood:</p>\n\n<pre><code>blurb1.time = Time.now\nblurb1.mood = :sick\n\nputs blurb1</code></pre>\n",
-        "load_code": "prev;blurb1=Blurb.new;blurb1.content=%22Today%20Mount%20Hood%20Was%20Stolen!%22"
+        "load_code": "prev;blurb1=Blurb.new;blurb1.content=\"Today Mount Hood Was Stolen!\""
     },
     "50": {
         "lang": "EN",
@@ -507,7 +507,7 @@
         "ok": "Blurb added",
         "error": "",
         "text": "<p>Did you see how inside the class we used the at-symbols (@time).</p>\n\n<p><strong>Outside</strong> the class, we use accessors:</p>\n\n<blockquote>\n<p><strong>blurb.time = Time.now</strong></p>\n</blockquote>\n\n<p>but <strong>inside</strong> we use the <strong>object&rsquo;s variables</strong>:</p>\n\n<blockquote>\n<p><strong>@time = Time.now</strong></p>\n</blockquote>\n\n<p>They&rsquo;re the exact same thing, but expressed in two different places of your program.</p>\n\n<h3>Create another Blurb<sup>TM</sup></h3>\n\n<p>When a new Blurb<sup>TM</sup> is created, the initialize method is used to check for any\narguments to new.</p>\n\n<p>Uh, we need two arguments:</p>\n\n<pre><code>Blurb2 = Blurb.new :confused, &quot;I can not believe Mt. Hood was stolen!&quot;</code></pre>\n",
-        "load_code": "class%20Blurb;attr_accessor%20:content,:time,:mood;def%20initialize(mood,%20content=%22%22);@time=Time.now;@content=content[0..39];@mood=mood;end;end;blurb1=Blurb.new(:sick,%22Today%20Mount%20Hood%20Was%20Stolen!%22)"
+        "load_code": "class Blurb;attr_accessor :content,:time,:mood;def initialize(mood, content=\"\");@time=Time.now;@content=content[0..39];@mood=mood;end;end;blurb1=Blurb.new(:sick,\"Today Mount Hood Was Stolen!\")"
     },
     "52": {
         "lang": "EN",
@@ -517,7 +517,7 @@
         "ok": "",
         "error": "",
         "text": "<p>Aha, you&rsquo;re here. And all in one piece. We&rsquo;re still going to make your app real,\nbut until then, let&rsquo;s review, okay?</p>\n\n<h3>Classes</h3>\n\n<p>Everything in Ruby is some kind of object. Classes explain objects, how a certain object works.\nFor example, you made a few Blurb<sup>TM</sup> objects and these objects are explained in the Blurb\nclass.\nIn other words: you call them Blurb objects.\nYou can use classes to (kinda) model real life objects.</p>\n\n<h3>Accessors</h3>\n\n<p>Accessors are variables attached to an object which can be used <strong>outside</strong> the object.\n(blurb2.time = Time.now)</p>\n\n<h3>Object variables</h3>\n\n<p>Object variables are the same variables you&rsquo;re using for accessors, but <strong>inside</strong> the object.\n(@time = Time.now)</p>\n",
-        "load_code": "prev;blurb2=Blurb.new%20:confused,%20%22I%20can%20not%20believe%20Mt.%20Hood%20was%20stolen!%22"
+        "load_code": "prev;blurb2=Blurb.new :confused, \"I can not believe Mt. Hood was stolen!\""
     },
     "53": {
         "lang": "EN",
@@ -527,7 +527,7 @@
         "ok": "My app created",
         "error": "",
         "text": "<p>Okay, let&rsquo;s wrap things up, kid. Here&rsquo;s the last chapter of the GRIPPING epic story of Try Ruby!\nNow that you&rsquo;ve got a taste of how it all works, how are you going to use it around the house\nand in your grocer&rsquo;s freezer?\nYou&rsquo;re a great person (one of my favorites), but you need guidance.</p>\n\n<h3>Let&rsquo;s finish your app</h3>\n\n<p>You have app entries, but no actual app.\nIt still needs a title, someplace to store all Blurbs<sup>TM</sup> and a timeline in order to work.</p>\n\n<p>Guess what, we&rsquo;re going to use another class. I&rsquo;ve given all the code for the new class in one go.\nJust <strong>take your time</strong> to study it.<br>\nI&rsquo;m in no hurry, I&rsquo;ll wait for you in the next lesson.</p>\n\n<pre><code>class Blurbalizer\n  def initialize(title)\n    @title  = title\n    @blurbs = [] # A fresh clean array\n                 # for storing Blurbs\n  end\n\n  def add_a_blurb(mood, content)\n    # The &lt;&lt; means add to the end of the array\n    @blurbs &lt;&lt; Blurb.new(mood, content)\n  end\n\n  def show_timeline\n    puts &quot;Blurbify: #{@title} has #{@blurbs.count} Blurbs&quot;\n\n    @blurbs.sort_by { |t|\n      t.time\n    }.reverse.each { |t|\n      puts &quot;#{t.content.ljust(40)} #{t.time}&quot;\n    }\n  end\nend\n\nmyapp = Blurbalizer.new &quot;The Big Blurb&quot;</code></pre>\n",
-        "load_code": "class%20Blurb;attr_accessor%20:content,:time,:mood;def%20initialize(mood,%20content=%22%22);@time=Time.now;@content=content[0..39];@mood=mood;end;end"
+        "load_code": "class Blurb;attr_accessor :content,:time,:mood;def initialize(mood, content=\"\");@time=Time.now;@content=content[0..39];@mood=mood;end;end"
     },
     "54": {
         "lang": "EN",
@@ -537,7 +537,7 @@
         "ok": "Bring on the blurbs",
         "error": "",
         "text": "<p>There you are. Did you figure out what all that code in the Blurbalizer<sup>TM</sup> class does?</p>\n\n<blockquote>\n<p>In the Blurbalizer<sup>TM</sup> class are two <strong>methods</strong> (add_a_blurb and show_timeline).\nYou can use a method outside the class, just like we did with accessors.</p>\n</blockquote>\n\n<p>Time to start using Blurbalizer<sup>TM</sup>. I&rsquo;ve already loaded some Blurbs<sup>TM</sup> for you,\nbut feel free to add your own.</p>\n\n<p>We&rsquo;re no longer creating Blurbs<sup>TM</sup> directly, but we use the add_a_blurb <strong>method</strong> of the\nBlurbalizer<sup>TM</sup> class. This way we can be sure all our Blurbs<sup>TM</sup> are stored in the\nmyapp object.</p>\n\n<pre><code>myapp.add_a_blurb :moody, &quot;Add Blurb here&quot;\n\nmyapp.show_timeline</code></pre>\n",
-        "load_code": "prev;class%20Blurbalizer;attr_reader%20:title;def%20initialize(title);@title=title;@blurbs=[];end;def%20add_a_blurb(mood,%20content);@blurbs%20%3C%3C%20Blurb.new(mood,%20content);@blurbs.each%20%7B%7Ct%7C%20t.time%20-=%2073%7D;end;def%20show_timeline;puts%20%22Blurbalizer:%20%23%7B@title%7D%20has%20%23%7B@blurbs.count%7D%20Blurbs%5Cn%22;@blurbs.sort_by%20%7B%20%7Ct%7C%20t.time%7D.reverse.each%20%7B%20%7Ct%7C%20puts%20%22%23%7Bt.content.ljust(40)%7D%20%23%7Bt.time%7D%22%7D;end;end;myapp%20=%20Blurbalizer.new%20%22The%20Big%20Blurb%22;myapp.add_a_blurb%20:sick,%22Today%20Mount%20Hood%20Was%20Stolen!%22;myapp.add_a_blurb%20:confused,%22I%20can%20not%20believe%20Mt.%20Hood%20was%20stolen!%22;myapp.add_a_blurb%20:dazed,%22I%20am%20speechless!%22;myapp.add_a_blurb%20:mad,%22It%20was%20stolen%20by%20a%20giraffe%20!!%22;myapp.add_a_blurb%20:sad,%22I%20Left%20my%20Hoodie%20on%20the%20Mountain!%22;myapp.add_a_blurb%20:mad,%22I%20am%20never%20going%20back%20to%20that%20mountain.%22"
+        "load_code": "prev;class Blurbalizer;attr_reader :title;def initialize(title);@title=title;@blurbs=[];end;def add_a_blurb(mood, content);@blurbs << Blurb.new(mood, content);@blurbs.each {|t| t.time -= 73};end;def show_timeline;puts \"Blurbalizer: #{@title} has #{@blurbs.count} Blurbs\\n\";@blurbs.sort_by { |t| t.time}.reverse.each { |t| puts \"#{t.content.ljust(40)} #{t.time}\"};end;end;myapp = Blurbalizer.new \"The Big Blurb\";myapp.add_a_blurb :sick,\"Today Mount Hood Was Stolen!\";myapp.add_a_blurb :confused,\"I can not believe Mt. Hood was stolen!\";myapp.add_a_blurb :dazed,\"I am speechless!\";myapp.add_a_blurb :mad,\"It was stolen by a giraffe !!\";myapp.add_a_blurb :sad,\"I Left my Hoodie on the Mountain!\";myapp.add_a_blurb :mad,\"I am never going back to that mountain.\""
     },
     "55": {
         "lang": "EN",
@@ -557,6 +557,6 @@
         "ok": "",
         "error": "",
         "text": "<p>This last section took a moment to wind down, to give you some pointers as to how you can use Ruby.</p>\n\n<p>If you enjoyed yourself, you can continue with the <a href=\"/TryRuby/playground\">TryRuby Playground</a>\nor download and install Ruby:\n<a href=\"https://www.ruby-lang.org/en/downloads/\" target=\"_blank\">ruby-lang.org</a></p>\n\n<p>Once you have Ruby installed, you can create a file, let say <em>my_first_progam.rb</em>, with a text\neditor, type some Ruby code and then run it by opening a command prompt and typing:</p>\n\n<pre><code>ruby my_first_progam.rb</code></pre>\n\n<p>There are many (free) development tools available that combine an editor, file browser and a\n&lsquo;ruby-runner&rsquo;.</p>\n\n<h2>Celebrate</h2>\n\n<p>You really deserve a double-layer cake with double-double frosting and a guy playing one of those guitars that&rsquo;s a double guitar.\nI mean you finished, you really did! No doubt about it, you&rsquo;re a <strong>certified red-blooded smartiac!</strong></p>\n\n<h2>More info</h2>\n\n<p>There are a couple of articles on this website. They can give you some pointers on where to\ngo from here.</p>\n",
-        "load_code": "def%20ruby(f);puts%20%22Go%20to%20www.ruby-lang.org%20to%20download%20Ruby%22;end;class%20K;attr_reader%20:rb;end;my_first_progam=K.new"
+        "load_code": "def ruby(f);puts \"Go to www.ruby-lang.org to download Ruby\";end;class K;attr_reader :rb;end;my_first_progam=K.new"
     }
 }

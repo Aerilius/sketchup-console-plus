@@ -64,10 +64,10 @@ module AE
         # Score the completions
         total_tokens_count = @api_usage_counter.instance_variable_get(:@data).count #DocProvider.instance_variable_get(:@apis).count
         total_usage_count = @api_usage_counter.get_total_count
-        mean = total_usage_count / (total_tokens_count | 1)
+        mean = (total_usage_count | 1) / (total_tokens_count | 1).to_f
         completions.map!{ |classification|
           confidence_score = 3 - classification.inherited
-          usage_score = @api_usage_counter.get_count(classification.docpath) / (mean | 1)
+          usage_score = @api_usage_counter.get_count(classification.docpath) / mean
           alphabetical_score = 1 - string_to_positional_fraction(classification.token.to_s)
           score = 1000 * confidence_score + 10 * usage_score + alphabetical_score
           doc_html = begin

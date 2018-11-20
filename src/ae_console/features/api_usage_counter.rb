@@ -35,6 +35,7 @@ module AE
 
       DATA_DIR = File.join(get_data_dir(), 'SketchUp Ruby Console+') unless defined?(self::DATA_DIR)
       DATA_FILE = File.join(DATA_DIR, 'api_usage_statistics.json')
+      DEFAULT_FILE = File.join(PATH, 'data', 'generated_api_usage_statistics.json')
 
       def initialize(filepath=DATA_FILE)
         @filepath = filepath
@@ -44,6 +45,10 @@ module AE
 
       def read
         if File.exist?(@filepath)
+          File.open(DEFAULT_FILE, 'r'){ |f|
+            string = f.read
+            @data.update(JSON.parse(string))
+          }
           File.open(@filepath, 'r'){ |f|
             string = f.read
             @data.update(JSON.parse(string))

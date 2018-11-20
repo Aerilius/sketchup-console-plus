@@ -1,5 +1,4 @@
 require 'json.rb'
-require 'digest/sha1'
 
 module AE
 
@@ -62,13 +61,12 @@ module AE
       end
 
       def used(docpath, weight=1)
-        hash = Digest::SHA1.hexdigest(docpath)
-        @data[hash] += 1
+        puts(docpath)
+        @data[docpath] += 1
       end
       
       def get_count(docpath)
-        hash = Digest::SHA1.hexdigest(docpath)
-        return @data[hash]
+        return @data[docpath]
       end
 
       def get_total_count

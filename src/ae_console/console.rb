@@ -54,14 +54,15 @@ module AE
       def puts(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('Console.puts',
-                       ensure_valid_encoding(arg.to_s),
-                       {
-                         :language => :ruby,
-                         :time => Time.now.to_f,
-                         :id => @message_id.next!,
-                         :backtrace => backtrace
-                       })
+          message = ensure_valid_encoding(arg.to_s)
+          metadata = {
+            :language => :ruby,
+            :time => Time.now.to_f,
+            :id => @message_id.next!,
+            :backtrace => backtrace
+          }
+          trigger(:puts, message, metadata)
+          @dialog.call('Console.puts', message, metadata)
         }
         nil
       end
@@ -71,14 +72,15 @@ module AE
       def print(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('Console.print',
-                       ensure_valid_encoding(arg.to_s),
-                       {
-                         :language => :ruby,
-                         :time => Time.now.to_f,
-                         :id => @message_id.next!,
-                         :backtrace => backtrace
-                       })
+          message = ensure_valid_encoding(arg.to_s)
+          metadata = {
+            :language => :ruby,
+            :time => Time.now.to_f,
+            :id => @message_id.next!,
+            :backtrace => backtrace
+          }
+          trigger(:print, message, metadata)
+          @dialog.call('Console.print', message, metadata)
         }
         nil
       end
@@ -88,7 +90,15 @@ module AE
       def warn(*args, backtrace: nil)
         return unless @dialog && @dialog.visible?
         args.each { |arg|
-          @dialog.call('Console.warn', arg.to_s, {:language => :ruby, :time => Time.now.to_f, :id => @message_id.next!, :backtrace => backtrace})
+          message = arg.to_s
+          metadata = {
+            :language => :ruby,
+            :time => Time.now.to_f,
+            :id => @message_id.next!,
+            :backtrace => backtrace
+          }
+          trigger(:warn, message, metadata)
+          @dialog.call('Console.warn', message, metadata)
         }
         nil
       end
@@ -110,6 +120,7 @@ module AE
         metadata[:language] ||= :ruby
         metadata[:time] ||= Time.now.to_f # seconds
         metadata[:id] = @message_id.next!
+        trigger(:error, exception, {:message => message}.update(metadata))
         @dialog.call('Console.error', message, metadata)
         nil
       end
@@ -194,18 +205,18 @@ module AE
           result_string = ensure_valid_encoding(result_to_string(result))
           # Return the result and metadata.
           new_metadata[:time] = Time.now.to_f
-          trigger(:result, result, new_metadata)
+          trigger(:result, result, {:result_string => result_string}.update(new_metadata))
           action_context.resolve({:result => result_string, :metadata => new_metadata})
-          trigger(:result_printed, result, result_string, new_metadata)
+          # Take care that no code after resolving the promise resolve it again 
+          # or raises an exception and tries to rejects the resolved promise!
         rescue Exception => exception
           remove_eval_internals_from_backtrace(exception.backtrace)
           message, _metadata = get_exception_metadata(exception)
           new_metadata.merge!(_metadata)
           new_metadata[:time] = Time.now.to_f
           new_metadata[:message] = message
-          trigger(:error, exception, new_metadata)
+          trigger(:error, exception, {:message => message}.update(new_metadata))
           action_context.reject(new_metadata)
-          trigger(:error_printed, exception, message, new_metadata)
         end
       end
 

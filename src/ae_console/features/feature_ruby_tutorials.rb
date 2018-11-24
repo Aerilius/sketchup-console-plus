@@ -1,7 +1,9 @@
 require 'json'
-require 'uri'
 require_relative '../bridge'
 
+# TODO: update json format, remove prev
+# test introduction tutorial
+# improve menu placement
 module AE
 
   module ConsolePlugin
@@ -10,8 +12,11 @@ module AE
 
       TRY_RUBY_FILENAME = 'try_ruby.json'
 
+      @@current_running_tutorial = nil
+
       def initialize(app)
         app.plugin.on(:console_added){ |console_instance|
+
           dialog = console_instance.dialog
 
           # Callback from webdialog menu
@@ -19,7 +24,7 @@ module AE
             action_context.resolve(find_tutorials.map{ |tutorial_filename|
               {
                 :filename => tutorial_filename,
-                :display_name => self.class.to_title_case(File.basename(tutorial_filename, '.json'))
+                :display_name => to_title_case(File.basename(tutorial_filename, '.json'))
               }
             })
           }
@@ -41,13 +46,11 @@ module AE
 
       def self.start_tutorial(console_instance, tutorial_filename, locale = Sketchup.get_locale)
         tutorial_path = File.join(PATH, 'Resources', locale, 'tutorials', tutorial_filename)
-        tutorial_display_name = self.to_title_case(File.basename(tutorial_filename, '.json'))
-        if File.exist?(tutorial_path)
-          Tutorial.new(console_instance, tutorial_path, tutorial_display_name).start
-        else
-          fallback_tutorial_path = File.join(PATH, 'Resources', 'en-US', 'tutorials', tutorial_filename)
-          Tutorial.new(console_instance, fallback_tutorial_path, tutorial_display_name).start
-        end
+        tutorial_path = File.join(PATH, 'Resources', 'en-US', 'tutorials', tutorial_filename) unless File.exist?(tutorial_path)
+        @@current_running_tutorial.quit if @@current_running_tutorial
+        tutorial = Tutorial.new(console_instance, tutorial_path)
+        tutorial.start
+        @@current_running_tutorial = tutorial
       end
 
       def find_tutorials
@@ -56,13 +59,14 @@ module AE
         }
       end
 
-      def self.to_title_case(string)
+      def to_title_case(string)
         string.split(/[\s_-]+/).map(&:capitalize).join(' ')
       end
+      private :to_title_case
 
       def on_first_start
         properties = {
-            :dialog_title    => TRANSLATE['Welcome in Ruby Console+'],
+            :dialog_title    => TRANSLATE['Welcome to Ruby Console+'],
             :scrollable      => false,
             :resizable       => true,
             :width           => 520,
@@ -90,7 +94,7 @@ module AE
           map{ |tutorial_filename|
             {
               :filename => tutorial_filename,
-              :display_name => self.class.to_title_case(File.basename(tutorial_filename, '.json'))
+              :display_name => to_title_case(File.basename(tutorial_filename, '.json'))
             }
           })
         }
@@ -121,18 +125,20 @@ module AE
 
       class Tutorial
 
-        attr_reader :name, :current_item
+        attr_reader :title, :current_item, :current_step, :steps
 
         DELAY = 1 # seconds
 
-        def initialize(console_instance, tutorial_path, name = File.basename(tutorial_path))
+        def initialize(console_instance, tutorial_path)
           @console_instance = console_instance
-          @steps = load_tutorial(tutorial_path)
-          @name = name
+          @steps = []
+          @title = ''
           @current_step = -1
+          @tip_counter = 0
           @context = nil # SandBox
           @original_wrap_in_undo = nil
           @original_binding = nil
+          load_tutorial(tutorial_path)
         end
 
         def start
@@ -145,26 +151,54 @@ module AE
           @original_wrap_in_undo = @console_instance.instance_variable_get(:@settings)[:wrap_in_undo]
           @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = true # TODO: Does this update setting in dialog? No
           # Listen for result
-          @console_instance.on(:result_printed, &method(:on_result))
-          @console_instance.on(:error_printed, &method(:on_error))
+          @combined_stdout = ''
+          @on_eval = proc{ |command, metadata|
+            @combined_stdout.clear
+          }
+          @on_puts = proc{ |message, metadata|
+            @combined_stdout << message << $/
+          }
+          @on_print = proc{ |message, metadata|
+            @combined_stdout << message
+          }
+          @on_result = proc{ |result, metadata|
+            validate_result(result, metadata)
+            @combined_stdout.clear
+          }
+          @on_error = proc{ |exception, metadata|
+            validate_error(exception, metadata)
+            @combined_stdout.clear
+          }
+          @console_instance.on(:result, &@on_result)
+          @console_instance.on(:error, &@on_error)
+          @console_instance.on(:puts, &@on_puts)
+          @console_instance.on(:print, &@on_print)
+          @console_instance.bridge.on(:next_tip) { show_tip }
+          @console_instance.bridge.on(:show_solution) { show_solution }
+          @console_instance.on(:closed) { quit }
           # Go to first step
           next_step
         end
 
-        def next_step
+        def next_step(target=nil)
           # Increase step counter
-          @current_step += 1
+          @current_step = (target.nil?) ? @current_step + 1 : target - 1
           if @current_step >= @steps.length
             # TODO: Ask whether to start next tutorial (if there exist) => requires method to list existing tutorials
             quit
           end
-          # Print description text
           @current_item = @steps[@current_step]
-          eval(@current_item[:preparation_code]) if @current_item[:preparation_code]
-          show_message(@current_item[:text]) if @current_item[:text]
+          # Reset tip counter for tips of the current step
+          @tip_counter = 0
+          # Prepare the model for this step if something needs to be prepared (entities drawn, model loaded).
+          if @current_item[:preparation_code]
+            evaluate(@current_item[:preparation_code])
+          end
+          # Print description text
+          show_instruction(@current_item) if @current_item[:text]
           if @current_item[:load_code]
-            code = URI.decode(@current_item[:load_code])
-            # TODO: support prev
+            code = @current_item[:load_code]
+            # TODO: json: support prev or remove prev
             # item.load_code = prev_code + item.load_code[4..999999] if item.load_code && !item.load_code.empty? && item.load_code[0..3] == 'prev'
             load_code(code)
           end
@@ -172,12 +206,41 @@ module AE
 
         def quit
           # Remove listeners for result
-          @console_instance.off(:result_printed, &method(:on_result))
-          @console_instance.off(:error_printed, &method(:on_error))
+          @console_instance.off(:result, &@on_result)
+          @console_instance.off(:error, &@on_error)
+          @console_instance.off(:eval, &@on_eval)
+          @console_instance.off(:puts, &@on_puts)
+          @console_instance.off(:print, &@on_print)
           # Change execution context back to original
           @console_instance.instance_variable_set(:@binding, @original_binding)
           # Set wrap in undo back to original
           @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = @original_wrap_in_undo # TODO: Does this update setting in dialog? No
+        end
+
+        def show_instruction(step)
+          html_string = step[:text]
+          if step[:tip] || step[:solution_code]
+            buttons_div = '<div class="ruby_tutorials_toolbar">'
+            tip = step[:tip]
+            if tip
+              number_of_tips = (tip.is_a?(Array)) ? tip.length : 1
+              buttons_div += (<<-EOT)
+              <button class="tip" title="#{TRANSLATE['Tip']}" onclick="this.count = this.count || #{number_of_tips}; this.disabled = (--this.count <= 0); Bridge.call('next_tip')">
+                  <img src="../images/tip.svg" alt="tip">
+              </button>
+              EOT
+            end
+            if step[:solution_code]
+              buttons_div += (<<-EOT)
+              <button class="solution" title="#{TRANSLATE['Solution']}" onclick="Bridge.call('show_solution'); this.disabled = true">
+                  <img src="../images/solution.svg" alt="solution">
+              </button>
+              EOT
+            end
+            buttons_div += "</div>"
+            html_string += buttons_div
+          end
+          show_message(html_string)
         end
 
         def show_message(html_string)
@@ -188,96 +251,26 @@ module AE
           @console_instance.bridge.call('window.insertInConsoleEditor', code)
         end
 
-        def demonstrate_solution(solution = @current_item[:solution])
-          return # Not yet supported
-          if solution
-            solution.each{ |solution_step|
-              show_message(solution_step[:text]) if solution_step[:text]
-              # eval(solution_step[:code]) if solution_step[:code]
-              load_code(solution_step[:code]) if solution_step[:code]
-              # TODO: add JS function to evaluate
-              # TODO: This is asynchronous, wait until finished!
-              # wait for :timeout before next iteration, if timeout
-            }
-          end
-        end
-
-        private
-
-        def load_tutorial(filepath)
-          return File.open(filepath, 'r'){ |f|
-            JSON.parse(f.read, :symbolize_names => true)
-          }.
-          # The tutorial format uses a dictionary with step numbers as key, 
-          # we use a list where indices correspond to step numbers.
-          # Convert to tuple list and sort by first tuple element (since they are unique), 
-          # then select of all tuples the second element.
-          sort_by{ |tuple| tuple.first.to_s.to_i }.map{ |tuple|
-            item = tuple.last
-            [:text, :answer, :ok, :error].each{ |key|
-              # TryRuby files have some entries URL-encoded.
-              item[key] = URI.decode(item[key]) if item[key]
-            }
-            item
-          }
-        end
-
-        def on_result(result, result_string, metadata)
-          # Check if output matches the defined answer regexp.
-          # and print status message
-          valid = nil
-          if @current_item[:answer] && !@current_item[:answer].empty?
-            # TODO: instead of stringified result, tryruby needs access to all the concatenated stdout since user input.
-            valid = !result_string.chomp.match(@current_item[:answer]).nil?
-          elsif @current_item[:answer_code] && !@current_item[:answer_code].empty?
-            valid = !!eval("proc{ |result| #{@current_item[:answer_code]} }").call(result)
-          end
-          case valid
-          when true
-            # Defer action so that result is printed first.
-            delay(0) {
-              show_message(@current_item[:ok])
-              delay(2) {
-                next_step
-              }
-            }
-          when false
-            delay(0) {
-              show_message(@current_item[:error])
-            }
+        def show_tip
+          return unless @current_item
+          tip = @current_item[:tip]
+          if tip.is_a?(Array) && @tip_counter < tip.length
+            show_message(tip[@tip_counter])
+            @tip_counter += 1
+          elsif tip.is_a?(String) && !tip.empty? && @tip_counter == 0
+            show_message(tip)
+            @tip_counter += 1
           else
-            delay(0) {
-              next_step
-            }
+            show_message(TRANSLATE['Sorry, I don\'t have any tips.'])
           end
         end
 
-        def on_error(exception, message, metadata)
-          # Check if output matches the defined answer regexp.
-          # and print status message
-          valid = nil
-          if @current_item[:answer] && !@current_item[:answer].empty?
-            valid = !message.chomp.match(@current_item[:answer]).nil?
-          elsif @current_item[:answer_code] && !@current_item[:answer_code].empty?
-            valid = !!eval("proc{ |result| #{@current_item[:answer_code]} }").call(exception)
-          end
-          case valid
-          when true
-            # Defer action so that result is printed first.
-            delay(0) {
-              show_message(@current_item[:ok])
-              delay(2) {
-                next_step
-              }
-            }
-          when false
-            delay {
-              show_message(@current_item[:error])
-            }
+        def show_solution
+          return unless @current_item
+          if @current_item[:solution_code]
+            @console_instance.bridge.call('evaluateInConsole', @current_item[:solution_code])
           else
-            delay(0) {
-              next_step
-            }
+            show_message(TRANSLATE['Sorry, I don\'t know the solution either.'])
           end
         end
 
@@ -285,6 +278,103 @@ module AE
           UI.start_timer(duration, false, &block)
         end
 
+        private
+
+        def load_tutorial(filepath)
+          json = File.open(filepath, 'r'){ |f|
+            JSON.parse(f.read, :symbolize_names => true)
+          }
+          @title = json[:title]
+          @steps = json[:steps]
+        end
+
+        def validation_defined?
+          return (@current_item[:validate_result_regexp] && !@current_item[:validate_result_regexp].empty?) ||
+                 (@current_item[:validate_result_code] && !@current_item[:validate_result_code].empty?) ||
+                 (@current_item[:validate_stdout_regexp] && !@current_item[:validate_stdout_regexp].empty?) ||
+                 (@current_item[:validate_error_regexp] && !@current_item[:validate_error_regexp].empty?) ||
+                 (@current_item[:validate_error_code] && !@current_item[:validate_error_code].empty?)
+        end
+
+        def validate_result(result, metadata)
+          return unless @current_item
+          if validation_defined?
+            valid = nil
+            # TODO: json: rename in :validate_result_regexp, :validate_stdout_regexp
+            # TODO: instead of stringified result, tryruby needs access to all the concatenated stdout since user input.
+            if @current_item[:validate_result_regexp] && !@current_item[:validate_result_regexp].empty?
+              if !result.nil?
+                result_string = metadata[:result_string]
+                valid = !result_string.match(@current_item[:validate_result_regexp]).nil?
+              end
+            elsif @current_item[:validate_result_code] && !@current_item[:validate_result_code].empty?
+              if !result.nil?
+                code = "proc{ |result| #{@current_item[:validate_result_code]} }"
+                proc = evaluate(code, @context)
+                valid = !!proc.call(result)
+              end
+            elsif @current_item[:validate_stdout_regexp] && !@current_item[:validate_stdout_regexp].empty?
+              message = @combined_stdout
+              valid = !message.match(@current_item[:validate_stdout_regexp]).nil?
+            end
+            when_console_message_printed(metadata[:id]).then{
+              case valid
+              when true
+                show_message(@current_item[:ok])
+                delay(1) {
+                  next_step
+                }
+              when false
+                show_message(@current_item[:error])
+              end
+            }
+          else
+            next_step
+          end
+        end
+
+        def validate_error(exception, metadata)
+          return unless @current_item
+          if validation_defined?
+            valid = nil
+            # TODO: json: rename in :validate_error_regexp
+            if @current_item[:validate_error_regexp] && !@current_item[:validate_error_regexp].empty?
+              message = metadata[:message]
+              valid = !message.chomp.match(@current_item[:validate_error_regexp]).nil?
+            elsif @current_item[:validate_error_code] && !@current_item[:validate_error_code].empty?
+              code = "proc{ |exception| #{@current_item[:validate_error_code]} }"
+              proc = evaluate(code, @context)
+              valid = !!proc.call(exception)
+            end
+            when_console_message_printed(metadata[:id]).then{
+              case valid
+              when true
+                # Defer action so that result is printed first.
+                show_message(@current_item[:ok])
+                delay(1) {
+                  next_step
+                }
+              when false
+                show_message(@current_item[:error])
+              end
+            }
+          else
+            next_step
+          end
+        end
+
+        def when_console_message_printed(id)
+          return @console_instance.bridge.get('waitForMessage', id)
+        end
+
+        def evaluate(code, context=Object.new)
+          binding = (AE::ConsolePlugin::FeatureRubyTutorials::Tutorial).object_binding(context)
+          return eval(code, binding)
+        end
+
+        # Not a true sandbox, but a context to run code outside the tutorial 
+        # implementation without polluting each other's scope with variables.
+        # Only methods that should be available as commands during the tutorial.
         class SandBox
 
           def initialize(tutorial)
@@ -292,29 +382,37 @@ module AE
           end
 
           def inspect
-            return @tutorial.name # print something tutorial name, analog like what main prints
+            return @tutorial.title
           end
 
-          def go!
-            delay(0) {
-              @tutorial.next_step
+          def go!(target=nil)
+            @tutorial.delay(0) {
+              @tutorial.next_step(target)
             }
             nil # TODO: avoid that nil is printed to the console?
           end
           alias_method :skip, :go!
 
           def quit
+            if @tutorial.current_step < @tutorial.steps.length - 1
+              @tutorial.show_message(TRANSLATE['You proceded up to step %0 of %1!', @tutorial.current_step + 1, @tutorial.steps.length])
+            end
+            @tutorial.show_message(TRANSLATE['See you next time!'])
             @tutorial.quit
             nil # TODO: avoid that nil is printed to the console?
           end
 
+          def tip
+            @tutorial.delay(0) {
+              @tutorial.show_tip
+            }
+            nil # TODO: avoid that nil is printed to the console?
+          end
+
           def show
-            solution = @tutorial.current_item[:solution]
-            if solution
-              demonstrate_solution(solution)
-            else
-              @tutorial.show_message(TRANSLATE['Sorry, I don\'t know the solution either.'])
-            end
+            @tutorial.delay(0) {
+              @tutorial.show_solution
+            }
             nil # TODO: avoid that nil is printed to the console?
           end
 

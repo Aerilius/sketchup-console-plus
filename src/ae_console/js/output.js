@@ -115,6 +115,7 @@ define(['jquery', 'bootstrap'], function ($, _) {
             data.text = text;
 
             var $entryElement = $('<div>')
+            .attr('id', 'message_id_' + data.id)
             .addClass('message')
             .addClass(data.type)
             //.addClass('ace_scroller ace_text-layer'); // Tweaks for ace. // TODO: Verify that ace_scroller is not

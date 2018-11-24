@@ -101,3 +101,20 @@
 /* Wrap in undo */
 "wrap_in_undo"="rückgängigmachbare Operation";
 "Ruby Console operation %0"="Ruby-Konsole Operation %0";
+
+/* Ruby Tutorials */
+"Welcome to Ruby Console+"="Willkommen in der Ruby Konsole+";
+"Welcome!"="Willkommen!";
+"Start with Ruby in 30 minutes"="Beginne mit Ruby
+in 30 Minuten";
+"Begin learning Ruby in SketchUp"="Lerne 
+Ruby in SketchUp";
+"No, thanks!"="Nein, danke!";
+"(Credits to Ivo Herweijer and TryRuby.org)"="(Dank an Ivo Herweijer und TryRuby.org)";
+"You can access the tutorials later again in Ruby Console+ in the menu button."="Du kannst die Tutorials später in der Ruby Konsole+ unter dem Menüknopf wiederfinden.";
+"Tip"="Tipp";
+"Solution"="Lösung";
+"Sorry, I don't have any tips."="Sorry, ich habe keine weiteren Tipps.";
+"Sorry, I don't know the solution either."="Sorry, ich kenne die Lösung auch nicht.";
+"You proceded up to step %0 of %1!"="Du bist bis zum Schritt %0 von %1 gekommen!";
+"See you next time!"="Bis zum nächsten Mal!";

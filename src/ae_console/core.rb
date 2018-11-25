@@ -116,7 +116,9 @@ module AE
           # Ignore callers that are subclasses or intercepters of the console itself.
           _caller = [caller.find{ |s| IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
           PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless PRIMARY_CONSOLE.value.nil?
-          super
+          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
+          # sends two arguments (string, "\n") or separate method invocations depending on arity.
+          args.each{ |arg| super(arg) }
         end
       }.new)
       @@stderr_redirecter ||= ObjectReplacer.new('$stderr', Class.new($stderr.class){
@@ -128,7 +130,9 @@ module AE
               PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
             end
           end
-          super
+          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
+          # sends two arguments (string, "\n") or separate method invocations depending on arity.
+          args.each{ |arg| super(arg) }
         end
       }.new)
       # Eval and $stderr do not catch script errors (why?), but global variable `$!` does.

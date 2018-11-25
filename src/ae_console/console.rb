@@ -142,6 +142,7 @@ module AE
         }
         if defined?(UI::HtmlDialog)
           properties[:style] = UI::HtmlDialog::STYLE_DIALOG
+          [:width, :height, :left, :top].each{ |property| properties[property] * UI.scale_factor }
           @dialog = UI::HtmlDialog.new(properties)
         else
           @dialog = UI::WebDialog.new(properties)

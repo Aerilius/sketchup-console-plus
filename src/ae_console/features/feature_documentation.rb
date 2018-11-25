@@ -33,9 +33,18 @@ module AE
       def show_documentation_browser(dialog)
         # Compute dimensions to display the documentation browser next to the console dialog.
         return dialog.get('WindowGeometry.getGeometry').then{ |x, y, w, h, screen_w, screen_h|
-          width = [w, 500].min
+          min_width = 500
+          if dialog.is_a?(UI::HtmlDialog)
+            x, y, w, h, screen_w, screen_h, min_width = [x, y, w, h, screen_w, screen_h, min_width].map{ |n|
+              n * UI.scale_factor
+            }
+          end
+          width = [w, min_width].min
+          # Place the documentation browser at the same vertical position either left or right of the console.
+          # Placing the documentation browser right, its left coordinate is:
           left = x + w # right of console dialog
-          left = x - w if left > screen_w || screen_w - left < x # left of console dialog
+          # Placing it left if it would be outside of the screen or if there is more available space on the left.
+          left = x - width if left > screen_w || screen_w - left < x # left of console dialog
           # Initialize the documentation browser and return a promise that is resolved once the html is loaded.
           if @documentation_browser.nil?
             initialize_documentation_browser

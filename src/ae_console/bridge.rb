@@ -261,7 +261,7 @@ module AE
       # @private
       def __request_handler_htmldialog__(action_context, request)
         unless request.is_a?(Hash) &&
-            request['id'].is_a?(Fixnum) &&
+            (defined?(Integer) ? request['id'].is_a?(Integer) : request['id'].is_a?(Fixnum)) &&
             request['name'].is_a?(String) &&
             request['parameters'].is_a?(Array)
           raise(BridgeInternalError, "Bridge received invalid data: \n#{value}")
@@ -312,7 +312,7 @@ module AE
         value   = dialog.get_element_value("#{NAMESPACE}.requestField") # returns empty string if element not found
         request = self.class.unserialize(value)
         unless request.is_a?(Hash) &&
-            request['id'].is_a?(Fixnum) &&
+            (defined?(Integer) ? request['id'].is_a?(Integer) : request['id'].is_a?(Fixnum)) &&
             request['name'].is_a?(String) &&
             request['parameters'].is_a?(Array)
           raise(BridgeInternalError, "Bridge received invalid data: \n#{value}")
@@ -387,7 +387,7 @@ module AE
       class ActionContext < Promise::Deferred
 
         # @param dialog [UI::WebDialog, UI::HtmlDialog]
-        # @param id     [Fixnum]
+        # @param id     [Fixnum, Integer]
         # @private
         def initialize(dialog, id)
           super()

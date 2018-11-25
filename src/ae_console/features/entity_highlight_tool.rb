@@ -290,9 +290,11 @@ module AE
               entity.entities.parent.bounds
             when Sketchup::ComponentDefinition then
               entity.bounds
+            when Sketchup::Image then
+              get_image_definition(entity).bounds
             when Geom::BoundingBox then
-              entity
-            else
+              entity # is a BoundingBox
+            when Sketchup::ComponentInstance
               entity.definition.bounds
             end
             @transformations_active[entity].each{ |t|   draw_boundingbox(view, bounds, @color_active,   @color_active_transparent,   t) }
@@ -313,6 +315,13 @@ module AE
       end
 
       private
+
+      def get_image_definition(image_entity)
+        definitions = image_entity.model.definitions
+        definitions.find{ |d|
+          d.image? && d.instances.include?(image_entity)
+        }
+      end
 
       # Bottom-up breadth search of all transformations of all occurences of the given entity (within nested component instances).
       # It starts from the leaves (!) and multiplies the local transformations up to the root.

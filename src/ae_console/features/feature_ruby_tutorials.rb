@@ -1,9 +1,6 @@
 require 'json'
 require_relative '../bridge'
 
-# TODO: update json format, remove prev
-# test introduction tutorial
-# improve menu placement
 module AE
 
   module ConsolePlugin

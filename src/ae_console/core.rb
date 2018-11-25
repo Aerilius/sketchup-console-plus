@@ -32,7 +32,13 @@ module AE
       # When this console will be closed, unregister it properly.
       console.on(:closed){
         @@consoles.delete(console)
-        PRIMARY_CONSOLE.value = @@consoles.first
+        PRIMARY_CONSOLE.value = @@consoles.first # or nil
+        if @@consoles.empty?
+          # Undo setup.
+          @@stdout_redirecter.disable
+          @@stderr_redirecter.disable
+          Kernel::untrace_var(:$!, @@script_error_catcher)
+        end
         trigger(:console_closed, console)
       }
       # Initial setup when opening consoles.
@@ -52,11 +58,6 @@ module AE
       @@consoles.each{ |instance| instance.close }
       # Unregister all.
       @@consoles.clear
-      # Undo setup.
-      PRIMARY_CONSOLE.value = nil
-      @@stdout_redirecter.disable
-      @@stderr_redirecter.disable
-      Kernel::untrace_var(:$!, @@script_error_catcher)
       nil
     end
 

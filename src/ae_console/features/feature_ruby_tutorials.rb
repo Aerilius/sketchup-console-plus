@@ -9,7 +9,7 @@ module AE
 
       TRY_RUBY_FILENAME = 'try_ruby.json'
 
-      @@current_running_tutorial = nil
+      @@current_running_tutorial ||= nil
 
       def initialize(app)
         app.plugin.on(:console_added){ |console_instance|
@@ -18,21 +18,27 @@ module AE
 
           # Callback from webdialog menu
           dialog.on('get_tutorials') { |action_context|
-            action_context.resolve(find_tutorials.map{ |tutorial_filename|
+            action_context.resolve(FeatureRubyTutorials.find_tutorials.map{ |filepath|
               {
-                :filename => tutorial_filename,
-                :display_name => to_title_case(File.basename(tutorial_filename, '.json'))
+                :filepath => filepath,
+                :display_name => filepath_to_title(filepath)
               }
             })
           }
-          dialog.on('start_tutorial') { |action_context, tutorial_filename|
-            self.class.start_tutorial(console_instance, tutorial_filename)
+          dialog.on('get_next_tutorial_and_step') { |action_context|
+            tutorial_paths = FeatureRubyTutorials.find_tutorials
+            next_tutorial = console_instance.settings[:ruby_tutorials_next_tutorial] || tutorial_paths.find{ |filepath| filepath[TRY_RUBY_FILENAME] }
+            next_step = console_instance.settings[:ruby_tutorials_next_step] || 1
+            action_context.resolve([next_tutorial, next_step])
+          }
+          dialog.on('start_tutorial') { |action_context, tutorial_path, next_step|
+            FeatureRubyTutorials.start_tutorial(console_instance, tutorial_path, next_step)
           }
 
         }
         # Start-up notification on first start.
         if app.settings[:first_start].nil?
-          app.settings[:first_start] = true # TODO: false
+          app.settings[:first_start] = false
           on_first_start
         end
       end
@@ -41,25 +47,15 @@ module AE
         return 'feature_ruby_tutorials.js'
       end
 
-      def self.start_tutorial(console_instance, tutorial_filename, locale = Sketchup.get_locale)
-        tutorial_path = File.join(PATH, 'Resources', locale, 'tutorials', tutorial_filename)
-        tutorial_path = File.join(PATH, 'Resources', 'en-US', 'tutorials', tutorial_filename) unless File.exist?(tutorial_path)
-        @@current_running_tutorial.quit if @@current_running_tutorial
-        tutorial = Tutorial.new(console_instance, tutorial_path)
-        tutorial.start
-        @@current_running_tutorial = tutorial
-      end
+      private
 
-      def find_tutorials
-        return Dir.glob(File.join(PATH, 'Resources', 'en-US', 'tutorials', '*.json')).map{ |tutorial_path|
-          File.basename(tutorial_path)
-        }
+      def filepath_to_title(filepath)
+        return to_title_case(File.basename(filepath, '.json')).gsub(/_/, ' ')
       end
 
       def to_title_case(string)
-        string.split(/[\s_-]+/).map(&:capitalize).join(' ')
+        return string.split(/[\s_-]+/).map(&:capitalize).join(' ')
       end
-      private :to_title_case
 
       def on_first_start
         properties = {
@@ -86,21 +82,22 @@ module AE
         }
         startup_dialog.on('get_tutorials') { |action_context|
           # Get all SketchUp tutorials (exclude the basic Ruby tutorial since it is for the left button).
-          action_context.resolve(find_tutorials.
-          select{ |tutorial_filename| tutorial_filename != TRY_RUBY_FILENAME }.
-          map{ |tutorial_filename|
+          action_context.resolve(FeatureRubyTutorials.find_tutorials.
+          select{ |tutorial_path| !tutorial_path[TRY_RUBY_FILENAME] }.
+          map{ |tutorial_path|
             {
-              :filename => tutorial_filename,
-              :display_name => to_title_case(File.basename(tutorial_filename, '.json'))
+              :filepath => tutorial_path,
+              :display_name => filepath_to_title(tutorial_path)
             }
           })
         }
-        startup_dialog.on('start_tryruby') { |action_context|
-          self.class.open_console_with_tutorial(TRY_RUBY_FILENAME)
+        startup_dialog.on('start_try_ruby') { |action_context|
+          try_ruby_path = FeatureRubyTutorials.find_tutorials.find{ |path| path[TRY_RUBY_FILENAME] }
+          FeatureRubyTutorials.open_console_with_tutorial(try_ruby_path)
           startup_dialog.close
         }
-        startup_dialog.on('start_tutorial') { |action_context, tutorial_filename|
-          self.class.open_console_with_tutorial(tutorial_filename)
+        startup_dialog.on('start_tutorial') { |action_context, tutorial_filepath, next_step|
+          FeatureRubyTutorials.open_console_with_tutorial(tutorial_filepath, next_step)
           startup_dialog.close
         }
         startup_dialog.on('close') { |action_context|
@@ -110,14 +107,34 @@ module AE
         startup_dialog.show
       end
 
-      def self.open_console_with_tutorial(tutorial_filename)
+      def self.start_tutorial(console_instance, tutorial_path, next_step=1)
+        @@current_running_tutorial.quit if @@current_running_tutorial
+        tutorial = Tutorial.new(console_instance, tutorial_path)
+        tutorial.start(next_step)
+        @@current_running_tutorial = tutorial
+      end
+
+      def self.open_console_with_tutorial(tutorial_filepath, next_step=1)
         console_instance = ConsolePlugin.open
         console_instance.on(:shown) {
           # Wait until JavaScript is loaded.
           UI.start_timer(1, false) {
-            self.start_tutorial(console_instance, tutorial_filename)
+            self.start_tutorial(console_instance, tutorial_filepath, next_step)
           }
         }
+      end
+
+      def self.find_tutorials
+        filepaths = Dir.glob(File.join(PATH, 'Resources', 'en-US', 'tutorials', '*.json')).map{ |filepath|
+          locale_filepath = File.join(PATH, 'Resources', Sketchup.get_locale, 'tutorials', File.basename(filepath))
+          if File.exist?(locale_filepath)
+            locale_filepath
+          else
+            filepath
+          end
+        }.sort
+        filepaths.unshift(filepaths.delete(filepaths.find{ |filepath| filepath[TRY_RUBY_FILENAME] }))
+        return filepaths
       end
 
       class Tutorial
@@ -127,26 +144,28 @@ module AE
         DELAY = 1 # seconds
 
         def initialize(console_instance, tutorial_path)
+          @tutorial_path = tutorial_path
           @console_instance = console_instance
           @steps = []
           @title = ''
           @current_step = -1
           @tip_counter = 0
-          @context = nil # SandBox
+          @binding = nil # SandBox binding
           @original_wrap_in_undo = nil
           @original_binding = nil
+          @ignore_command_result = false
           load_tutorial(tutorial_path)
         end
 
-        def start
+        def start(initial_step=nil)
           # Change execution context to instance of SandBox
-          @context = SandBox.new(self)
           @original_binding = @console_instance.instance_variable_get(:@binding) # TODO: This does not update the setting in the dialog
-          binding = self.class.object_binding(@context)
-          @console_instance.instance_variable_set(:@binding, binding)
+          context = SandBox.new(self)
+          @binding = FeatureRubyTutorials.object_binding(context)
+          @console_instance.instance_variable_set(:@binding, @binding)
           # Enable wrap in undo
           @original_wrap_in_undo = @console_instance.instance_variable_get(:@settings)[:wrap_in_undo]
-          @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = true # TODO: Does this update setting in dialog? No
+          @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = true # TODO: This does not update the setting in the dialog
           # Listen for result
           @combined_stdout = ''
           @on_eval = proc{ |command, metadata|
@@ -170,38 +189,57 @@ module AE
           @console_instance.on(:error, &@on_error)
           @console_instance.on(:puts, &@on_puts)
           @console_instance.on(:print, &@on_print)
-          @console_instance.bridge.on(:next_tip) { show_tip }
-          @console_instance.bridge.on(:show_solution) { show_solution }
+          @console_instance.bridge.on('next_tip') { show_tip }
+          @console_instance.bridge.on('show_solution') { show_solution }
           @console_instance.on(:closed) { quit }
+          @console_instance.bridge.call('Console.clear')
           # Go to first step
-          next_step
+          next_step(initial_step)
         end
 
         def next_step(target=nil)
           # Increase step counter
           @current_step = (target.nil?) ? @current_step + 1 : target - 1
           if @current_step >= @steps.length
-            # TODO: Ask whether to start next tutorial (if there exist) => requires method to list existing tutorials
-            quit
+            # Ask whether to start next tutorial
+            next_tutorial, next_step = get_next_tutorial_and_step()
+            if !next_tutorial.nil?
+              @console_instance.bridge.call('FeatureRubyTutorials.showTutorialSelector')
+            end
+            return quit
           end
           @current_item = @steps[@current_step]
           # Reset tip counter for tips of the current step
           @tip_counter = 0
           # Prepare the model for this step if something needs to be prepared (entities drawn, model loaded).
           if @current_item[:preparation_code]
-            evaluate(@current_item[:preparation_code])
+            evaluate(@current_item[:preparation_code], @binding)
           end
           # Print description text
           show_instruction(@current_item) if @current_item[:text]
           if @current_item[:load_code]
             code = @current_item[:load_code]
-            # TODO: json: support prev or remove prev
-            # item.load_code = prev_code + item.load_code[4..999999] if item.load_code && !item.load_code.empty? && item.load_code[0..3] == 'prev'
             load_code(code)
           end
         end
 
+        def get_next_tutorial_and_step
+          # Tutorial finished
+          if @current_step >= @steps.length
+            tutorial_paths = FeatureRubyTutorials.find_tutorials
+            next_tutorial = tutorial_paths[tutorial_paths.index(@tutorial_path) + 1] # or nil
+            next_step = 1
+          else
+            next_tutorial = @tutorial_path
+            next_step = @current_step + 1
+          end
+          return next_tutorial, next_step
+        end
+
         def quit
+          # Save status
+          @console_instance.settings[:ruby_tutorials_next_tutorial],
+          @console_instance.settings[:ruby_tutorials_next_step] = get_next_tutorial_and_step
           # Remove listeners for result
           @console_instance.off(:result, &@on_result)
           @console_instance.off(:error, &@on_error)
@@ -211,7 +249,8 @@ module AE
           # Change execution context back to original
           @console_instance.instance_variable_set(:@binding, @original_binding)
           # Set wrap in undo back to original
-          @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = @original_wrap_in_undo # TODO: Does this update setting in dialog? No
+          @console_instance.instance_variable_get(:@settings)[:wrap_in_undo] = @original_wrap_in_undo
+          @@current_running_tutorial = nil
         end
 
         def show_instruction(step)
@@ -241,11 +280,11 @@ module AE
         end
 
         def show_message(html_string)
-          @console_instance.bridge.call('window.addHtmlToOutput', html_string) unless html_string.empty?
+          @console_instance.bridge.call('FeatureRubyTutorials.addHtmlToOutput', html_string) unless html_string.empty?
         end
 
         def load_code(code)
-          @console_instance.bridge.call('window.insertInConsoleEditor', code)
+          @console_instance.bridge.call('FeatureRubyTutorials.insertInConsoleEditor', code)
         end
 
         def show_tip
@@ -265,7 +304,7 @@ module AE
         def show_solution
           return unless @current_item
           if @current_item[:solution_code]
-            @console_instance.bridge.call('evaluateInConsole', @current_item[:solution_code])
+            @console_instance.bridge.call('FeatureRubyTutorials.evaluateInConsole', @current_item[:solution_code])
           else
             show_message(TRANSLATE['Sorry, I don\'t know the solution either.'])
           end
@@ -294,11 +333,10 @@ module AE
         end
 
         def validate_result(result, metadata)
+          return @ignore_command_result = false if @ignore_command_result
           return unless @current_item
           if validation_defined?
             valid = nil
-            # TODO: json: rename in :validate_result_regexp, :validate_stdout_regexp
-            # TODO: instead of stringified result, tryruby needs access to all the concatenated stdout since user input.
             if @current_item[:validate_result_regexp] && !@current_item[:validate_result_regexp].empty?
               if !result.nil?
                 result_string = metadata[:result_string]
@@ -307,7 +345,7 @@ module AE
             elsif @current_item[:validate_result_code] && !@current_item[:validate_result_code].empty?
               if !result.nil?
                 code = "proc{ |result| #{@current_item[:validate_result_code]} }"
-                proc = evaluate(code, @context)
+                proc = evaluate(code, @binding)
                 valid = !!proc.call(result)
               end
             elsif @current_item[:validate_stdout_regexp] && !@current_item[:validate_stdout_regexp].empty?
@@ -318,7 +356,7 @@ module AE
               case valid
               when true
                 show_message(@current_item[:ok])
-                delay(1) {
+                delay(1.5) {
                   next_step
                 }
               when false
@@ -331,16 +369,16 @@ module AE
         end
 
         def validate_error(exception, metadata)
+          return @ignore_command_result = false if @ignore_command_result
           return unless @current_item
           if validation_defined?
             valid = nil
-            # TODO: json: rename in :validate_error_regexp
             if @current_item[:validate_error_regexp] && !@current_item[:validate_error_regexp].empty?
               message = metadata[:message]
               valid = !message.chomp.match(@current_item[:validate_error_regexp]).nil?
             elsif @current_item[:validate_error_code] && !@current_item[:validate_error_code].empty?
               code = "proc{ |exception| #{@current_item[:validate_error_code]} }"
-              proc = evaluate(code, @context)
+              proc = evaluate(code, @binding)
               valid = !!proc.call(exception)
             end
             when_console_message_printed(metadata[:id]).then{
@@ -361,11 +399,10 @@ module AE
         end
 
         def when_console_message_printed(id)
-          return @console_instance.bridge.get('waitForMessage', id)
+          return @console_instance.bridge.get('FeatureRubyTutorials.waitForMessage', id)
         end
 
-        def evaluate(code, context=Object.new)
-          binding = (AE::ConsolePlugin::FeatureRubyTutorials::Tutorial).object_binding(context)
+        def evaluate(code, binding=FeatureTutorials.object_binding(Object.new))
           return eval(code, binding)
         end
 
@@ -383,34 +420,38 @@ module AE
           end
 
           def go!(target=nil)
+            @tutorial.instance_variable_set(:@ignore_command_result, true)
             @tutorial.delay(0) {
               @tutorial.next_step(target)
             }
-            nil # TODO: avoid that nil is printed to the console?
+            ''
           end
           alias_method :skip, :go!
 
           def quit
+            @tutorial.instance_variable_set(:@ignore_command_result, true)
             if @tutorial.current_step < @tutorial.steps.length - 1
               @tutorial.show_message(TRANSLATE['You proceded up to step %0 of %1!', @tutorial.current_step + 1, @tutorial.steps.length])
             end
             @tutorial.show_message(TRANSLATE['See you next time!'])
             @tutorial.quit
-            nil # TODO: avoid that nil is printed to the console?
+            ''
           end
 
           def tip
+            @tutorial.instance_variable_set(:@ignore_command_result, true)
             @tutorial.delay(0) {
               @tutorial.show_tip
             }
-            nil # TODO: avoid that nil is printed to the console?
+            ''
           end
 
           def show
+            @tutorial.instance_variable_set(:@ignore_command_result, true)
             @tutorial.delay(0) {
               @tutorial.show_solution
             }
-            nil # TODO: avoid that nil is printed to the console?
+            ''
           end
 
         end
@@ -427,6 +468,6 @@ end
 # in the original class definition.
 # @param object [Object]
 # @return [Binding]
-def (AE::ConsolePlugin::FeatureRubyTutorials::Tutorial).object_binding(object)
+def (AE::ConsolePlugin::FeatureRubyTutorials).object_binding(object)
   object.instance_eval('binding')
 end

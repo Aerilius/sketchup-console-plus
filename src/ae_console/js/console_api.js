@@ -84,6 +84,7 @@ define(['./app'], function (FeatureAPI) {
         warn: warn,
         javaScriptError: javaScriptError,
         puts: puts,
-        print: print
+        print: print,
+        clear: FeatureAPI.output.clear
     };
 });

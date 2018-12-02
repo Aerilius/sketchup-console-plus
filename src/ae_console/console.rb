@@ -21,7 +21,7 @@ module AE
 
       CONSOLE_HTML = File.join(PATH, 'html', 'console.html') unless defined?(self::CONSOLE_HTML)
 
-      attr_reader :dialog, :bridge
+      attr_reader :dialog, :bridge, :settings
 
       def initialize(settings)
         @settings = settings

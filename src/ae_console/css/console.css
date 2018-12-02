@@ -65,6 +65,10 @@ button {
     vertical-align: middle;
 }
 
+label {
+    margin: 0;
+}
+
 form {
     margin: 0;
     padding: 0;
@@ -450,8 +454,7 @@ table {
 }
 
 .formatted blockquote {
-    margin-left: 0;
-    margin-right: 0;
+    margin: 1em 0;
     padding: 12px;
     border-left: 5px solid #ececec;
     background-color: #f9f9f9;
@@ -459,7 +462,13 @@ table {
     font-size: 1em;
 }
 
+.formatted ul {
+    list-style: disc;
+    margin: 1em;
+}
+
 .formatted pre {
+    margin: 1em 0;
     padding: 0.1em;
     background: #f4f4f4;
 }
@@ -473,11 +482,8 @@ table {
     tab-size: 2;
 }
 
-.formatted p > code, .formatted p > tt, .formatted li > code, .formatted pre > code {
+.formatted code, .formatted tt, .formatted samp {
     background: #f4f4f4;
-}
-
-.formatted code, .formatted tt, .formatted pre, .formatted samp {
     font-family: monospace, monospace;
     border-radius: 3px;
     font-size: 85%;

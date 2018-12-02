@@ -28,18 +28,9 @@ requirejs(['app', 'bridge', 'translate', 'menu', 'ace/ace'], function (app, Brid
     opacity: 0.5;                         \
 }                                         \
 ");
-
-    // Submenu for tutorials.
-    var tutorialsMenu = new Menu('<ul id="tutorials_dropdown" class="dropdown-menu menu" style="top: 0; left: -10em; width: 10em; min-height: 28em;">'); /* Workaround for missing submenu positioning: min-height */
-    app.consoleMenu.addSubmenu(tutorialsMenu, Translate.get('tutorials'));
-
-    Bridge.get('get_tutorials').then(function (tutorialData) {
-        for (var i = 0; i < tutorialData.length; i++) {
-            var tutorialItem = tutorialData[i];
-            tutorialsMenu.addItem(tutorialItem.display_name, function () {
-                Bridge.call('start_tutorial', tutorialItem.filename)
-            });
-        }
+    app.consoleMenu.addItem(Translate.get('tutorials'), function () {
+        //Bridge.call('show_tutorial_selector');
+        showTutorialSelector();
     });
 
     function insertInConsoleEditor (text) {
@@ -72,18 +63,43 @@ requirejs(['app', 'bridge', 'translate', 'menu', 'ace/ace'], function (app, Brid
         }
     }
 
+    function showTutorialSelector () {
+        Promise.all([Bridge.get('get_tutorials'), Bridge.get('get_next_tutorial_and_step')]).then(function (results) {
+            var tutorials = results[0],
+                nextTutorial = results[1][0],
+                nextStep = results[1][1];
+            var html = '<div>' +
+                '  <label>' + Translate.get('Select a tutorial') + 
+                '    <select id="ruby_tutorials_input_next_tutorial" value="' + nextTutorial + '">';
+            for (var i = 0; i < tutorials.length; i++) {
+                html += '      <option value="' + tutorials[i].filepath + '"';
+                if (tutorials[i].filepath == nextTutorial) html += 'selected';
+                html += '>' + tutorials[i].display_name + '</option>';
+            }
+            html += '    </select>' +
+                '  </label>' +
+                '  <label>' + Translate.get('Step') + 
+                '    <input id="ruby_tutorials_input_next_step" type="number" value="' + nextStep + '" />' + 
+                '  </label>' +
+                '  <button onclick="Bridge.call(\'start_tutorial\', $(\'#ruby_tutorials_input_next_tutorial\').val(), parseInt($(\'#ruby_tutorials_input_next_step\').val()))">' + Translate.get('Start') + 
+                '  </button>' +
+                '</div>';
+            addHtmlToOutput(html);
+        })
+    }
+
     function addHtmlToOutput (html) {
         var insertCodeOnDblClick = function (event, args) {
             var element = args[0];
-            $('pre code', element).click(function () {
+            $('pre code', element).addClass('ace_editor').click(function () {
                 var codeElement = $(this).get(0);
                 var code = codeElement.innerText;
                 insertInConsoleEditor(code);
                 app.console.focus();
             }).hover(function () {
-              $(this).css('cursor', 'pointer');
+                $(this).css('cursor', 'pointer');
             }, function () {
-              $(this).css('cursor', null);
+                $(this).css('cursor', null);
             });
         };
         $(app.output).one('added', insertCodeOnDblClick);
@@ -91,9 +107,12 @@ requirejs(['app', 'bridge', 'translate', 'menu', 'ace/ace'], function (app, Brid
         app.console.aceEditor.container.scrollIntoView();
     }
 
-    // Publish methods so that they can be accessed from Ruby side of this feature (FIXME: not very elegant, avoid clashes).
-    window.insertInConsoleEditor = insertInConsoleEditor;
-    window.addHtmlToOutput = addHtmlToOutput;
-    window.waitForMessage = waitForMessage;
-    window.evaluateInConsole = evaluateInConsole;
+    // Publish methods so that they can be accessed from Ruby side of this feature
+    window.FeatureRubyTutorials = {
+        insertInConsoleEditor: insertInConsoleEditor,
+        addHtmlToOutput: addHtmlToOutput,
+        waitForMessage: waitForMessage,
+        evaluateInConsole: evaluateInConsole,
+        showTutorialSelector: showTutorialSelector
+    };
 });

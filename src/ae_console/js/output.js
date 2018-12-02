@@ -111,7 +111,7 @@ define(['jquery', 'bootstrap'], function ($, _) {
          * @private
          */
         var createNewEntry = function (text, data) {
-            if (typeof text !== 'string') return;
+            if (typeof text !== 'string' && !text instanceof HTMLElement && !text.jquery) return;
             data.text = text;
 
             var $entryElement = $('<div>')

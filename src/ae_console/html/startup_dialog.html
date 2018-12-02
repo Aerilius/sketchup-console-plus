@@ -70,7 +70,7 @@
         </tr>
         <tr>
             <td>
-                <button id="button_start_tryruby">Start with Ruby in 30 minutes</button>
+                <button id="button_start_try_ruby">Start with Ruby in 30 minutes</button>
             </td>
             <td>
                 <button id="button_start_tutorial">Begin learning Ruby in SketchUp</button>
@@ -102,18 +102,18 @@ requirejs(['jquery', 'bridge'], function ($, Bridge) {
                 var tutorialItem = tutorialData[i];
                 $('#available_tutorials').append(
                     $('<option>')
-                    .val(tutorialItem.filename)
+                    .val(tutorialItem.filepath)
                     .text(tutorialItem.display_name)
                 );
             }
         });
 
-        $('#button_start_tryruby').on('click', function (event) {
-            Bridge.call('start_tryruby');
+        $('#button_start_try_ruby').on('click', function (event) {
+            Bridge.call('start_try_ruby');
         });
 
         $('#button_start_tutorial').on('click', function (event) {
-            Bridge.call('start_tutorial', $('#available_tutorials').val());
+            Bridge.call('start_tutorial', $('#available_tutorials').val(), 1);
         });
 
         $('#button_no').on('click', function (event) {

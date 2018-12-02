@@ -102,6 +102,7 @@
 "Ruby Console operation %0"="Ruby Console operation %0";
 
 /* Ruby Tutorials */
+"tutorials"="Tutorials";
 "Welcome to Ruby Console+"="Welcome to Ruby Console+";
 "Welcome!"="Welcome!";
 "Start with Ruby in 30 minutes"="Start with
@@ -111,6 +112,9 @@ Ruby in SketchUp";
 "No, thanks!"="No, thanks!";
 "(Credits to Ivo Herweijer and TryRuby.org)"="(Credits to Ivo Herweijer and TryRuby.org)";
 "You can access the tutorials later again in Ruby Console+ in the menu button."="You can access the tutorials later again in Ruby Console+ in the menu button.";
+"Select a tutorial"="Select a tutorial";
+"Step"="Step";
+"Start"="Start";
 "Tip"="Tip";
 "Solution"="Solution";
 "Sorry, I don't have any tips."="Sorry, I don't have any tips.";

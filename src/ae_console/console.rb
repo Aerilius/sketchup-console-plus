@@ -95,7 +95,8 @@ module AE
             :language => :ruby,
             :time => Time.now.to_f,
             :id => @message_id.next!,
-            :backtrace => backtrace
+            :backtrace => backtrace,
+            :backtrace_short => shorten_paths_in_backtrace(backtrace)
           }
           trigger(:warn, message, metadata)
           @dialog.call('Console.warn', message, metadata)

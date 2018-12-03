@@ -134,7 +134,7 @@ module AE
         properties = {
             :dialog_title    => TRANSLATE['Ruby Console+'],
             :preferences_key => 'com.aerilius.console',
-            :scrollable      => false,
+            :scrollable      => true,
             :resizable       => true,
             :width           => 400,
             :height          => 300,

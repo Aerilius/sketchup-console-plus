@@ -66,7 +66,6 @@ module AE
       end
 
       def used(docpath, weight=1)
-        puts(docpath)
         @data[docpath] += 1
       end
       

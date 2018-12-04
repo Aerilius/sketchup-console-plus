@@ -1,0 +1,104 @@
+{
+	"title": "Introduction: Finding your way through SketchUp",
+	"steps": [{
+			"text": "<p>When you launch SketchUp you get 1 application instance where you can open and close models, which can contain multiple entities. SketchUp's Ruby API reproduces these relationships. </p><p>Let's ask SketchUp's API to give us these entities.</p><p>Type <code>Sketchup.active_model</code></p>",
+			"solution_code": "Sketchup.active_model",
+			"validate_result_code": "result.is_a?(Sketchup::Model)",
+			"ok": "Good! We got the model that is currently open!",
+			"error": "That was not quite right. Try again <code>Sketchup.active_model</code>"
+		},
+		{
+			"preparation_code": "Sketchup.active_model.entities.add_edges([0, 0.5, 0], [1, 0.5, 0])\n  Sketchup.active_model.active_view.camera = Sketchup::Camera.new([5, -30, 30], [5, 5, 0], Z_AXIS)",
+			"text": "Now <pre><code>Sketchup.active_model.entities.first</code></pre>",
+			"solution_code": "Sketchup.active_model.entities.first",
+			"validate_result_code": "result.is_a?(Sketchup::Drawingelement)",
+			"ok": "And there we have the edge that I just placed there for you."
+		},
+		{
+			"preparation_code": "instance_eval{\n  es = Sketchup.active_model.entities\n  circle = es.add_face(es.add_circle([5, 5, 0], Z_AXIS, 5, 12))\n  circle.reverse!.material = 'BlanchedAlmond'\n  eye1 = (es.add_circle([3, 6, 0], Z_AXIS, 0.75, 8).first.faces - [circle])[0]\n  eye1.material = 'CornflowerBlue'\n  eye2 = (es.add_circle([7, 6, 0], Z_AXIS, 0.75, 8).first.faces - [circle])[0]\n  eye2.material = 'CornflowerBlue'\n  arc = es.add_arc([5, 4, 0], Y_AXIS.reverse, Z_AXIS, 2.5, -80.degrees, 80.degrees, 8)\n  es.add_edges(arc.first.start, arc.last.end).first.find_faces\n  mouth = (arc.first.faces - [circle])[0]\n  mouth.material = 'DarkSalmon'\n  Sketchup.active_model.materials.select{ |m| m.name == 'CornflowerBlue' }.map{ |m| m.name = 'blue' }\n  Sketchup.active_model.materials.select{ |m| m.name == 'DarkSalmon' }.map{ |m| m.name = 'red' }\n  Sketchup.active_model.active_view.camera = Sketchup::Camera.new([5, -30, 30], [5, 5, 0], Z_AXIS)\n}",
+			"text": "<p>Since there can be many entities, entities is an enumerable collection whose elements you can access by index (<code>entities[0]</code>) or iterate over them.</p><p>Remember how to print objects? Now iterate over all entities and print them.</p>",
+			"tip": [
+				"Print something to the output: <code><b>puts</b>(object)</code>",
+				"Iterate with: <code>entities.<b>each<b>{ |entity| ... }</code>"
+			],
+			"solution_code": "Sketchup.active_model.entities.each{ |entity| puts(entity) }",
+			"validate_stdout_code": "Sketchup::Edge",
+			"ok": "These are so many!"
+		},
+		{
+			"text": "<p>We are just interested in those that are faces, or to be precise, <code>Sketchup::Face</code>. There are two ways to select them.</p><p>The first is obviously \"<code>select</code>\".</p>",
+			"load_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
+			"solution_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
+			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })",
+			"ok": "Good! <code>select</code> filters elements of a collection that fulfill a condition."
+		},
+		{
+			"text": "For selecting types of objects, we can use a shorthand \"<code>grep</code>\"",
+			"load_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
+			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
+			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })"
+		},
+		{
+			"text": "Now select those entities that are faces and have a blue material!",
+			"load_code": " ",
+			"tip": "Grep those entities that are a Sketchup::Face and select those where <code>entity.material.name == \"blue\"</code>",
+			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" }",
+			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" })"
+		},
+		{
+			"text": "<p>See what you have learned:<ul><li>You can \"navigate\" the hierarchy of the model by using accessor methods separated by a dot.</li><li>When you get a collection of items, you can iterate over all elements with <code>each</code> or filter some of them with <code>select</code>.</li></ul></p>",
+			"load_code": " "
+		},
+		{
+			"text": "<p>We used the model often, so it is better to save a reference to it once and avoid some repetition.</p>",
+			"load_code": "model = Sketchup.active_model",
+			"validate_result_code": "Kernel.local_variables.include?(:model) && Kernel.eval('model').is_a?(Sketchup::Model)",
+			"solution_code": "model = Sketchup.active_model"
+		},
+		{
+			"text": "<p>Now save the selected faces in a reference \"<code>blue_faces</code>\".</p>",
+			"load_code": " ",
+			"tip": "<pre><code>blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }</code></pre>",
+			"solution_code": "blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }",
+			"validate_result_code": "Kernel.local_variables.include?(:blue_faces) && Set.new(Kernel.eval('blue_faces')) == Set.new(model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" })",
+			"ok": "Good!"
+		},
+		{
+			"text": "Let's start modifying the model. Iterate over the blue faces and change the material to \"red\".",
+			"tip": "Iterate over <code>blue_faces</code> with <code>each</code> and assign the color <code>entity.material.name == \"red\"</code>",
+			"solution_code": "blue_faces.each{ |face| face.material = \"red\" }",
+			"validate_result_code": "blue_faces.all?{ |face| face.material.name == \"red\" }",
+			"ok": "Scary! But not scary enough..."
+		},
+		{
+			"text": "<p>What would be really creepy? Stalk eyes!</p><p>Iterate over the same faces and call the method <code>pushpull(10)</code> on them.</p>",
+			"tip": "Use <code>blue_faces.each{ |face| ... }</code>",
+			"solution_code": "blue_faces.each{ |face| face.pushpull(10) }",
+			"ok": "Awesome!"
+		},
+		{
+			"text": "Entities like edges and faces have vertices which represent end points:",
+			"load_code": "face = model.entities.grep(Sketchup::Face).first\nface.vertices",
+			"solution_code": "face = model.entities.grep(Sketchup::Face).first\nface.vertices",
+			"validate_result_code": "Kernel.local_variables.include?(:face) && face.is_a?(Sketchup::Face) && result.is_a?(Array) && result.all?{ |v| v.is_a?(Sketchup::Vertex) }"
+		},
+		{
+			"load_code": "vertex = face.vertices.first\nvertex.position",
+			"solution_code": "vertex = face.vertices.first\nvertex.position",
+			"validate_result_code": "Kernel.local_variables.include?(:vertex) && vertex.is_a?(Sketchup::Vertex) && result.is_a?(Geom::Point3d)"
+		},
+		{
+			"text": "The model contains a lot more: the viewport with the camera from where you see the model:",
+			"load_code": "model.active_view.camera",
+			"solution_code": "model.active_view.camera",
+			"validate_result_code": "result.is_a?(Sketchup::Camera)"
+		},
+		{
+			"text": "Then layers, materials, (component) definitions:",
+			"load_code": "model.layers.each{ |layer| puts('Layer: ' + layer.name) }\nmodel.materials.each{ |material| puts('Materal: ' + material.name) }\nmodel.definitions.each{ |definition| puts('Component definition: ' + definition.name) }"
+		},
+		{
+			"text": "Explore the API documentation:<br><a href=\"http://ruby.sketchup.com/Sketchup/Model.html\">Sketchup::Model</a>"
+		}
+	]
+}

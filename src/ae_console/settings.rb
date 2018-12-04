@@ -23,7 +23,7 @@ module AE
         if @properties.include?(name)
           @properties[name].set_value(value)
         else
-          add_property(name, value)
+          add_property(name, value).set_value(value)
         end
         return value
       end

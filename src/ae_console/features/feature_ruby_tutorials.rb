@@ -37,7 +37,7 @@ module AE
 
         }
         # Start-up notification on first start.
-        if app.settings[:first_start].nil?
+        if app.settings[:first_start, true]
           app.settings[:first_start] = false
           on_first_start
         end

@@ -213,7 +213,11 @@ module AE
           @tip_counter = 0
           # Prepare the model for this step if something needs to be prepared (entities drawn, model loaded).
           if @current_item[:preparation_code]
-            evaluate(@current_item[:preparation_code], @binding)
+            begin
+              evaluate(@current_item[:preparation_code], @binding)
+            rescue => error
+              AE::ConsolePlugin.error(error)
+            end
           end
           # Print description text
           show_instruction(@current_item) if @current_item[:text]
@@ -320,8 +324,8 @@ module AE
           json = File.open(filepath, 'r'){ |f|
             JSON.parse(f.read, :symbolize_names => true)
           }
-          @title = json[:title]
-          @steps = json[:steps]
+          @title = json[:title] if json[:title]
+          @steps = json[:steps] if json[:steps]
         end
 
         def validation_defined?
@@ -345,8 +349,12 @@ module AE
             elsif @current_item[:validate_result_code] && !@current_item[:validate_result_code].empty?
               if !result.nil?
                 code = "proc{ |result| #{@current_item[:validate_result_code]} }"
-                proc = evaluate(code, @binding)
-                valid = !!proc.call(result)
+                begin
+                  proc = evaluate(code, @binding)
+                  valid = !!proc.call(result)
+                rescue => error
+                  AE::ConsolePlugin.error(error)
+                end
               end
             elsif @current_item[:validate_stdout_regexp] && !@current_item[:validate_stdout_regexp].empty?
               message = @combined_stdout
@@ -355,16 +363,18 @@ module AE
             when_console_message_printed(metadata[:id]).then{
               case valid
               when true
-                show_message(@current_item[:ok])
+                show_message(@current_item[:ok]) if @current_item[:ok]
                 delay(1.5) {
                   next_step
                 }
               when false
-                show_message(@current_item[:error])
+                show_message(@current_item[:error]) if @current_item[:error]
               end
             }
           else
-            next_step
+            delay(0) {
+              next_step
+            }
           end
         end
 
@@ -378,23 +388,29 @@ module AE
               valid = !message.chomp.match(@current_item[:validate_error_regexp]).nil?
             elsif @current_item[:validate_error_code] && !@current_item[:validate_error_code].empty?
               code = "proc{ |exception| #{@current_item[:validate_error_code]} }"
-              proc = evaluate(code, @binding)
-              valid = !!proc.call(exception)
+              begin
+                proc = evaluate(code, @binding)
+                valid = !!proc.call(exception)
+              rescue => error
+                AE::ConsolePlugin.error(error)
+              end
             end
             when_console_message_printed(metadata[:id]).then{
               case valid
               when true
                 # Defer action so that result is printed first.
-                show_message(@current_item[:ok])
+                show_message(@current_item[:ok]) if @current_item[:ok]
                 delay(1) {
                   next_step
                 }
               when false
-                show_message(@current_item[:error])
+                show_message(@current_item[:error]) if @current_item[:error]
               end
             }
           else
-            next_step
+            delay(0) {
+              next_step
+            }
           end
         end
 

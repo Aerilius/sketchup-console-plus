@@ -68,7 +68,7 @@ requirejs(['app', 'bridge', 'translate', 'menu', 'ace/ace'], function (app, Brid
             var tutorials = results[0],
                 nextTutorial = results[1][0],
                 nextStep = results[1][1];
-            var html = '<div>' +
+            var html = '<form action="" onsubmit="return false;">' +
                 '  <label>' + Translate.get('Select a tutorial') + 
                 '    <select id="ruby_tutorials_input_next_tutorial" value="' + nextTutorial + '">';
             for (var i = 0; i < tutorials.length; i++) {
@@ -79,11 +79,11 @@ requirejs(['app', 'bridge', 'translate', 'menu', 'ace/ace'], function (app, Brid
             html += '    </select>' +
                 '  </label>' +
                 '  <label>' + Translate.get('Step') + 
-                '    <input id="ruby_tutorials_input_next_step" type="number" value="' + nextStep + '" />' + 
+                '    <input id="ruby_tutorials_input_next_step" type="number" min="1" value="' + nextStep + '" />' + 
                 '  </label>' +
-                '  <button onclick="Bridge.call(\'start_tutorial\', $(\'#ruby_tutorials_input_next_tutorial\').val(), parseInt($(\'#ruby_tutorials_input_next_step\').val()))">' + Translate.get('Start') + 
-                '  </button>' +
-                '</div>';
+                '  <input type="submit" onclick="Bridge.call(\'start_tutorial\', $(\'#ruby_tutorials_input_next_tutorial\').val(), parseInt($(\'#ruby_tutorials_input_next_step\').val()))" value="' + Translate.get('Start') + 
+                '" />' +
+                '</form>';
             addHtmlToOutput(html);
         })
     }

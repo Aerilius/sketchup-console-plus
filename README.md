@@ -54,7 +54,9 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Aerili
 
 You can find a technical overview about this extension in the design folder.
 
-Run `rake test` to run the tests.
+First, run `bundle install` to install requirements.
+
+Run `bundle exec rake test` to run the tests.
 
 To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version and push git commits and tags.
 

@@ -22,28 +22,28 @@
 				"Iterate with: <code>entities.<b>each<b>{ |entity| ... }</code>"
 			],
 			"solution_code": "Sketchup.active_model.entities.each{ |entity| puts(entity) }",
-			"validate_stdout_code": "Sketchup::Edge",
+			"validate_stdout_code": ".*Sketchup::Edge.*",
 			"ok": "These are so many!"
 		},
 		{
 			"text": "<p>We are just interested in those that are faces, or to be precise, <code>Sketchup::Face</code>. There are two ways to select them.</p><p>The first is obviously \"<code>select</code>\".</p>",
 			"load_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
 			"solution_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
-			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })",
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })",
 			"ok": "Good! <code>select</code> filters elements of a collection that fulfill a condition."
 		},
 		{
 			"text": "For selecting types of objects, we can use a shorthand \"<code>grep</code>\"",
 			"load_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
 			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
-			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })"
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })"
 		},
 		{
 			"text": "Now select those entities that are faces and have a blue material!",
 			"load_code": " ",
 			"tip": "Grep those entities that are a Sketchup::Face and select those where <code>entity.material.name == \"blue\"</code>",
 			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" }",
-			"validate_result_code": "result.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" })"
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" })"
 		},
 		{
 			"text": "<p>See what you have learned:<ul><li>You can \"navigate\" the hierarchy of the model by using accessor methods separated by a dot.</li><li>When you get a collection of items, you can iterate over all elements with <code>each</code> or filter some of them with <code>select</code>.</li></ul></p>",
@@ -60,7 +60,7 @@
 			"load_code": " ",
 			"tip": "<pre><code>blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }</code></pre>",
 			"solution_code": "blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }",
-			"validate_result_code": "Kernel.local_variables.include?(:blue_faces) && Set.new(Kernel.eval('blue_faces')) == Set.new(model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" })",
+			"validate_result_code": "require 'set'\nKernel.local_variables.include?(:blue_faces) && Set.new(Kernel.eval('blue_faces')) == Set.new(model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" })",
 			"ok": "Good!"
 		},
 		{
@@ -74,6 +74,7 @@
 			"text": "<p>What would be really creepy? Stalk eyes!</p><p>Iterate over the same faces and call the method <code>pushpull(10)</code> on them.</p>",
 			"tip": "Use <code>blue_faces.each{ |face| ... }</code>",
 			"solution_code": "blue_faces.each{ |face| face.pushpull(10) }",
+			"validate_result_code": "",
 			"ok": "Awesome!"
 		},
 		{
@@ -98,7 +99,7 @@
 			"load_code": "model.layers.each{ |layer| puts('Layer: ' + layer.name) }\nmodel.materials.each{ |material| puts('Materal: ' + material.name) }\nmodel.definitions.each{ |definition| puts('Component definition: ' + definition.name) }"
 		},
 		{
-			"text": "Explore the API documentation:<br><a href=\"http://ruby.sketchup.com/Sketchup/Model.html\">Sketchup::Model</a>"
+			"text": "This the end of the first tutorial. Now you can explore more in the API documentation:<br><a href=\"http://ruby.sketchup.com/Sketchup/Model.html\">Sketchup::Model</a>"
 		}
 	]
 }

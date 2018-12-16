@@ -27,7 +27,7 @@
 "Run"="Ausführen";
 "Open"="Öffnen";
 "More files…"="Mehr Dateien…";
-"Open a text file to edit"="Öffne eine Textdatei zum bearbeiten";
+"Open a text file to edit"="Öffne eine Textdatei zum Bearbeiten";
 "Only Ruby code can be run."="Nur Ruby-Code kann ausgeführt werden.";
 "If this is Ruby code, set the edit mode in the menu."="Wenn das Ruby-Code ist, ändere die Programmiersprache im Menü.";
 "Running the code…"="Code wird ausgeführt…";
@@ -103,6 +103,7 @@
 "Ruby Console operation %0"="Ruby-Konsole Operation %0";
 
 /* Ruby Tutorials */
+"tutorials"="Tutorials";
 "Welcome to Ruby Console+"="Willkommen in der Ruby Konsole+";
 "Welcome!"="Willkommen!";
 "Start with Ruby in 30 minutes"="Beginne mit Ruby

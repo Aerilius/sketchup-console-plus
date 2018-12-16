@@ -7,7 +7,7 @@ It lets you open multiple independent instances of the console and remembers the
 
 ## Requirements
 
-- **SketchUp 2017**  
+- **SketchUp 2017+**  
   This [extension](https://extensions.sketchup.com/en/content/ruby-console) (originating from 2012 & 2014) has been completely rebuilt to take advantage of modern technologies (the new HtmlDialog with modern JavaScript support, Ruby 2.0).
 
 ## Installation
@@ -28,6 +28,8 @@ There are two modes (<kbd>Ctrl</kbd>-<kbd>Tab ↹</kbd>):
 - <img alt="Editor" src="./src/ae_console/images/editor.png" align="left" width="24" /> The **editor** is a full-featured text editor. Here you turn code into a script and save it as a file. 
 
 ### Features
+
+- **Tutorials**: You don't know any programming? No problem, because SketchUp is the coolest opportunity to get started and it's super easy with the famous "Try Ruby" interactive tutorial that is included with this extension. 
 
 - **Autocompletion** and **doc tooltips**: Intelligent live autocompletion tells you not only which methods you can call next on a reference but provides you also with detailed info on how to correctly use them. Use <kbd>Tab ↹</kbd> to accept a suggestion.
 

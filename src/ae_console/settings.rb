@@ -38,8 +38,8 @@ module AE
         name = name.to_sym
         if @properties.include?(name)
           return @properties[name].get_value()
-        elsif default_value
-          return default_value
+        else
+          return add_property(name, default_value).get_value()
         end
       end
       alias_method :[], :get

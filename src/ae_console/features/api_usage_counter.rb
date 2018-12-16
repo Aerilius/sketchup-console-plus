@@ -54,6 +54,8 @@ module AE
             @data.update(JSON.parse(string))
           }
           @total_count = @data.values.reduce(0, &:+)
+        else
+          @total_count = 0
         end
         return self
       end

@@ -372,6 +372,7 @@ module AE
               end
             }
           else
+            show_message(@current_item[:ok]) if @current_item[:ok]
             delay(0) {
               next_step
             }

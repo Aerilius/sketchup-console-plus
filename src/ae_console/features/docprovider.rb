@@ -297,10 +297,12 @@ module AE
           ['**', 'b'],
           ['_', 'i'],
           ['*', 'i'],
-          ['+', 'tt']
+          ['+', 'tt'],
+          [['{', '}'], 'tt'],
         ].map{ |markup, tagname|
-          word_boundary = (markup != '+') ? '\\b' : '\\B'
-          regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}#{word_boundary}")
+          word_boundary = (markup =~ /_\*/) ? '\\b' : '\\B'
+          markup_start, markup_end = (markup.is_a?(String)) ? [markup, markup] : markup
+          regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup_start)}([\#\.]?\\w[\\w\\s]*\\w)#{Regexp.quote(markup_end)}#{word_boundary}")
           replacement = "<#{tagname}>\\1</#{tagname}>"
           [regexp, replacement]
         } unless defined?(RDOC_TO_HTML_MAP)

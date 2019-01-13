@@ -281,17 +281,18 @@ module AE
         end
 
 
-        RDOC_TO_HTML_MAP = Hash[{
-          '+'  => 'tt',
-          '_'  => 'i',
-          '*'  => 'i',
-          '__' => 'b',
-          '**' => 'b'
-        }.map{ |markup, tagname|
-          regexp      = Regexp.new("\\b#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}\\b")
+        RDOC_TO_HTML_MAP = [
+          ['__', 'b'],
+          ['**', 'b'],
+          ['_', 'i'],
+          ['*', 'i'],
+          ['+', 'tt']
+        ].map{ |markup, tagname|
+          word_boundary = (markup != '+') ? '\\b' : '\\B'
+          regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup)}(\\w[\\w\\s]*\\w)#{Regexp.quote(markup)}#{word_boundary}")
           replacement = "<#{tagname}>\\1</#{tagname}>"
           [regexp, replacement]
-        }] unless defined?(RDOC_TO_HTML_MAP)
+        } unless defined?(RDOC_TO_HTML_MAP)
 
         def rdoc_to_html(text)
           text = text.clone

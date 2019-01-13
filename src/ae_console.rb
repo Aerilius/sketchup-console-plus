@@ -1,16 +1,30 @@
 # Load the normal support files.
 require 'sketchup.rb'
 require 'extensions.rb'
-require File.join('ae_console', 'version.rb')
 
-# Create the extension.
-ext = SketchupExtension.new('Ruby Console+', File.join('ae_console', 'core.rb'))
+module AE
 
-# Attach some nice info.
-ext.creator     = 'Aerilius'
-ext.version     = AE::ConsolePlugin::VERSION
-ext.copyright   = '2012-2019 Andreas Eisenbarth'
-ext.description = 'An alternative Ruby Console with command history and code highlighting.'
+  module ConsolePlugin
 
-# Register and load the extension on startup.
-Sketchup.register_extension(ext, true)
+    self::PATH = File.join(File.expand_path('..', __FILE__), 'ae_console') unless defined?(self::PATH)
+
+    require File.join(PATH, 'version.rb')
+    require File.join(PATH, 'translate.rb')
+
+    self::TRANSLATE = Translate.new('console.strings') unless defined?(self::TRANSLATE)
+
+    # Create the extension.
+    ext = SketchupExtension.new(self::TRANSLATE['Ruby Console+'], File.join(PATH, 'core.rb'))
+
+    # Attach some nice info.
+    ext.creator     = 'Aerilius'
+    ext.version     = AE::ConsolePlugin::VERSION
+    ext.copyright   = '2012-2019 Andreas Eisenbarth'
+    ext.description = self::TRANSLATE['An alternative Ruby Console with command history and code highlighting.']
+
+    # Register and load the extension on startup.
+    Sketchup.register_extension(ext, true)
+
+  end
+
+end

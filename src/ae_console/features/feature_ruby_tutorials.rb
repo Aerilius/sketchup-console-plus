@@ -21,7 +21,7 @@ module AE
             action_context.resolve(FeatureRubyTutorials.find_tutorials.map{ |filepath|
               {
                 :filepath => filepath,
-                :display_name => filepath_to_title(filepath)
+                :display_name => (JSON.parse(File.read(filepath))['title'] rescue filepath_to_title(filepath))
               }
             })
           }
@@ -87,7 +87,7 @@ module AE
           map{ |tutorial_path|
             {
               :filepath => tutorial_path,
-              :display_name => filepath_to_title(tutorial_path)
+              :display_name => (JSON.parse(File.read(tutorial_path))['title'] rescue filepath_to_title(tutorial_path))
             }
           })
         }
@@ -125,7 +125,8 @@ module AE
       end
 
       def self.find_tutorials
-        filepaths = Dir.glob(File.join(PATH, 'Resources', 'en-US', 'tutorials', '*.json')).map{ |filepath|
+        fallback_locale = 'en-US'
+        filepaths = Dir.glob(File.join(PATH, 'Resources', fallback_locale, 'tutorials', '*.json')).map{ |filepath|
           locale_filepath = File.join(PATH, 'Resources', Sketchup.get_locale, 'tutorials', File.basename(filepath))
           if File.exist?(locale_filepath)
             locale_filepath

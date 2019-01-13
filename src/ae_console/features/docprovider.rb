@@ -8,7 +8,18 @@ module AE
     module DocProvider
 
       # The directory where Marshal dumps generated with Yard2Hash are stored.
-      API_PATH = File.join(PATH, 'data', 'apis') unless defined?(self::API_PATH)
+      def self.find_apis
+        fallback_locale = 'en-US'
+        filepaths = Dir.glob(File.join(PATH, 'Resources', fallback_locale, 'apis', '*.json')).map{ |fallback_filepath|
+          locale_filepath = File.join(PATH, 'Resources', Sketchup.get_locale, 'apis', File.basename(fallback_filepath))
+          if File.exist?(locale_filepath)
+            locale_filepath
+          else
+            fallback_filepath
+          end
+        }
+        return filepaths
+      end
 
       # [Hash<String,Hash>] docpath => doc_info
       @apis ||= {}
@@ -393,7 +404,7 @@ module AE
 
       end
 
-      DocProvider.load_apis(Dir.glob(File.join(API_PATH, '*.json')))
+      DocProvider.load_apis(self.find_apis())
 
     end
 

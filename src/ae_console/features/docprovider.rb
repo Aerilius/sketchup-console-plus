@@ -90,7 +90,7 @@ module AE
           parameters.each{ |param|
             param_name, param_types, param_description = *param
             param_type_expression = (param_types.is_a?(Array)) ? param_types.map{ |s| escape(s) }.join(', ') : '?'
-            parameters_section += "<li><b>#{escape(param_name)}</b> (<tt>#{param_type_expression}</tt>) — #{escape(param_description)}</li>"
+            parameters_section += "<li><b>#{escape(param_name)}</b> (<tt>#{param_type_expression}</tt>) — #{escape(rdoc_to_html(param_description))}</li>"
           }
           parameters_section += '</ul>'
         end
@@ -101,7 +101,7 @@ module AE
           if doc_info[:type].to_s != 'constant'
             return_section += "<p><b>#{TRANSLATE['Return value']}:</b></p><ul>"
             return_section += "<li>(<tt>#{return_type_expression}</tt>)"
-            return_section += " — #{escape(return_description)}</li>" if return_description && !return_description.empty?
+            return_section += " — #{escape(rdoc_to_html(return_description))}</li>" if return_description && !return_description.empty?
             return_section += '</ul>'
           end
         end
@@ -292,23 +292,27 @@ module AE
         end
 
 
-        RDOC_TO_HTML_MAP = [
-          ['__', 'b'],
-          ['**', 'b'],
-          ['_', 'i'],
-          ['*', 'i'],
-          ['+', 'tt'],
-          [['{', '}'], 'tt'],
-        ].map{ |markup, tagname|
-          word_boundary = (markup =~ /_\*/) ? '\\b' : '\\B'
-          markup_start, markup_end = (markup.is_a?(String)) ? [markup, markup] : markup
-          regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup_start)}([\#\.]?\\w[\\w\\s]*\\w)#{Regexp.quote(markup_end)}#{word_boundary}")
-          replacement = "<#{tagname}>\\1</#{tagname}>"
-          [regexp, replacement]
-        } unless defined?(RDOC_TO_HTML_MAP)
+        unless defined?(RDOC_TO_HTML_MAP)
+          RDOC_TO_HTML_MAP = [
+            ['__', 'b'],
+            ['**', 'b'],
+            ['_', 'i'],
+            ['*', 'i'],
+            ['+', 'tt'],
+            [['{', '}'], 'tt'],
+          ].map{ |markup, tagname|
+            word_boundary = (markup =~ /_\*/) ? '\\b' : ''
+            markup_start, markup_end = (markup.is_a?(String)) ? [markup, markup] : markup
+            regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup_start)}([\#\.]?\\w[\\w\\s]*\\w)#{Regexp.quote(markup_end)}#{word_boundary}")
+            replacement = "<#{tagname}>\\1</#{tagname}>"
+            [regexp, replacement]
+          }
+          RDOC_TO_HTML_MAP << [/([\s\(])(\+\.?[_a-zA-Z][\w_]+[=!\?]?\+)([\s\.,\)])/, "\\1<tt>\\2</tt>\\3"]
+          RDOC_TO_HTML_MAP << [/([\s\(])(\+(?:\[-?)?[\d][\d\s\-\+,]*\]?\+)([\s\.,\)])/, "\\1<tt>\\2</tt>\\3"]
+        end
 
         def rdoc_to_html(text)
-          text = text.clone
+          text = text.to_s.clone
           RDOC_TO_HTML_MAP.each{ |regexp, replacement|
             # Markup
             text.gsub!(regexp, replacement)
@@ -316,7 +320,7 @@ module AE
           # Spaces
           text.gsub!(/  +/){ |spaces| '&nbsp;'*spaces.length }
           # Line breaks
-          text.gsub!(/\n/, '<br/>')
+          text.gsub!(/\n|\\n/, '<br/>')
           return text
         end
 

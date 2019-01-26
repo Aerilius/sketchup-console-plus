@@ -7,10 +7,32 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   width="128"
-   height="128"
-   id="svg2">
+   width="24"
+   height="24"
+   id="svg2"
+   sodipodi:docname="sketchup_logo.svg"
+   inkscape:version="0.92+devel (unknown)">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     inkscape:document-rotation="0"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview839"
+     showgrid="false"
+     inkscape:zoom="4.2315984"
+     inkscape:cx="65.804921"
+     inkscape:cy="65.920599"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
   <metadata
@@ -26,27 +48,33 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(0,-924.36218)"
-     id="layer1">
+     transform="matrix(0.18750001,0,0,0.18750001,-7.8999972e-8,-173.3179)"
+     id="layer1"
+     style="stroke-width:5.33333">
     <g
        transform="matrix(0.0996776,0,0,-0.0996776,4.6713911,1052.3622)"
-       id="g2995">
+       id="g2995"
+       style="stroke-width:5.33333">
       <path
          d="M 1103.75,234.629 275.641,0 114.332,502.605 0,1182.48 786.211,1284.14 1190.41,968.672 1103.75,234.629"
          id="path2997"
-         style="fill:#ea212d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         style="fill:#ea212d;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.33333"
+         inkscape:connector-curvature="0" />
       <path
          d="M 131.812,1010.94 624.387,1082.5 801.609,899.469 1091.39,951.035 764.82,1205.93 86.668,1118.27 131.812,1010.94"
          id="path2999"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.33333"
+         inkscape:connector-curvature="0" />
       <path
          d="M 245.727,456.41 290.547,326.559 542.113,388.965 480.395,509.793 245.727,456.41"
          id="path3001"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.33333"
+         inkscape:connector-curvature="0" />
       <path
          d="M 630.883,884.902 165.305,803.145 210.934,681.918 461.871,730.641 526.934,618.98 798.988,676.836 630.883,884.902"
          id="path3003"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.33333"
+         inkscape:connector-curvature="0" />
     </g>
   </g>
 </svg>

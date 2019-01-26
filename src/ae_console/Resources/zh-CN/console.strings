@@ -1,0 +1,122 @@
+/* Plugin metadata */
+"Ruby Console+"="Ruby控制台+";
+"An alternative Ruby Console with many useful features."="另一个具有许多有用特性的Ruby控制台。";
+
+/* Settings */
+"fontSize"="字体大小";
+"tabSize"="制表宽度";
+"useSoftTabs"="作为制表符的空格";
+"useWrapMode"="包裹线";
+"editMode"="编程语言";
+"theme"="主题";
+"evaluationKeyBinding"="执行代码的键盘快捷方式";
+"shift"="Shift键";
+"ctrl"="Ctrl键";
+"enter"="Enter键";
+
+/* Console */
+"Console"="控制台";
+"Press the %0 key to evaluate the input, and use %1 for linebreaks."="按%0键评估输入，并使用%1键进行换行。";
+"Clear"="清除";
+"Menu"="下拉菜单 ";
+"Show shortcuts"="显示键盘快捷键";
+"Switch between console and editor"="在控制台和编辑器之间切换";
+
+/* Editor */
+"Editor"="编辑器";
+"Run"="运行";
+"Open"="打开";
+"More files…"="更多文件…";
+"Open a text file to edit"="打开文本文件进行编辑";
+"Only Ruby code can be run."="您只能运行Ruby代码。";
+"If this is Ruby code, set the edit mode in the menu."="如果这是Ruby代码，请在菜单中设置编程语言。";
+"Running the code…"="运行的代码…";
+"Code was run and returned: \n %0"="代码已运行并返回以: \n %0";
+"Code was run successfully!"="该守则已成功运行！";
+"Code failed with an error: \n %0"="代码因错误而失败: \n %0";
+"Unsaved document"="未保存的文档";
+"Save changes to current file?"="保存对当前文件的更改？";
+"Save"="保存";
+"Save the current file as…"="将当前文件另存为…";
+"Failed to save file"="保存文件失败";
+"New"="新文件";
+"Save as…"="另存为…";
+"Find…"="查找…";
+"Find and replace…"="查找并替换…";
+"Go to line…"="转到行号…";
+"Saved"="保存的";
+"The file has been changed externally.\nOverwrite external changes and save the current file?"="该文件已在外部更改。\n覆盖外部更改并保存当前文件？";
+"The file was changed externally."="该文件已在外部更改。";
+"Reload"="重新加载";
+"Ignore"="忽略";
+"Yes"="是";
+"No"="否";
+
+/* Features */
+
+/* Binding */
+"binding"="变量绑定";
+
+/* History */
+"Go one command back in the history."="在命令的历史记录中返回一个。";
+"Go one command forward in the history."="在命令的历史记录中前进一个。";
+
+/* Reload Scripts */
+"reload_scripts"="受监控的脚本";
+"%0 reloaded"="%0 已重新加载";
+"Scripts reloaded"="脚本重新加载";
+"Click to remove files from auto-loading"="单击以从自动重新加载中删除文件";
+
+/* Autocomplete */
+"global_variable"="全局變量";
+"instance_variable"="實例變量";
+"class_variable"="類別變量";
+"local_variable"="局部变量";
+"instance_method"="实例方法";
+"class_method"="類別方法";
+"module_function"="模块函数";
+"constant"="常數";
+"module"="模块";
+"class"="類別";
+
+/* Documentation */
+"Help"="帮助";
+"Show documentation for the currently focussed word in a browser window."="在浏览器窗口中显示当前焦点词的文档。";
+"The help function can only lookup Ruby documentation."="帮助只能查找Ruby文档。";
+"Documentation not found"="找不到文档";
+"Documentation for %0 not found at url %1"="在URL %1上找不到%0的文档";
+"Parameters"="参数值";
+"Return value"="返回值";
+"Documentation"="文档";
+"Back"="向后";
+"Forward"="向前";
+"Search Engine"="搜索引擎";
+"Search…"="搜索…";
+
+/* Select entity */
+"Select"="挑选";
+"Click to select an entity. Right-click to abort. Press the ctrl key to select points. Press the shift key to use inferencing."="单击以选择实体。右键单击以中止。按ctrl键选择点。按shift键使用推断。";
+
+/* Wrap in undo */
+"wrap_in_undo"="将此命令包装为可撤消的操作";
+"Ruby Console operation %0"="Ruby控制台操作%0";
+
+/* Ruby Tutorials */
+"tutorials"="教程";
+"Welcome to Ruby Console+"="欢迎使用Ruby控制台+";
+"Welcome!"="欢迎！";
+"Start with Ruby in 30 minutes"="30分钟内从Ruby开始。";
+"Begin learning Ruby in SketchUp"="开始学习在SketchUp中
+使用Ruby";
+"No, thanks!"="不，谢谢！";
+"(Credits to Ivo Herweijer and TryRuby.org)"="(谢谢Ivo Herweijer和TryRuby.org)";
+"You can access the tutorials later again in Ruby Console+ in the menu button."="稍后您可以在Ruby控制台+的下拉菜单按钮中再次访问教程。";
+"Select a tutorial"="选择教程";
+"Step"="步骤";
+"Start"="开始";
+"Tip"="提示";
+"Solution"="解决方案";
+"Sorry, I don't have any tips."="对不起，我没有任何提示。";
+"Sorry, I don't know the solution either."="对不起，我也不知道解决办法。";
+"You proceded up to step %0 of %1!"="你已经进步到%1的第%0步！";
+"See you next time!"="下次见！";

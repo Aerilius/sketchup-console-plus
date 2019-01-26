@@ -1,0 +1,105 @@
+{
+	"title": "简介：通过SketchUp找到你的方法",
+	"steps": [{
+			"text": "<p>启动SketchUp时，会得到一个应用程序实例，您可以在其中打开和关闭模型，模型可以包含多个实体。SketchUp的RubyAPI复制了这些关系。</p><p>让我们让SketchUp的API给我们提供这些实体。</p><p>键入 <code>Sketchup.active_model</code></p>",
+			"solution_code": "Sketchup.active_model",
+			"validate_result_code": "result.is_a?(Sketchup::Model)",
+			"ok": "好！我们收到了当前打开的模型！",
+			"error": "那不太对。再试一次 <code>Sketchup.active_model</code>"
+		},
+		{
+			"preparation_code": "Sketchup.active_model.entities.add_edges([0, 0.5, 0], [1, 0.5, 0])\n  Sketchup.active_model.active_view.camera = Sketchup::Camera.new([5, -30, 30], [5, 5, 0], Z_AXIS)",
+			"text": "现在 <pre><code>Sketchup.active_model.entities.first</code></pre>",
+			"solution_code": "Sketchup.active_model.entities.first",
+			"validate_result_code": "result.is_a?(Sketchup::Drawingelement)",
+			"ok": "在那里，我们有我刚才为你放置的边缘。"
+		},
+		{
+			"preparation_code": "instance_eval{\n  es = Sketchup.active_model.entities\n  circle = es.add_face(es.add_circle([5, 5, 0], Z_AXIS, 5, 12))\n  circle.reverse!.material = 'BlanchedAlmond'\n  eye1 = (es.add_circle([3, 6, 0], Z_AXIS, 0.75, 8).first.faces - [circle])[0]\n  eye1.material = 'CornflowerBlue'\n  eye2 = (es.add_circle([7, 6, 0], Z_AXIS, 0.75, 8).first.faces - [circle])[0]\n  eye2.material = 'CornflowerBlue'\n  arc = es.add_arc([5, 4, 0], Y_AXIS.reverse, Z_AXIS, 2.5, -80.degrees, 80.degrees, 8)\n  es.add_edges(arc.first.start, arc.last.end).first.find_faces\n  mouth = (arc.first.faces - [circle])[0]\n  mouth.material = 'DarkSalmon'\n  Sketchup.active_model.materials.select{ |m| m.name == 'CornflowerBlue' }.map{ |m| m.name = 'blue' }\n  Sketchup.active_model.materials.select{ |m| m.name == 'DarkSalmon' }.map{ |m| m.name = 'red' }\n  Sketchup.active_model.active_view.camera = Sketchup::Camera.new([5, -30, 30], [5, 5, 0], Z_AXIS)\n}",
+			"text": "<p>因为可以有许多实体，entities是一个可枚举集合，其元素可以通过索引(<code>entities[0]</code>)访问或循环访问。</p><p>你记得怎么打印物体吗？现在迭代所有实体并打印它们。</p>",
+			"tip": [
+				"打印到输出： <code><b>puts</b>(object)</code>",
+				"迭代：<code>entities.<b>each<b>{ |entity| ... }</code>"
+			],
+			"solution_code": "Sketchup.active_model.entities.each{ |entity| puts(entity) }",
+			"validate_stdout_code": ".*Sketchup::Edge.*",
+			"ok": "这些太多了！"
+		},
+		{
+			"text": "<p>我们只对那些面孔感兴趣，或者准确地说，是<code>Sketchup::Face</code>。有两种方法可以选择它们。</p><p>第一个显然是\"<code>select</code>\"(挑选).</p>",
+			"load_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
+			"solution_code": "Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) }",
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })",
+			"ok": "好！<code>select</code>过滤满足给定条件的集合的元素。"
+		},
+		{
+			"text": "对于选择不同类型的对象，我们可以使用一个简短的\"<code>grep</code>\"",
+			"load_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
+			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face)",
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.select{ |entity| entity.is_a?(Sketchup::Face) })"
+		},
+		{
+			"text": "现在选择那些面和蓝色材质的实体！ ",
+			"load_code": " ",
+			"tip": "使用grep选择Sketchup::Face实体，然后挑选以下的<code>entity.material.name == \"blue\"</code>",
+			"solution_code": "Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" }",
+			"validate_result_code": "require 'set'\nresult.is_a?(Array) && Set.new(result) == Set.new(Sketchup.active_model.entities.grep(Sketchup::Face).select{ |entity| entity.material.name == \"blue\" })"
+		},
+		{
+			"text": "<p>看看你学到了什么：<ul><li>通过使用由点分隔的访问器方法，可以在模型的层次结构中导航。</li><li>当您得到一个对象集合时，您可以使用<code>each</code>迭代所有元素，或者使用<code>select</code>过滤其中的一些元素。</li></ul></p>",
+			"load_code": " "
+		},
+		{
+			"text": "<p>我们经常使用这个模型，所以最好为它保存一次变量，避免重复。</p>",
+			"load_code": "model = Sketchup.active_model",
+			"validate_result_code": "Kernel.local_variables.include?(:model) && Kernel.eval('model').is_a?(Sketchup::Model)",
+			"solution_code": "model = Sketchup.active_model"
+		},
+		{
+			"text": "<p>现在将选定面保存在名为\"<code>blue_faces</code>\"的引用中.</p>",
+			"load_code": " ",
+			"tip": "<pre><code>blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }</code></pre>",
+			"solution_code": "blue_faces = model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" }",
+			"validate_result_code": "require 'set'\nKernel.local_variables.include?(:blue_faces) && Set.new(Kernel.eval('blue_faces')) == Set.new(model.entities.grep(Sketchup::Face).select{ |face| face.material.name == \"blue\" })",
+			"ok": "好！"
+		},
+		{
+			"text": "让我们开始修改模型。 迭代蓝色面并将材质更改为\"red\"。",
+			"tip": "使用<code>each</code>迭代<code>blue_faces</code>，并指定颜色：<code>entity.material.name == \"red\"</code>",
+			"solution_code": "blue_faces.each{ |face| face.material = \"red\" }",
+			"validate_result_code": "blue_faces.all?{ |face| face.material.name == \"red\" }",
+			"ok": "吓人的！但这还不够可怕…"
+		},
+		{
+			"text": "<p>什么才是真正令人毛骨悚然的？长眼睛！</p><p>迭代相同的面并对其调用方法<code>pushpull(10)</code>。</p>",
+			"tip": "Use <code>blue_faces.each{ |face| ... }</code>",
+			"solution_code": "blue_faces.each{ |face| face.pushpull(10) }",
+			"validate_result_code": "",
+			"ok": "令人惊叹的！"
+		},
+		{
+			"text": "边缘和面等实体具有表示端点的顶点：",
+			"load_code": "face = model.entities.grep(Sketchup::Face).first\nface.vertices",
+			"solution_code": "face = model.entities.grep(Sketchup::Face).first\nface.vertices",
+			"validate_result_code": "Kernel.local_variables.include?(:face) && face.is_a?(Sketchup::Face) && result.is_a?(Array) && result.all?{ |v| v.is_a?(Sketchup::Vertex) }"
+		},
+		{
+			"load_code": "vertex = face.vertices.first\nvertex.position",
+			"solution_code": "vertex = face.vertices.first\nvertex.position",
+			"validate_result_code": "Kernel.local_variables.include?(:vertex) && vertex.is_a?(Sketchup::Vertex) && result.is_a?(Geom::Point3d)"
+		},
+		{
+			"text": "模型包含了更多：视口(view)和照相机(camera)你用来观察模型:",
+			"load_code": "model.active_view.camera",
+			"solution_code": "model.active_view.camera",
+			"validate_result_code": "result.is_a?(Sketchup::Camera)"
+		},
+		{
+			"text": "然后是层、材质、组件定义：",
+			"load_code": "model.layers.each{ |layer| puts('Layer: ' + layer.name) }\nmodel.materials.each{ |material| puts('Materal: ' + material.name) }\nmodel.definitions.each{ |definition| puts('Component definition: ' + definition.name) }"
+		},
+		{
+			"text": "这是第一个教程的结尾。现在，您可以在API文档中了解更多信息：<br><a href=\"http://ruby.sketchup.com/Sketchup/Model.html\">Sketchup::Model</a>"
+		}
+	]
+}

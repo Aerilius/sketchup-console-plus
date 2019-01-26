@@ -1,0 +1,545 @@
+{
+    "title": "尝试Ruby",
+    "steps": [{
+        "lang": "ZH",
+        "title": "你有30分钟吗？那现在就试试鲁比吧！",
+        "chapter": "Y",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>Ruby是一种来自日本的编程语言，它正在彻底改变软件开发。</p>    <p>Ruby的美丽体现在它在简单性和强大性之间的平衡。</p>    <p>本教程指导您学习基础知识。</p>    <p>在任何时候，您都可以通过键入<tt>skip<tt>并按<kbd>Enter<kbd>（或者您可以跳到特定的步骤<code>skip(12)<code>）来跳过一个步骤，显示带有<tt>show<tt>的解决方案，或者使用<tt>quit>离开教程。按<kbd>Enter.<kbd>开始学习。</p>本教程基于Ivo Herweijer的<a href=\"https://easydatawarehousing.github.io/<code>skip(12)</code>/\" target=\"_blank\">TryRuby</a>.  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "使用编辑器",
+        "chapter": "N",
+        "validate_result_regexp": "^8$",
+        "ok": "好！你做了一点数学。你看到答案是怎么出现的吗？",
+        "error": "在编辑器中键入2+6 ",
+        "text": "<p>控制台窗口将很快看起来像您和Ruby之间的对话。底部的编辑器部分是您输入Ruby代码的地方，点击<kbd>Enter<kbd>键，您就可以看到它运行了！</p>    <p>例如，尝试输入一些数学。像：</p>    <tt>skip</tt>    ",
+        "load_code": "",
+        "tip": "写入<tt>show</tt>并按键盘上的<kbd>Enter</kbd>键",
+        "solution_code": "2 + 6"
+    }, {
+        "lang": "ZH",
+        "title": "数字和数学",
+        "chapter": "N",
+        "validate_result_regexp": "^7$",
+        "ok": "好",
+        "error": "",
+        "text": "ruby识别数字和数学符号。你可以尝试一些其他的数学方法，比如：<p> <code>2 + 6</code>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "换个说法",
+        "chapter": "N",
+        "validate_stdout_regexp": "^(?:[0-9\\.-]\\n){1,}$",
+        "ok": "放好。",
+        "error": "",
+        "text": "<p>您是否注意到，如果您键入了多个公式，那么您只看到最后一个公式的答案。发生了什么？在输入两个或更多公式时，Ruby只显示最后一个公式的结果。</p><p>当然你有控制屏幕的能力！只需在每个公式前键入puts（中间有空格）。Puts意味着：“把一些东西放在屏幕上”，</p><p>试试这个：</p> <code>2 + 6</code><p>现在从最后一个公式中去掉“puts”，看看会发生什么。</p>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "说出你的名字",
+        "chapter": "N",
+        "validate_result_regexp": "[a-zA-Z]{1,1}",
+        "ok": "很好，你用你名字的字母组成了一个字符串",
+        "error": "",
+        "text": "<p>当然，计算机在数学上既方便又快捷。让我们继续前进。你想看到你的名字被颠倒了吗？</p><p>首先用这样的引号键入你的名字：</p> <pre><code>4 * 10\n5 - 12\n30 / 4</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "把你的名字倒过来说",
+        "chapter": "N",
+        "validate_result_regexp": "\\w+",
+        "ok": "好",
+        "error": "",
+        "text": "<p>字符串是计算机可以处理的一组字符。想象一下，这些字母在一排晾衣绳上，引用的是固定两端的衣夹。引号字符标记开始和结束。</p> <p>要颠倒姓名，请键入：</p>  <pre><code>puts 4 * 10\nputs 5 - 12\nputs 30 / 4</code></pre>  <p>（不要忘记点字符！）</p>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "数字母",
+        "chapter": "N",
+        "validate_result_regexp": "^\\d+$",
+        "ok": "对。长度也是一种方法。",
+        "error": "",
+        "text": "<p>您在您的姓名上使用了“reverse”方法！通过将您的名称括在引号中，您创建了一个字符串。然后您调用了reverse方法，该方法对字符串起作用，将所有字母向后翻转。</p><p>现在，让我们看看你的名字里有多少个字母：</p><pre><code>&quot;Jimmy&quot;</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "关于重复",
+        "chapter": "N",
+        "validate_result_regexp": "^(?<x>\\w+)\\k<x>{4}$",
+        "ok": "很高兴认识<code>&quot;Jimmy&quot;.length</code>认识<pre><code>&quot;Jimmy&quot;.length</code></pre>认识你。",
+        "error": "",
+        "text": "<p>现在，您可能想知道这其中有什么有用的。</p><p>好吧，我确信您已经访问了一个抱怨的网站：“嘿，您的密码太短了！”</p><p>看，确实有一些程序使用这个简单的长度方法。</p><p>注意这个。让我们把你的名字乘以五。</p><pre><code>&quot;Jimmy&quot;.reverse</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "嘿，总结1已经",
+        "chapter": "Y",
+        "validate_error_regexp": "^NoMethodError(.*)$",
+        "ok": "不，不能反转数字。",
+        "error": "",
+        "text": "<p>让我们看一下你在第一分钟学到了什么。</p><h3>输入字段</h3><p>当您在输入字段中输入代码并对其进行评估时，它会在输出部分给出一个答案。几乎所有的代码都给出了一个答案。</p><h3>数字和字符串</h3><p>数字和字符串都是Ruby的数学和文本对象。</p><h3>方法</h3><p>你已经使用了英语语言的方法，比如倒转法和长度法。和符号方法，如乘法方法：*<br>方法意味着动作！</p><p>这是你学习的基础。拿简单的东西，玩弄它们，把它们变成新的东西。你觉得舒服吗？我向你保证。</p><p>好的，让我们做些不舒服的事。试着反转一个数字：</p><pre><code>&quot;Jimmy&quot; * 5</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "住手，你疯了！",
+        "chapter": "N",
+        "validate_result_regexp": "^\\d{1,}$",
+        "ok": "只能反转字符串",
+        "error": "",
+        "text": "<p>您不能反转数字40。我猜你可以把显示器举到镜子前，但是反转一个数字是没有意义的。</p><p>Ruby抛出了一条错误消息。Ruby告诉您数字没有反向方法。</p><p>如果你先把数字变成一个字符串：</p>you.Nice",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "男孩不同于女孩",
+        "chapter": "N",
+        "validate_result_regexp": "\\[\\]",
+        "ok": "太好了，那是个空名单",
+        "error": "",
+        "text": "<p>和数字不同于字符串。</p><p>虽然您可以在Ruby中的任何对象上使用方法，但某些方法仅适用于某些类型的事物。但是，您可以始终使用Ruby的“to”方法在不同类型之间转换。</p><ul><li>“to_s”将事物转换为字符串。</li><li>“to_i”将事物转换为整数（数字）</li><li>“to_a”将事物转换为数组。</li></ul><p>什么是数组？！</p><p>它们是列表。键入一对括号：</p><pre><code>40.reverse</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "排队",
+        "chapter": "N",
+        "validate_result_regexp": "^\\[(\\d+)(,\\s*\\d+){3,}\\]$",
+        "ok": "杰出的",
+        "error": "尝试向列表中添加第四个数字",
+        "text": "<p>列表以有序的方式保存事物。</p><p>这就像站在队伍里等待爆米花。你在某人后面，你永远不会把他推到一边，对吧？你身后的那个人，你可以很近的看到他，对吗？</p><p>这是您的列表。彩票号码：</p><pre><code>40.to_s.reverse</code></pre><p>尝试在此列表中添加数字： 在35后面键入一个逗号，后跟一个数字。空间是可选的。</p>",
+        "load_code": "",
+        "solution_code": "[12, 47, 35, 81]"
+    }, {
+        "lang": "ZH",
+        "title": "举起手来",
+        "chapter": "N",
+        "validate_result_regexp": "^47$",
+        "ok": "可以",
+        "error": "",
+        "text": "<p>彩票号码列表。哪一个最高？</p><p>尝试：</p><pre><code>[]</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "把清单收起来",
+        "chapter": "N",
+        "validate_result_regexp": "^\\[(\\d+)(,\\s*\\d+){2,}\\]$",
+        "ok": "保存的！",
+        "error": "",
+        "text": "<p>很好，很好。但是每次你需要的时候都要重新输入这个列表是很烦人的，不是吗？</p><p>让我们把我们的号码保存在一张票里，就像这样：</p><pre><code>[12, 47, 35]</code></pre>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "现在键入票",
+        "chapter": "N",
+        "validate_result_regexp": "\\[(\\d+(, )?){2,}\\]",
+        "ok": "恢复！",
+        "error": "",
+        "text": "<p>现在，类型：</p><pre><code>[12, 47, 35].max</code></pre>",
+        "preparation_code": "ticket = [12, 47, 35]"
+    }, {
+        "lang": "ZH",
+        "title": "保存，藏起来",
+        "chapter": "N",
+        "validate_result_regexp": "\\[12, 35, 47\\]",
+        "ok": "你已经把名单分类了",
+        "error": "",
+        "text": "<p>您已经挂起了您的lotto编号，将它们塞进一个名为ticket的变量中。但是，任何其他名称，如JimmyList，都可以。</p><p>您将发现编程主要是关于使用变量的。 </p><p>让我们把你的彩票号码整理好，怎么样？</p><p>使用：</p><pre><code>ticket = [12, 47, 35]</code></pre><p>你有一张单子。你把名单排序了。ticket变量现在已更改。<br>你注意到sort!方法的结尾有一个很大的感叹号吗？ <br>很多时候，如果Ruby方法能很好地改变变量，那么它们就会像这样大喊大叫。这没什么特别的，只是一个标记。</p>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "初级的",
+        "chapter": "N",
+        "validate_stdout_regexp": "^(?:(?:12|35|47)\\n+){3,}$",
+        "ok": "好啊",
+        "error": "几乎",
+        "text": "<p>因此我们将lotto编号存储在名为ticket的变量中。我们怎样才能把数字再拿出来？</p><p>我们已经看到用max可以得到最高的数字。同样，您可以获取列表的第一个或最后一个元素。但是如果你想要一个特定的元素呢？</p><h3>“[ ]”</h3><p>Ruby使用方括号[ ]以元素为目标。方括号在Ruby中很常见。它们就像用来对准目标的瞄准装置。确切地。这些括号的意思是，“我要找<pre><code>ticket</code></pre>”。</p><p>让我们得到所有的彩票号码：</p><code>ticket.sort!</code><p>为什么我们使用[0], [1], [2]而不是[1], [2]和[3]？那是日本禅吗？不，我们电脑人喜欢从零开始计数。它不仅仅是一个Ruby的东西，在大多数编程语言中都使用了基于零的索引。</p>",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "总结2即将到来",
+        "chapter": "Y",
+        "validate_stdout_regexp": "\\w+",
+        "ok": "它押韵吗？",
+        "error": "",
+        "text": "<p>现在，看看你的第二分钟是怎样的：</p><h3>错误</h3><p>如果你试图反转一个数字或做任何有问题的事情，Ruby会告诉你。</p><h3>数组</h3><p>数组是按某种顺序存储东西的列表。我们还知道如何创建数组并从数组中获取项。.</p><h3>变量</h3><p>变量保存一件事并给它一个名字。你用等号来做这个。像：<tt>ticket = [14, 37, 18]</tt>。</p><h3>2/8</h3><p>总共有八个部分。你有八分之二的路！这很简单，你不觉得吗？前面有好东西。</p><p>让我们改变一下方向。我在一个变量里为你写了一点诗。看一看。类型：</p><code>puts ticket[0]\nputs ticket[1]\nputs ticket[2]</code>",
+        "preparation_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\"",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "可悲的是，你讨厌祝酒诗",
+        "chapter": "N",
+        "validate_result_regexp": "(toast){0}",
+        "ok": "杰出的",
+        "error": "闻起来像烤面包",
+        "text": "<p>听着，没关系。你不必喜欢它。别闹了，请便。不要烤面包，吃个甜瓜之类的。试试看这首新诗：</p><pre><code>puts ticket[0]\nputs ticket[1]\nputs ticket[2]</code></pre><p>gsub方法是全局替换“GLOBAL_SUBSTITUTE”的缩写。它用“蜜露”代替所有出现的“吐司”。</p>",
+        "preparation_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\"",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "准备好，瞄准",
+        "chapter": "N",
+        "validate_result_regexp": "^.ti tae ot (.+)",
+        "ok": "好的，当然。所以整首诗都被颠倒了。",
+        "error": "",
+        "text": "<p>这里有一个问题：当我们把整首诗倒转时会发生什么？</p>    <pre><code>puts poem</code></pre>  ",
+        "preparation_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\"",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "逆转太多",
+        "chapter": "N",
+        "validate_result_regexp": "^\\[\"More still did (.+)",
+        "ok": "是的，几乎是我们想要的",
+        "error": "",
+        "text": "<p>所以整首诗都被一个字母一个字母地倒过来了。不过，我真的想把这些线颠倒过来。将最后一行上移到第一行，将第一行下移到最后一行。</p>    <p>向后，但不能这样向后。</p>    <p>以下是如何：</p>    <pre><code>poem.gsub(&quot;toast&quot;, &quot;honeydew&quot;)</code></pre>  ",
+        "preparation_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\"",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "链式方法的环",
+        "chapter": "N",
+        "validate_stdout_regexp": "^More still did (.+)",
+        "ok": "好戏，我的朋友！<code>poem.lines.reverse</code>方法将该行数组放入一个字符串中。",
+        "error": "",
+        "text": "<p>你看到了什么？那里发生了什么？你打了“poem.lines.reverse”什么事？</p>    <p>发生了两件事。你用“lines”把这首诗变成了一张单子。“lines”决定字符串的拆分方式，并将其转换为数组。</p>    <p>然后，你把名单倒过来了。你每行都有。你把它们颠倒了。就是这样。</p>    <p>让我们在结尾处再加一个方法：</p>    <pre><code>poem.reverse</code></pre>    <p>将这样的方法组合起来称为方法链接。</p>  ",
+        "preparation_code": "poem = \"My toast has flown from my hand\nAnd my toast has gone to the moon.\nBut when I saw it on television,\nPlanting our flag on Halley's comet,\nMore still did I want to eat it.\"",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "在所有的总结中，3现在在这里",
+        "chapter": "Y",
+        "validate_result_regexp": "\\{\\}",
+        "ok": "你做了一个空哈希！",
+        "error": "",
+        "text": "<h3>感叹号</h3>    <p>方法的名称中可能包含感叹号（以及问号）。这些只是为了更好地解释它们的功能。没什么大不了的。</p>    <h3>字符串操作</h3>    <p>搜索和更改字符串</p>    <h3>方法链</h3>    <p>链接方法可以让您完成更多的工作。分解一首诗，倒转，重新组合： poem.lines.reverse.join</p>    <p>在这一点上，你可能想对这首诗再做些修改。<a href=\"http://ruby-doc.org/core/classes/String.html\" target=\"_blank\">这里</a>是所有字符串方法的完整列表。</p>    <p>试试看，比如：<code>puts poem.lines.reverse.join</code>或poem.swapcase</p>    <h2>准备好了吗？</h2>    <p>当您准备好继续时，键入：</p>    <pre><code>puts poem.lines.reverse.join</code></pre>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "一本空白的书",
+        "chapter": "N",
+        "validate_result_regexp": "^:(splendid|quite_good|mediocre|quite_not_good|abysmal)$",
+        "ok": "是的，这是一个新的评论。",
+        "error": "使用<pre><code>books = {}</code></pre>、<code>books[&quot;Gravitys Rainbow&quot;] = :splendid</code>、TryRuby、<pre><code>books[&quot;Gravitys Rainbow&quot;] = :splendid</code></pre>、<tt>splendid</tt>中的一个。别忘了结肠。",
+        "text": "<p>你做了一个空哈希。哈希就像一个数组，只有它的每个元素都有一个名称。</p>    <p>我们要把一些小书评放在新的散堆里。这是我们的评级系统：</p>    <ul>  <li>:splendid → a masterpiece</li>  <li>:quite_good → enjoyed, sure, yes</li>  <li>:mediocre → equal parts great and terrible</li>  <li>:quite_not_good → notably bad</li>  <li>:abysmal → steaming wreck</li>  </ul>    <p>要对一本书进行评级，请将书名放在方括号中，并将评级放在等号之后。例如：</p>    poem.downcase    <blockquote>  <p>到目前为止，我认为告诉你们<code>books = {}</code>年的所有课程都是分开的，这是公平的。所以如果你疯狂地在这里输入书评，你只能在本课中使用它们。<br>  如果您想在下一课中使用您的评论，您应该复制/粘贴它们。<br>  别担心太多，每节课都有很多预先定义好的东西供你玩。</p>  </blockquote>  ",
+        "preparation_code": "books ||= {}",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "更多点评",
+        "chapter": "N",
+        "validate_stdout_regexp": "[3-9]",
+        "ok": "请参见，length方法适用于字符串、数组和哈希。",
+        "error": "",
+        "text": "<p>继续，写评论。如果您想查看整个列表，只需键入：puts books</p>    <p>再说一遍，评级是： :splendid, :quite_good, :mediocre, <tt>mediocre</tt> 和 :abysmal.</p>    <p>这些评级不是字符串。当你把一个冒号放在一个简单的单词前面时，你会得到一个符号化的字符串。  符号比字符串（在计算机内存方面）便宜。如果在程序中反复使用一个词，请使用符号。计算机不会在内存中存储这个词的数千份副本，而是只存储一次符号。</p>    <p>更重要的是，一个符号告诉你，这不仅仅是一个旧词，而且在你的程序中有意义。</p>    <p>再输入2个书评，使用books.length查看哈希中有多少个书评：</p>    <tt>quite_not_good</tt>  ",
+        "preparation_code": "books ||= {}",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "等等，我喜欢《万有引力彩虹》这本书吗？",
+        "chapter": "N",
+        "validate_stdout_regexp": "^(splendid|quite_good|mediocre|quite_not_good|abysmal)$",
+        "ok": "我很喜欢它",
+        "error": "",
+        "text": "<p>Ruby的一个优点是名称经常被重用，这意味着需要记住的名称更少。</p>    <p>记住我们如何使用数字从数组中检索项：<br>  <tt>abysmal</tt>.</p>    <p>对于散列，它的工作方式相同，只是我们不使用数字来获取元素，而使用名称。</p>    <p>所以，如果你想查阅你以前的评论，再次把标题放在广场上。但不要等量齐观。就像这样：</p>    :quite_not_good  ",
+        "preparation_code": "books = {\"Gravitys Rainbow\" => :splendid, \"The deep end\" => :abysmal, \"Living colors\" => :mediocre}",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "哈希配对",
+        "chapter": "N",
+        "validate_result_regexp": "^\\[\".*\"\\]",
+        "ok": "你找到钥匙了",
+        "error": "",
+        "text": "<p>记住哈希不会按顺序保存东西。那不是他们的工作。它只需要将两件事情配对：一个键和一个值。</p>    <p>在你的评论中，这本书的书名是关键，评级是价值。</p>    <p>如果你只想看到你看过的所有书的书名：</p>    <code>puts ticket[1]</code>    <p>您也可以使用.values而不是.keys来尝试此操作。</p>  ",
+        "preparation_code": "books = {\"Gravitys Rainbow\" => :splendid, \"The deep end\" => :abysmal, \"Living colors\" => :mediocre}",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "你严厉吗？",
+        "chapter": "N",
+        "validate_stdout_regexp": ":mediocre",
+        "ok": "太棒了，哇！你已经做了一个评分计分卡",
+        "error": "",
+        "text": "<p>那么你是在发表严厉、不公平的评论吗？让我们用一个新的哈希评分来保持分数：</p>    <p>那么，好吧，现在让我们数一数你的评论。和我在一起。键入：</p>    <code>books.keys</code>    <p>代码中的直线是管道字符，可能位于键盘上Enter键的正上方。</p>    <p>\" += 1 \"的意思是：增加1。</p>    <p>如果你不了解这里发生的一切，不要担心。稍后会揭晓。</p>  ",
+        "preparation_code": "books = {\"Gravitys Rainbow\" => :splendid, \"The deep end\" => :abysmal, \"Living colors\" => :mediocre, \"Bumblebees\" => :mediocre}",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "理货",
+        "chapter": "N",
+        "validate_result_regexp": "\\w+",
+        "ok": "万岁！",
+        "error": "",
+        "text": "<p>我们刚刚使用的一个惊人的新功能是代码块。我们将在本课和下一课中进一步探讨这些内容。但是，基本上，代码块是由大括号包围的一点Ruby代码。</p>    <p>让我们尝试另一个代码块：</p>    \n  ratings[rate] += 1\n    <p>块始终附加到方法。就像times方法一样，它接受块并反复运行代码。（在我们的示例中：5次。）</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "你有时间吗？",
+        "chapter": "N",
+        "validate_stdout_regexp": "^0\n1\n2\n3\n4\n$",
+        "ok": "你的时间恰到好处！正如我们前面看到的，Ruby从0开始计数，但块正好运行了5次（最后返回迭代器）。",
+        "error": "运行块0到5次",
+        "text": "<p>正如我们在第一个使用代码块的示例中看到的（计算评级时），我们可以将值传递给代码块。传递的值由运行代码块的方法确定。</p>    <p>代码块接收的值将放置在块开头的变量名中，位于两个管道符号之间： |</p>    <p>让我们用这个代码块来尝试一下：</p>    <code>5.times { print &quot;Odelay! &quot; }</code>    <p>这里，方法“.times”向变量发送一个值 |time|。但请注意，变量<pre><code>5.times { print &quot;Odelay! &quot; }</code></pre>仅在块内已知。</p>    <blockquote>  <p>您注意到可以将代码拆分为多行吗？这使它更容易阅读。</p>  </blockquote>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "现在得出摘要4",
+        "chapter": "Y",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>最后一节课要长一点。你可能已经用了三分钟的时间来学习：</p>    <h3>哈希</h3>    <p>波形括号的小词典： \n  puts time\n</p>    <h3>符号化字符串</h3>    <p>带有冒号的小而有效的代码字，如： <code>5.times { |time|\n  puts time\n}</code></p>    <h3>代码块</h3>    <p>可以附加到Ruby的许多方法上的代码块。下面是用于构建记分卡的代码：<br>  <pre><code>5.times { |time|\n  puts time\n}</code></pre></p>    <h3>接下来</h3>    <p>在下一课中，我们将深入研究方法。</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "去或不去",
+        "chapter": "N",
+        "validate_stdout_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>还有一件我们还没有公开讨论过的小事情：方法参数。还记得我们什么时候把诗改了一点吗？我们使用：  poem.gsub(&ldquo;toast&rdquo;, &ldquo;honeydew&rdquo;)</p>    <p><code>{}</code>方法需要2个参数，我们通过在圆括号之间包含两个字符串来传递给gsub。参数告诉方法要做什么。</p>    <h3>括号</h3>    <p>实际上，大多数时候Ruby不介意省略括号。所以这也会起作用： poem.gsub &ldquo;toast&rdquo;, &ldquo;honeydew&rdquo;</p>    <p>我们已经使用了另一个带有参数的方法。事实上，很多时候，虽然不是很明显：</p>    <code>:splendid</code>    <p>是的，看跌期权也是一种方法。在Ruby中使用带括号或不带括号的“puts”是相同的，但是不带括号的版本更容易阅读。这样可以节省宝贵的打字时间！</p>    <blockquote>  <p>所以我想结论是，只要代码可读性好，您可以用括号做任何您喜欢的事情。</p>  </blockquote>    <h3>去或不去</h3>    <p>所以，如果to是一个方法，be是一个论点，我们现在知道这个古老问题的答案了。  所以，如果“to”是一种方法，“be”是一个论点，我们现在就知道这个古老问题的答案了。不管你是想要to be还是to(be)，这都只是一个偏好问题。</p>    <p>你想多点莎士比亚吗？继续阅读。</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "驯服悍妇",
+        "chapter": "N",
+        "validate_result_regexp": "^:tame",
+        "ok": "很好！",
+        "error": "",
+        "text": "<p>你现在完全知道如何使用Ruby了。我是说你已经把必需品拿下来了。你只需要不断学习更多的方法，尝试更复杂的模块。</p>    <p>但红宝石的一面我们还没有解决。制定自己的方法。啊哼！那我们就结束吧。方法</p>    <p>除了使用Ruby的内置方法（如puts、sort、times），您还可以定义自己的方法。为什么这是个好主意？原因有二：</p>    <h3>缩短你的计划</h3>    <p>如果必须在代码的多个部分中执行相同的操作，则将代码放在单独的方法中会更容易。您的代码将变短。</p>    <h3>使代码更容易阅读</h3>    <p>假设你的程序需要做很多不同的事情。你可以把所有代码塞进一个长段。但以后要阅读和理解这段代码会非常困难。</p>    <p>相反，您应该用不同的方法分割代码，并给每个方法一个易于理解的名称。你以后会感谢你自己的。</p>    <p>那么我们如何定义一个方法呢？这样地：</p>    <code>puts &quot;Hello&quot;\nputs(&quot;Hello&quot;)</code>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "在Ruby中，Def Leppard意味着：定义方法Leppard",
+        "chapter": "N",
+        "validate_result_regexp": "^:tame",
+        "ok": "驯服不是跛脚",
+        "error": "",
+        "text": "<p>嘿，好吧，你做到了。你在制定自己的方法。您从<pre><code>def tame( number_of_shrews )\nend</code></pre>开始，然后是方法的名称。以及方法需要的参数列表。这不是太可怕和危险！我们要做的就是把它填满Ruby，然后用\n  number_of_shrews.times {\n    puts &quot;Tamed a shrew&quot;\n  }\n把它完成。</p>    <p>代码如下：</p>    <code>def tame( number_of_shrews )\nend</code>    <blockquote>  <p>另外：<br>  如果你不知道这一章的标题。 <a href=\"http://en.wikipedia.org/wiki/Def_Leppard\" target=\"_blank\">Def Leppard</a>是曾经著名的英国摇滚乐队的名字。</p>  </blockquote>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "你自己创造的成熟果实",
+        "chapter": "N",
+        "validate_stdout_regexp": "^Tamed a shrew",
+        "ok": "那会显示出那些怪物",
+        "error": "",
+        "text": "<p>一种新方法诞生了。现在让我们使用它：</p>    <pre><code>def tame( number_of_shrews )\n  number_of_shrews.times {\n    puts &quot;Tamed a shrew&quot;\n  }\nend</code></pre>  ",
+        "preparation_code": "def tame(number_of_shrews);number_of_shrews.times{puts \"Tamed a shrew\"};end;",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "互赠",
+        "chapter": "N",
+        "validate_stdout_regexp": "\\d+",
+        "ok": "马上就来。好极了。",
+        "error": "",
+        "text": "<p>大多数方法不仅需要一些参数作为输入，还需要一些反馈。我稍微改变了一下我们的方法，它将返回一个值给您。试试看：</p>    <code>tame 5</code>    <h3>返回</h3>    <p>而且，由于您在这里变得如此先进和有能力，另一个技巧是：您可以从方法的最后一行中省略单词“return”。Ruby将自动返回方法中使用的最后一个值。</p>    <p>所以我们可以将最后一行更改为： number_of_shrews.</p>    <p>但是，由于方法.times还返回number_of_shrews，我们可以删除最后一行。所以事实上，我们原来的方法已经做了我们一直想要的！</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "你好，谁在那儿？总结5挥动帽子！",
+        "chapter": "Y",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>干得好，干得好，干得好，干得好！</p>    <p>真的，真的，真的，真的，真的！</p>    <p>以下是你生命中最后几分钟的回顾：</p>    <h3>方法</h3>    <p>方法可以用def定义并有一个名称。方法使您的程序更短、更易于阅读。</p>    <h3>参数</h3>    <p>方法可以有参数。</p>    <h3>返回值</h3>    <p>方法（几乎）总是返回一个值。</p>    <h2>现在</h2>    <p>To (be) or not to (be) is not a question to you anymore. 你准备好再来点莎士比亚了吗？</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "世界是我们的牡蛎",
+        "chapter": "N",
+        "validate_result_regexp": "^\\{\\\"William",
+        "ok": "很好。有点难读。",
+        "error": "",
+        "text": "<p>到目前为止，我们运行的程序只使用我们自己键入的东西。很好，现在是互联网时代，我们应该把世界其他地方包括在我们的编程工作中。</p>    <p>许多，许多，许多的网站都是可用的，你可以要求信息。例如，这个链接将提供关于Ruby的所有当前<a href=\"http://news.google.com/news/section?q=ruby&output=rss\" target=\"_blank\">Google新闻提要</a>  。</p>    <p>你的网络浏览器可能会为你很好地显示它。如果您查看源代码（按control-u键），您将看到一长串格式奇怪的文本。在谷歌的例子中，它是RSS格式的。</p>    <h3>格式</h3>    <p>有许多其他格式，有奇怪的名称，可以在网络上使用，例如： html, xml 和 json. 是的，即使是这个网站也使用其中的一些。</p>    <p>我已经为你准备了一个方法，可以从网上找到威廉·莎士比亚的完整作品的清单。</p>    <p>获取数据的方式：</p>    \n  number_of_shrews.times {\n    puts &quot;Tamed a shrew&quot;\n  }\n  return number_of_shrews\n  ",
+        "preparation_code": "def get_shakey;JSON.parse(\"{\\\"William Shakespeare\\\": {\\\"1\\\": {\\\"title\\\": \\\"The Two Gentlemen of Verona\\\", \\\"finished\\\": 1591},\\\"2\\\": {\\\"title\\\": \\\"The Taming of the Shrew\\\", \\\"finished\\\": 1591},\\\"3\\\": {\\\"title\\\": \\\"Henry VI, Part 2\\\", \\\"finished\\\": 1591},\\\"4\\\": {\\\"title\\\": \\\"Henry VI, Part 3\\\", \\\"finished\\\": 1591},\\\"5\\\": {\\\"title\\\": \\\"Henry VI, Part 1\\\", \\\"finished\\\": 1592},\\\"6\\\": {\\\"title\\\": \\\"Titus Andronicus\\\", \\\"finished\\\": 1592},\\\"7\\\": {\\\"title\\\": \\\"Richard III\\\", \\\"finished\\\": 1593},\\\"8\\\": {\\\"title\\\": \\\"Edward III\\\", \\\"finished\\\": 1593},\\\"9\\\": {\\\"title\\\": \\\"The Comedy of Errors\\\", \\\"finished\\\": 1594},\\\"10\\\": {\\\"title\\\": \\\"Love's Labour's Lost\\\", \\\"finished\\\": 1595},\\\"11\\\": {\\\"title\\\": \\\"Love's Labour's Won\\\", \\\"finished\\\": 1596},\\\"12\\\": {\\\"title\\\": \\\"Richard II\\\", \\\"finished\\\": 1595},\\\"13\\\": {\\\"title\\\": \\\"Romeo and Juliet\\\", \\\"finished\\\": 1595},\\\"14\\\": {\\\"title\\\": \\\"A Midsummer Night's Dream\\\", \\\"finished\\\": 1595},\\\"15\\\": {\\\"title\\\": \\\"King John\\\", \\\"finished\\\": 1596},\\\"16\\\": {\\\"title\\\": \\\"The Merchant of Venice\\\", \\\"finished\\\": 1597},\\\"17\\\": {\\\"title\\\": \\\"Henry IV, Part 1\\\", \\\"finished\\\": 1597},\\\"18\\\": {\\\"title\\\": \\\"The Merry Wives of Windsor\\\", \\\"finished\\\": 1597},\\\"19\\\": {\\\"title\\\": \\\"Henry IV, Part 2\\\", \\\"finished\\\": 1598},\\\"20\\\": {\\\"title\\\": \\\"Much Ado About Nothing\\\", \\\"finished\\\": 1599},\\\"21\\\": {\\\"title\\\": \\\"Henry V\\\", \\\"finished\\\": 1599},\\\"22\\\": {\\\"title\\\": \\\"Julius Caesar\\\", \\\"finished\\\": 1599},\\\"23\\\": {\\\"title\\\": \\\"As You Like It\\\", \\\"finished\\\": 1600},\\\"24\\\": {\\\"title\\\": \\\"Hamlet\\\", \\\"finished\\\": 1601},\\\"25\\\": {\\\"title\\\": \\\"Twelfth Night\\\", \\\"finished\\\": 1601},\\\"26\\\": {\\\"title\\\": \\\"Troilus and Cressida\\\", \\\"finished\\\": 1602},\\\"27\\\": {\\\"title\\\": \\\"Sir Thomas More\\\", \\\"finished\\\": 1604},\\\"28\\\": {\\\"title\\\": \\\"Measure for Measure\\\", \\\"finished\\\": 1604},\\\"29\\\": {\\\"title\\\": \\\"Othello\\\", \\\"finished\\\": 1604},\\\"30\\\": {\\\"title\\\": \\\"All's Well That Ends Well\\\", \\\"finished\\\": 1605},\\\"31\\\": {\\\"title\\\": \\\"King Lear\\\", \\\"finished\\\": 1606},\\\"32\\\": {\\\"title\\\": \\\"Timon of Athens\\\", \\\"finished\\\": 1606},\\\"33\\\": {\\\"title\\\": \\\"Macbeth\\\", \\\"finished\\\": 1606},\\\"34\\\": {\\\"title\\\": \\\"Antony and Cleopatra\\\", \\\"finished\\\": 1606},\\\"35\\\": {\\\"title\\\": \\\"Pericles, Prince of Tyre\\\", \\\"finished\\\": 1608},\\\"36\\\": {\\\"title\\\": \\\"Coriolanus\\\", \\\"finished\\\": 1608},\\\"37\\\": {\\\"title\\\": \\\"The Winter's Tale\\\", \\\"finished\\\": 1611},\\\"38\\\": {\\\"title\\\": \\\"Cymbeline\\\", \\\"finished\\\": 1610},\\\"39\\\": {\\\"title\\\": \\\"The Tempest\\\", \\\"finished\\\": 1611},\\\"40\\\": {\\\"title\\\": \\\"Cardenio\\\", \\\"finished\\\": 1613},\\\"41\\\": {\\\"title\\\": \\\"Henry VIII\\\", \\\"finished\\\": 1613},\\\"42\\\": {\\\"title\\\": \\\"The Two Noble Kinsmen\\\", \\\"finished\\\": 1614}}}\");end;",
+        "load_code": "",
+        "solution_code": "get_shakey"
+    }, {
+        "lang": "ZH",
+        "title": "高贵的金匠",
+        "chapter": "N",
+        "validate_stdout_regexp": "^The Two Noble Kinsmen$",
+        "ok": "那好多了",
+        "error": "",
+        "text": "<p>好的，我们现在有一个从互联网播放的列表。列表采用JSON格式。幸运的是，Ruby提供了一种将jsonData转换为Ruby哈希的方法。get_shakey方法已经为我们做到了这一点。</p>    <p>但由于JSON数据的结构保留在散列中，所以仍然有点难以读取。让我们写一个方法来打印出好的戏剧剧本。</p>    <p>如果仔细检查播放列表，您会发现它有一种嵌套结构。（事实上，这在您从互联网上获得的数据中很常见。）如下所示：</p>    <ul><code>def tame( number_of_shrews )\n  number_of_shrews.times {\n    puts &quot;Tamed a shrew&quot;\n  }\n  return number_of_shrews\nend\n\nputs tame(3)</code></ul>    <p>要列出这些戏剧，我们首先要访问名为William Shakespeare的散列元素。接下来，我们必须迭代它下面的每个元素。</p>    <p>Ruby有一个迭代方法。它被称为“each”。我们在创建图书评级系统时曾见过。</p>    <p>方法返回的所有内容都传递给一个块：</p>    <pre><code>get_shakey</code></pre>  ",
+        "preparation_code": "def get_shakey;JSON.parse(\"{\\\"William Shakespeare\\\": {\\\"1\\\": {\\\"title\\\": \\\"The Two Gentlemen of Verona\\\", \\\"finished\\\": 1591},\\\"2\\\": {\\\"title\\\": \\\"The Taming of the Shrew\\\", \\\"finished\\\": 1591},\\\"3\\\": {\\\"title\\\": \\\"Henry VI, Part 2\\\", \\\"finished\\\": 1591},\\\"4\\\": {\\\"title\\\": \\\"Henry VI, Part 3\\\", \\\"finished\\\": 1591},\\\"5\\\": {\\\"title\\\": \\\"Henry VI, Part 1\\\", \\\"finished\\\": 1592},\\\"6\\\": {\\\"title\\\": \\\"Titus Andronicus\\\", \\\"finished\\\": 1592},\\\"7\\\": {\\\"title\\\": \\\"Richard III\\\", \\\"finished\\\": 1593},\\\"8\\\": {\\\"title\\\": \\\"Edward III\\\", \\\"finished\\\": 1593},\\\"9\\\": {\\\"title\\\": \\\"The Comedy of Errors\\\", \\\"finished\\\": 1594},\\\"10\\\": {\\\"title\\\": \\\"Love's Labour's Lost\\\", \\\"finished\\\": 1595},\\\"11\\\": {\\\"title\\\": \\\"Love's Labour's Won\\\", \\\"finished\\\": 1596},\\\"12\\\": {\\\"title\\\": \\\"Richard II\\\", \\\"finished\\\": 1595},\\\"13\\\": {\\\"title\\\": \\\"Romeo and Juliet\\\", \\\"finished\\\": 1595},\\\"14\\\": {\\\"title\\\": \\\"A Midsummer Night's Dream\\\", \\\"finished\\\": 1595},\\\"15\\\": {\\\"title\\\": \\\"King John\\\", \\\"finished\\\": 1596},\\\"16\\\": {\\\"title\\\": \\\"The Merchant of Venice\\\", \\\"finished\\\": 1597},\\\"17\\\": {\\\"title\\\": \\\"Henry IV, Part 1\\\", \\\"finished\\\": 1597},\\\"18\\\": {\\\"title\\\": \\\"The Merry Wives of Windsor\\\", \\\"finished\\\": 1597},\\\"19\\\": {\\\"title\\\": \\\"Henry IV, Part 2\\\", \\\"finished\\\": 1598},\\\"20\\\": {\\\"title\\\": \\\"Much Ado About Nothing\\\", \\\"finished\\\": 1599},\\\"21\\\": {\\\"title\\\": \\\"Henry V\\\", \\\"finished\\\": 1599},\\\"22\\\": {\\\"title\\\": \\\"Julius Caesar\\\", \\\"finished\\\": 1599},\\\"23\\\": {\\\"title\\\": \\\"As You Like It\\\", \\\"finished\\\": 1600},\\\"24\\\": {\\\"title\\\": \\\"Hamlet\\\", \\\"finished\\\": 1601},\\\"25\\\": {\\\"title\\\": \\\"Twelfth Night\\\", \\\"finished\\\": 1601},\\\"26\\\": {\\\"title\\\": \\\"Troilus and Cressida\\\", \\\"finished\\\": 1602},\\\"27\\\": {\\\"title\\\": \\\"Sir Thomas More\\\", \\\"finished\\\": 1604},\\\"28\\\": {\\\"title\\\": \\\"Measure for Measure\\\", \\\"finished\\\": 1604},\\\"29\\\": {\\\"title\\\": \\\"Othello\\\", \\\"finished\\\": 1604},\\\"30\\\": {\\\"title\\\": \\\"All's Well That Ends Well\\\", \\\"finished\\\": 1605},\\\"31\\\": {\\\"title\\\": \\\"King Lear\\\", \\\"finished\\\": 1606},\\\"32\\\": {\\\"title\\\": \\\"Timon of Athens\\\", \\\"finished\\\": 1606},\\\"33\\\": {\\\"title\\\": \\\"Macbeth\\\", \\\"finished\\\": 1606},\\\"34\\\": {\\\"title\\\": \\\"Antony and Cleopatra\\\", \\\"finished\\\": 1606},\\\"35\\\": {\\\"title\\\": \\\"Pericles, Prince of Tyre\\\", \\\"finished\\\": 1608},\\\"36\\\": {\\\"title\\\": \\\"Coriolanus\\\", \\\"finished\\\": 1608},\\\"37\\\": {\\\"title\\\": \\\"The Winter's Tale\\\", \\\"finished\\\": 1611},\\\"38\\\": {\\\"title\\\": \\\"Cymbeline\\\", \\\"finished\\\": 1610},\\\"39\\\": {\\\"title\\\": \\\"The Tempest\\\", \\\"finished\\\": 1611},\\\"40\\\": {\\\"title\\\": \\\"Cardenio\\\", \\\"finished\\\": 1613},\\\"41\\\": {\\\"title\\\": \\\"Henry VIII\\\", \\\"finished\\\": 1613},\\\"42\\\": {\\\"title\\\": \\\"The Two Noble Kinsmen\\\", \\\"finished\\\": 1614}}}\");end;",
+        "load_code": "",
+        "solution_code": "s = get_shakey\n\ns[\"William Shakespeare\"].each { |key, val|\n  puts val[\"title\"]\n}"
+    }, {
+        "lang": "ZH",
+        "title": "现在一切都在一起了",
+        "chapter": "N",
+        "validate_stdout_regexp": "\\n4\\n$",
+        "ok": "是的，莎士比亚在1591年写了4部戏剧",
+        "error": "1591年的答案应该是4",
+        "text": "<p>现在假设我们只想知道莎士比亚在某一年所写剧本的名称和数量。</p>    <p>Ruby允许我们从哈希中选择值。\n  s = get_shakey\n方法使用一个代码块来定义选择什么，并返回找到的内容。</p>    <p>然后，我们可以像以前一样在each方法中使用select返回的结果，只需在select代码块后添加它。这是另一个方法链接的例子，我们之前在倒诗时看到过。</p>    <p>我已经为你准备好了数数法。看看你能不能弄清楚1591年莎士比亚写了多少部戏剧。试试这个：</p>    \n  s[&quot;William Shakespeare&quot;]\n    .select { |k, v|\n      v[&quot;finished&quot;] == year\n    }.each { |key, val|\n      puts val[&quot;title&quot;]\n    }.count\n    <p>你注意到我在each方法的末尾链接了count方法吗？这会给我们一个count_plays方法的返回值。</p>    <p>这里还有另一种链接的可能性。看那条孤独的线<tt>s = get_shakey<tt>。  您可以在<pre><code>s = get_shakey\n\ns[&quot;William Shakespeare&quot;].each { |key, val|\n  puts val[&quot;title&quot;]\n}</code></pre>末尾添加<tt>[&ldquo;William Shakespeare&rdquo;].select { |k, v|</tt>（这种情况下不需要点）。</p>  ",
+        "preparation_code": "def get_shakey;JSON.parse(\"{\\\"William Shakespeare\\\": {\\\"1\\\": {\\\"title\\\": \\\"The Two Gentlemen of Verona\\\", \\\"finished\\\": 1591},\\\"2\\\": {\\\"title\\\": \\\"The Taming of the Shrew\\\", \\\"finished\\\": 1591},\\\"3\\\": {\\\"title\\\": \\\"Henry VI, Part 2\\\", \\\"finished\\\": 1591},\\\"4\\\": {\\\"title\\\": \\\"Henry VI, Part 3\\\", \\\"finished\\\": 1591},\\\"5\\\": {\\\"title\\\": \\\"Henry VI, Part 1\\\", \\\"finished\\\": 1592},\\\"6\\\": {\\\"title\\\": \\\"Titus Andronicus\\\", \\\"finished\\\": 1592},\\\"7\\\": {\\\"title\\\": \\\"Richard III\\\", \\\"finished\\\": 1593},\\\"8\\\": {\\\"title\\\": \\\"Edward III\\\", \\\"finished\\\": 1593},\\\"9\\\": {\\\"title\\\": \\\"The Comedy of Errors\\\", \\\"finished\\\": 1594},\\\"10\\\": {\\\"title\\\": \\\"Love's Labour's Lost\\\", \\\"finished\\\": 1595},\\\"11\\\": {\\\"title\\\": \\\"Love's Labour's Won\\\", \\\"finished\\\": 1596},\\\"12\\\": {\\\"title\\\": \\\"Richard II\\\", \\\"finished\\\": 1595},\\\"13\\\": {\\\"title\\\": \\\"Romeo and Juliet\\\", \\\"finished\\\": 1595},\\\"14\\\": {\\\"title\\\": \\\"A Midsummer Night's Dream\\\", \\\"finished\\\": 1595},\\\"15\\\": {\\\"title\\\": \\\"King John\\\", \\\"finished\\\": 1596},\\\"16\\\": {\\\"title\\\": \\\"The Merchant of Venice\\\", \\\"finished\\\": 1597},\\\"17\\\": {\\\"title\\\": \\\"Henry IV, Part 1\\\", \\\"finished\\\": 1597},\\\"18\\\": {\\\"title\\\": \\\"The Merry Wives of Windsor\\\", \\\"finished\\\": 1597},\\\"19\\\": {\\\"title\\\": \\\"Henry IV, Part 2\\\", \\\"finished\\\": 1598},\\\"20\\\": {\\\"title\\\": \\\"Much Ado About Nothing\\\", \\\"finished\\\": 1599},\\\"21\\\": {\\\"title\\\": \\\"Henry V\\\", \\\"finished\\\": 1599},\\\"22\\\": {\\\"title\\\": \\\"Julius Caesar\\\", \\\"finished\\\": 1599},\\\"23\\\": {\\\"title\\\": \\\"As You Like It\\\", \\\"finished\\\": 1600},\\\"24\\\": {\\\"title\\\": \\\"Hamlet\\\", \\\"finished\\\": 1601},\\\"25\\\": {\\\"title\\\": \\\"Twelfth Night\\\", \\\"finished\\\": 1601},\\\"26\\\": {\\\"title\\\": \\\"Troilus and Cressida\\\", \\\"finished\\\": 1602},\\\"27\\\": {\\\"title\\\": \\\"Sir Thomas More\\\", \\\"finished\\\": 1604},\\\"28\\\": {\\\"title\\\": \\\"Measure for Measure\\\", \\\"finished\\\": 1604},\\\"29\\\": {\\\"title\\\": \\\"Othello\\\", \\\"finished\\\": 1604},\\\"30\\\": {\\\"title\\\": \\\"All's Well That Ends Well\\\", \\\"finished\\\": 1605},\\\"31\\\": {\\\"title\\\": \\\"King Lear\\\", \\\"finished\\\": 1606},\\\"32\\\": {\\\"title\\\": \\\"Timon of Athens\\\", \\\"finished\\\": 1606},\\\"33\\\": {\\\"title\\\": \\\"Macbeth\\\", \\\"finished\\\": 1606},\\\"34\\\": {\\\"title\\\": \\\"Antony and Cleopatra\\\", \\\"finished\\\": 1606},\\\"35\\\": {\\\"title\\\": \\\"Pericles, Prince of Tyre\\\", \\\"finished\\\": 1608},\\\"36\\\": {\\\"title\\\": \\\"Coriolanus\\\", \\\"finished\\\": 1608},\\\"37\\\": {\\\"title\\\": \\\"The Winter's Tale\\\", \\\"finished\\\": 1611},\\\"38\\\": {\\\"title\\\": \\\"Cymbeline\\\", \\\"finished\\\": 1610},\\\"39\\\": {\\\"title\\\": \\\"The Tempest\\\", \\\"finished\\\": 1611},\\\"40\\\": {\\\"title\\\": \\\"Cardenio\\\", \\\"finished\\\": 1613},\\\"41\\\": {\\\"title\\\": \\\"Henry VIII\\\", \\\"finished\\\": 1613},\\\"42\\\": {\\\"title\\\": \\\"The Two Noble Kinsmen\\\", \\\"finished\\\": 1614}}}\");end;",
+        "load_code": "",
+        "solution_code": "def count_plays(year)\n  s = get_shakey\n\n  s[\"William Shakespeare\"]\n    .select { |k, v|\n      v[\"finished\"] == year\n    }.each { |key, val|\n      puts val[\"title\"]\n    }.count\nend\n\nputs count_plays(1591)"
+    }, {
+        "lang": "ZH",
+        "title": "一切顺利，结局顺利",
+        "chapter": "N",
+        "validate_stdout_regexp": "1600\\s+->\\s+As You Like It",
+        "ok": "真",
+        "error": "交换包含<tt>puts</<tt>的行中的插值字符串<tt>#{}</tt>",
+        "text": "<p>好的，我们从互联网上得到了一些数据，我们选择了我们想要的，然后打印出来。还有什么需要改进的？我们可以把结果打印得更漂亮一点。例如，添加年份并对齐标题和年份。</p>    <p>这意味着在一行上打印多个值。鲁比有一种干净利落的方法。就像打印一个字符串：puts &ldquo;Hi, my name is Jimmy&rdquo;。但是我们使用变量的值来代替文本值“Jimmy”。 但是我们使用变量的值来代替文本值“Jimmy”。</p>    <p>首先用<tt>#{}</tt>代替“Jimmy”。如果Ruby看到一个哈希符号“#”，后面跟着一个大括号“{”，它会在第一个大括号和下一个右大括号“}”之间查找变量。所以我们可以用这个： &ldquo;Hi, my name is select&rdquo;.</p>    <p>让我们稍微改变一下代码：</p>    <pre><code>def count_plays(year)\n  s = get_shakey\n\n  s[&quot;William Shakespeare&quot;]\n    .select { |k, v|\n      v[&quot;finished&quot;] == year\n    }.each { |key, val|\n      puts val[&quot;title&quot;]\n    }.count\nend\n\nputs count_plays(0)</code></pre>    <p>我在标题中加了<tt>.ljust(30)</tt>。这样，标题就可以左对齐，最小长度为30个字符，这样年份就可以很好地对齐。</p>    <p>看看您是否可以更改程序的输出，以便它按如下方式打印戏剧： <sampl>1600 -> 正如你喜欢的</br>1601 -> Hamlet</sampl></p>    <p>结局好的一切都好？嘿，我们还没结束，但结局就在眼前！</p>  ",
+        "preparation_code": "def get_shakey;JSON.parse(\"{\\\"William Shakespeare\\\": {\\\"1\\\": {\\\"title\\\": \\\"The Two Gentlemen of Verona\\\", \\\"finished\\\": 1591},\\\"2\\\": {\\\"title\\\": \\\"The Taming of the Shrew\\\", \\\"finished\\\": 1591},\\\"3\\\": {\\\"title\\\": \\\"Henry VI, Part 2\\\", \\\"finished\\\": 1591},\\\"4\\\": {\\\"title\\\": \\\"Henry VI, Part 3\\\", \\\"finished\\\": 1591},\\\"5\\\": {\\\"title\\\": \\\"Henry VI, Part 1\\\", \\\"finished\\\": 1592},\\\"6\\\": {\\\"title\\\": \\\"Titus Andronicus\\\", \\\"finished\\\": 1592},\\\"7\\\": {\\\"title\\\": \\\"Richard III\\\", \\\"finished\\\": 1593},\\\"8\\\": {\\\"title\\\": \\\"Edward III\\\", \\\"finished\\\": 1593},\\\"9\\\": {\\\"title\\\": \\\"The Comedy of Errors\\\", \\\"finished\\\": 1594},\\\"10\\\": {\\\"title\\\": \\\"Love's Labour's Lost\\\", \\\"finished\\\": 1595},\\\"11\\\": {\\\"title\\\": \\\"Love's Labour's Won\\\", \\\"finished\\\": 1596},\\\"12\\\": {\\\"title\\\": \\\"Richard II\\\", \\\"finished\\\": 1595},\\\"13\\\": {\\\"title\\\": \\\"Romeo and Juliet\\\", \\\"finished\\\": 1595},\\\"14\\\": {\\\"title\\\": \\\"A Midsummer Night's Dream\\\", \\\"finished\\\": 1595},\\\"15\\\": {\\\"title\\\": \\\"King John\\\", \\\"finished\\\": 1596},\\\"16\\\": {\\\"title\\\": \\\"The Merchant of Venice\\\", \\\"finished\\\": 1597},\\\"17\\\": {\\\"title\\\": \\\"Henry IV, Part 1\\\", \\\"finished\\\": 1597},\\\"18\\\": {\\\"title\\\": \\\"The Merry Wives of Windsor\\\", \\\"finished\\\": 1597},\\\"19\\\": {\\\"title\\\": \\\"Henry IV, Part 2\\\", \\\"finished\\\": 1598},\\\"20\\\": {\\\"title\\\": \\\"Much Ado About Nothing\\\", \\\"finished\\\": 1599},\\\"21\\\": {\\\"title\\\": \\\"Henry V\\\", \\\"finished\\\": 1599},\\\"22\\\": {\\\"title\\\": \\\"Julius Caesar\\\", \\\"finished\\\": 1599},\\\"23\\\": {\\\"title\\\": \\\"As You Like It\\\", \\\"finished\\\": 1600},\\\"24\\\": {\\\"title\\\": \\\"Hamlet\\\", \\\"finished\\\": 1601},\\\"25\\\": {\\\"title\\\": \\\"Twelfth Night\\\", \\\"finished\\\": 1601},\\\"26\\\": {\\\"title\\\": \\\"Troilus and Cressida\\\", \\\"finished\\\": 1602},\\\"27\\\": {\\\"title\\\": \\\"Sir Thomas More\\\", \\\"finished\\\": 1604},\\\"28\\\": {\\\"title\\\": \\\"Measure for Measure\\\", \\\"finished\\\": 1604},\\\"29\\\": {\\\"title\\\": \\\"Othello\\\", \\\"finished\\\": 1604},\\\"30\\\": {\\\"title\\\": \\\"All's Well That Ends Well\\\", \\\"finished\\\": 1605},\\\"31\\\": {\\\"title\\\": \\\"King Lear\\\", \\\"finished\\\": 1606},\\\"32\\\": {\\\"title\\\": \\\"Timon of Athens\\\", \\\"finished\\\": 1606},\\\"33\\\": {\\\"title\\\": \\\"Macbeth\\\", \\\"finished\\\": 1606},\\\"34\\\": {\\\"title\\\": \\\"Antony and Cleopatra\\\", \\\"finished\\\": 1606},\\\"35\\\": {\\\"title\\\": \\\"Pericles, Prince of Tyre\\\", \\\"finished\\\": 1608},\\\"36\\\": {\\\"title\\\": \\\"Coriolanus\\\", \\\"finished\\\": 1608},\\\"37\\\": {\\\"title\\\": \\\"The Winter's Tale\\\", \\\"finished\\\": 1611},\\\"38\\\": {\\\"title\\\": \\\"Cymbeline\\\", \\\"finished\\\": 1610},\\\"39\\\": {\\\"title\\\": \\\"The Tempest\\\", \\\"finished\\\": 1611},\\\"40\\\": {\\\"title\\\": \\\"Cardenio\\\", \\\"finished\\\": 1613},\\\"41\\\": {\\\"title\\\": \\\"Henry VIII\\\", \\\"finished\\\": 1613},\\\"42\\\": {\\\"title\\\": \\\"The Two Noble Kinsmen\\\", \\\"finished\\\": 1614}}}\");end;",
+        "load_code": "",
+        "solution_code": "def print_plays(year_from, year_to)\n  get_shakey[\"William Shakespeare\"]\n    .select { |k, v|\n      year_from <= v[\"finished\"] &&\n      year_to   >= v[\"finished\"]\n    }.each { |k, v|\n      puts \"#{v[\"finished\"]} -> #{v[\"title\"].ljust(30)}\"\n    }\nend\nprint_plays(1600, 1605)"
+    }, {
+        "lang": "ZH",
+        "title": "我要是知道怎么做决定就好了",
+        "chapter": "N",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>决策，在现实生活中，这可能是一个真正的问题。但对我们来说不是。Ruby使决策变得非常容易。</p>    \n                # comparison of String with\n                # Numeric failed</code></pre>\n    <p>这里的关键词是<tt>if</tt>(如果)。如果可以放在方法之前或之后，如：</p>    <code>if 1 &lt; 2\n  puts &quot;It is true: 1 is less than 2&quot;\nend</code>    <p>“if”是需要一个参数的方法。该参数可以是要测试的任何表达式。表达式的结果必须为真或假。下面是几个表达式及其结果：</p>    <pre><code>5     <= 10     # => true  &#39;abc&#39; == &#39;def&#39;  # => false true            # => true 123456          # => true 0               # => true \n  puts &quot;It is true: 1 is less than 2&quot;\n             # => false  &#39;xyz&#39;.empty?    # => false  &#39;a&#39; > 5         # => error:<code>def print_plays(year_from, year_to)\n  get_shakey[&quot;William Shakespeare&quot;]\n    .select { |k, v|\n      year_from &lt;= v[&quot;finished&quot;] &amp;&amp;\n      year_to   &gt;= v[&quot;finished&quot;]\n    }.each { |k, v|\n      puts &quot;#{v[&quot;title&quot;].ljust(30)} #{v[&quot;finished&quot;]}&quot;\n    }\nend\nprint_plays(1600, 1605)</code>  <p>if表达式可以采用多种形式。它可以比较文本值（1 < 2）、变量（a < 1）和方法的返回值（<tt>‘xyz’.empty?</tt>）.</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "现在，令人吃惊的结论是",
+        "chapter": "N",
+        "validate_stdout_regexp": "is not equal to 100$",
+        "ok": "那更好",
+        "error": "这不可能是对的",
+        "text": "<p>在<tt>'abc'=='def'</tt>中看到2个等号了吗？</p>    <p>此<tt>==</tt>表示“等于”。我们以前看到的单等号表示“为变量赋值”。</p>    <p>要使其更混乱：您可以在如下if方法之后使用赋值：</p>    <pre><code>puts &quot;It is true: 1 is less than 2&quot; if 1 &lt; 2</code></pre>    <p>把=改为==看看会发生什么。</p>    <p>我可以保证你会经常忘记写第二等号。有时我也会忘记。</p>    <h3>否则</h3>    <p>在上面的代码中，我添加了一个<tt>else</tt>表达式。当if测试表达式的计算结果为false时，将执行此部分。</p>    <blockquote>  <p>这个if-then-else主题有更多的变化。你可以<a href=\"http://www.ruby-doc.org/core/doc/syntax/control_expressions_rdoc.html\" target=\"_blank\">在这里</a>读到更多。</p>  </blockquote>  ",
+        "load_code": "",
+        "solution_code": "a = 0\n\nif a == 100\n  puts \"Expression is true, but a is now: #{a}\"\nelse\n  puts \"#{a} is not equal to 100\"\nend"
+    }, {
+        "lang": "ZH",
+        "title": "我饿了",
+        "chapter": "N",
+        "validate_stdout_regexp": "^Me not hungry.$",
+        "ok": "是的",
+        "error": "我不可能在上午10点饿！",
+        "text": "<p>Okay, this is coming along wonderfully. This is simple stuff for you, but keep in mind that you\ndidn&rsquo;t know <strong>any Ruby whatsoever</strong> just fifteen minutes ago!</p>\n\n<p>Last step. Let&rsquo;s tie it all together, you know? Let&rsquo;s make it chime together like a very nice set\nof glistening chimes on the beach in the magnificent sunlight!</p>\n\n<p>We&rsquo;ll define two methods first and then take a decision:</p>\n\n<pre><code>def hungry?(time_of_day_in_hours)\n  puts &quot;我饿了.&quot;\n  true\nend\n\ndef eat_an(what)\n  puts &quot;Me eat #{what}.\\n&quot;\nend\n\neat_an &#39;apple&#39; if hungry?(14)\n\neat_an &#39;apple&#39; if hungry?(10)</code></pre>\n\n<p>Now see if you can change the method <strong>hungry?</strong> to display <strong>&ldquo;Me not hungry&rdquo;</strong> and returning false\nwhen the time is less than 12.</p>\n",
+        "load_code": "",
+        "solution_code": "def hungry?(time_of_day_in_hours)\n  if time_of_day_in_hours < 12\n    puts \"Me not hungry.\"\n    false\n  else\n    puts \"Me hungry.\"\n    true\nend\nend\n\ndef eat_an(what)\n  puts \"Me eat #{what}.\\n\"\nend\n\neat_an 'apple' if hungry?(14)\n\neat_an 'apple' if hungry?(10)"
+    }, {
+        "lang": "ZH",
+        "title": "总结6这意味着你到目前为止",
+        "chapter": "Y",
+        "validate_result_regexp": "\\{\\}",
+        "ok": "好吧，那是一个空哈希",
+        "error": "",
+        "text": "<p>你是六级Ruby牧师。我是说你干得真不错。让我们回顾一下：</p>    <h3>数据</h3>    <p>您从互联网加载了一些数据，遍历了数据结构和选定的值。</p>    <h3>迭代</h3>    <p>您迭代了哈希数据结构的所有元素，并链接了更多的方法。</p>    <h3>漂亮的印刷</h3>    <p>如果这还不够的话，你可以用一种人类容易阅读的方式格式化和打印一些值。实际上你做了一个真正的节目！</p>    <h3>如果</h3>    <p>你学会了用if和else语句控制程序。</p>    <h2>所以</h2>    <p>接下来可能是什么？你现在可能要学什么？哈，这是最好的部分。你已经走了这么长的路，我们要去揭露类。</p>    <p>之前，我们创建了这样的哈希：</p>    \n  puts &quot;Me eat #{what}.\\n&quot;\n  ",
+        "load_code": "",
+        "solution_code": "Hash.new"
+    }, {
+        "lang": "ZH",
+        "title": "不是学校班，是工人班",
+        "chapter": "N",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>你看，空的大括号<tt>{}</tt>是<tt>Hash.new</tt>的快捷方式。<pre><code>def hungry?(time_of_day_in_hours)\n  puts &quot;Me hungry.&quot;\n  true\nend\n\ndef eat_an(what)\n  puts &quot;Me eat #{what}.\\n&quot;\nend\n\neat_an &#39;apple&#39; if hungry?(14)\n\neat_an &#39;apple&#39; if hungry?(10)</code></pre>方法用于生成特定类的对象。把“阶级”想象成“工人阶级”——一组特定的物体，它们相似，有相同的工作，相同的衬衫。类有什么用？</p>    <h3>Blurbalizer<sup>TM</sup></h3>    <p>你刚想到一个新的应用程序。它将成为下一个即时通讯平台。你想要一个人们可以互相发送短消息的应用程序。你把这些信息叫做Blurb<sup>TM</sup>。. Blurb<sup>TM</sup>的最大长度只有40个字符。我们也添加一个情绪设置。</p>    <!---The Internet has really brought back stick people and smileys out of bankruptcy. __Emote!__-->    <h3>从哪里开始</h3>    <p>好吧，你可以把你的Blurb<sup>TM</sup>条目存储在一个JSON文件中，对吗？但是您如何跟踪条目的内容和发布时间呢？当您加载该文件时，它在Ruby中的外观如何？它会是一个哈希吗？还是一个阵列？还是一组数组？或者别的什么？</p>    <h3>类</h3>    <p>我真的认为你会想去上课的。您已经熟悉了许多类：哈希、数组、字符串。让我们创建一个新类（不返回任何输出）：</p>    <code>Hash.new</code>  ",
+        "load_code": "",
+        "solution_code": "class Blurb\nend"
+    }, {
+        "lang": "ZH",
+        "title": "组成应用程序的东西",
+        "chapter": "N",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>你已经打开了一个新的Blurb<sup>TM</sup>类。你的博客是用什么做的？当然是内容。还有，Blurb<sup>TM</sup>发布的时间。还有一种情绪。</p><p>好的，所以你有了第一行，剩下的是：</p>    new    <p>类名总是以大写字母开头。</p>    <p>（仍然没有输出）</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "访问变量的方法是四肢",
+        "chapter": "N",
+        "validate_stdout_regexp": "Blurb:0x",
+        "ok": "我的第一个混音",
+        "error": "",
+        "text": "<p>嘿，好班，伙计。你有一个新的Blurb<sup>TM</sup>班。</p>    <p>在类定义中，使用了一个名为\n  attr_accessor :content, :time, :mood\n的方法。有许多这样的属性方法可以为类添加一些设置。这些属性只是附加到类的变量。</p>    <p>这样想。一个班就像一个人。那颗星星形状的人。这些属性是悬垂的肢体，构成身体的不同身体部位，其他人可以握手。</p>    <h3>现在</h3>    <p>创建Blurb<sup>TM</sup>并设置内容：</p>    <code>class Blurb\n  attr_accessor :content, :time, :mood\nend</code>  ",
+        "preparation_code": "class Blurb;attr_accessor :content,:time,:mood;end",
+        "load_code": "",
+        "solution_code": "blurb1 = Blurb.new\nputs blurb1\nblurb1.content = \"Today Mount Hood Was Stolen!\""
+    }, {
+        "lang": "ZH",
+        "title": "一个物体，一个整洁的小包裹",
+        "chapter": "N",
+        "validate_stdout_regexp": "Blurb:0x",
+        "ok": "更新了Blurb<supTM</sup>",
+        "error": "",
+        "text": "<p>继续设定时间和心情：</p>    <code>blurb1 = Blurb.new\nputs blurb1\nblurb1.content = &quot;Today Mount Hood Was Stolen!&quot;</code>  ",
+        "preparation_code": "class Blurb;attr_accessor :content,:time,:mood;end",
+        "load_code": "blurb1.time = Time.now\nblurb1.mood = :sick\n\nputs blurb1"
+    }, {
+        "lang": "ZH",
+        "title": "加快速度",
+        "chapter": "N",
+        "validate_result_regexp": "^\\d{4}",
+        "ok": "著名的",
+        "error": "",
+        "text": "<p>酷，你的应用程序很棒。嘿，让我们让你过得轻松一点。你不想每次创建Blurb<sup>TM</sup>时都这样设置时间。</p>    <p>你只想输入内容并设定心情，对吗？</p>    <p>让我们向类中添加一个初始化方法。每当创建新Blurb<sup>TM</sup>时，都会调用此方法。同时，我们可以将Blurb<sup>TM</sup>内容的长度限制为40个字符。</p>    <pre><code>blurb1.time = Time.now\nblurb1.mood = :sick\n\nputs blurb1</code></pre>    <p>（参数<tt>content=&ldquo;&rdquo;</tt>是用来确保我们知道内容是一个字符串，即使没有content参数传递给initialize方法。）</p>  ",
+        "load_code": "",
+        "solution_code": "class Blurb\n  attr_accessor :content, :time, :mood\n\n  def initialize(mood, content=\"\")\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\nend\n\nBlurb.new(\"happy\").time"
+    }, {
+        "lang": "ZH",
+        "title": "你已经教过你的应用程序拒绝无用的东西",
+        "chapter": "N",
+        "validate_result_regexp": "Blurb:",
+        "ok": "Blurb公司",
+        "error": "",
+        "text": "<p>你看到我们如何在类中使用@符号了吗（@time）。</p>    <p>在类外部，我们使用访问器方法：</p>    <blockquote>  <p>blurb.time = Time.now</p>  </blockquote>    <p>但在内部，我们使用对象的变量：</p>    <blockquote>  <p>@time = Time.now</p>  </blockquote>    <p>它们是完全相同的，但在程序的两个不同位置表达。</p>    <h3>创建另一个Blurb<sup>TM</sup></h3>    <p>创建新Blurb<sup>TM</sup>时，使用initialize方法检查new的任何参数。</p>    <p>呃，我们需要两个论点：</p>    \n  def initialize(mood, content=&quot;&quot;)\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\n  ",
+        "preparation_code": "class Blurb;attr_accessor :content,:time,:mood;def initialize(mood, content=\"\");@time=Time.now;@content=content[0..39];@mood=mood;end;end;blurb1=Blurb.new(:sick,\"Today Mount Hood Was Stolen!\")",
+        "load_code": "",
+        "solution_code": "Blurb2 = Blurb.new(:confused, \"I can not believe Mt. Hood was stolen!\")"
+    }, {
+        "lang": "ZH",
+        "title": "长颈鹿没有偷摘要7",
+        "chapter": "Y",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>啊哈，你来了。所有的部分都在一起。我们仍然会让你的应用成为现实，但在那之前，让我们回顾一下，好吗？</p>    <h3>类</h3>    <p>Ruby中的一切都是某种对象。类解释对象，特定对象如何工作。例如，您制作了一些Blurb对象，这些对象在Blurb<sup>TM</sup>类中进行了解释。换句话说：你称它们为Blurb对象。你可以用类来（有点）模拟现实生活中的物体。</p>    <h3>访问器方法</h3>    <p>访问器方法是附加到对象的变量，可以在对象外部使用。  （<tt>blurb2.time = Time.now</tt>）</p>    <h3>对象变量</h3>    <p>对象变量与访问器方法使用的变量相同，但在对象内部。  (@time = Time.now)</p>  ",
+        "load_code": ""
+    }, {
+        "lang": "ZH",
+        "title": "你自己的草坪",
+        "chapter": "N",
+        "validate_result_regexp": "Blurbalizer:",
+        "ok": "我的应用程序已创建",
+        "error": "",
+        "text": "<p>好吧，我们把事情总结一下，孩子。这是《尝试Ruby》这部\n  def add_a_blurb(mood, content)\n    # The &lt;&lt; means add to the end of the array\n    @blurbs &lt;&lt; Blurb.new(mood, content)\n  end\n史诗故事的最后一章！既然你已经了解了这一切是如何运作的，你打算如何在家里和杂货店的冰箱里使用它？你是个好人（我最喜欢的人之一），但你需要指导。</p>    <h3>让我们完成你的应用程序</h3>    <p>您有应用程序条目，但没有实际的应用程序。它仍然需要一个标题、一个存储所有Blurb<sup>TM</sup>的位置和一个工作时间表。</p>    <p>你猜怎么着，我们要用另一个类。我已经一次性给出了新类的所有代码。慢慢来学习。<br>我不着急，下节课我等你。</p>    \n  def show_timeline\n    puts &quot;Blurbify: #{@title} has #{@blurbs.count} Blurbs&quot;\n  ",
+        "load_code": "",
+        "solution_code": "class Blurbalizer\n  def initialize(title)\n    @title  = title\n    @blurbs = [] # A fresh clean array\n                 # for storing Blurbs\n  end\n\n  def add_a_blurb(mood, content)\n    # The << means add to the end of the array\n    @blurbs << Blurb.new(mood, content)\n  end\n\n  def show_timeline\n    puts \"Blurbify: #{@title} has #{@blurbs.count} Blurbs\"\n\n    @blurbs.sort_by { |t|\n      t.time\n    }.reverse.each { |t|\n      puts \"#{t.content.ljust(40)} #{t.time}\"\n    }\n  end\nend\n\nmyapp = Blurbalizer.new(\"The Big Blurb\")"
+    }, {
+        "lang": "ZH",
+        "title": "这是怎么回事？",
+        "chapter": "N",
+        "validate_result_regexp": "^\\[[^\\]]+\\]$",
+        "ok": "把所有的事情都说出来 ",
+        "error": "",
+        "text": "<p>你已经到了这里。你知道Blurbalizer<sup>TM</sup>类中的所有代码都是什么吗？</p>\n\n<blockquote>\n<p>在Blurbalizer<sup>TM</sup>类中有两种<strong>方法</strong>（add_a_blurb和show_timeline）。\n您可以在类外部使用方法，就像我们对访问器方法所做的那样。</p>\n</blockquote>\n\n<p>是时候开始使用Blurbalizer<sup>TM</sup>了。 我已经为你加载了一些Blurbs<sup>TM</sup>，但请随意添加你自己的。</p>\n\n<p>我们不再直接创建Blurbs<sup>TM</sup>，而是使用Blurbalizer<sup>TM</sup>类的方法add_a_blurb。这样我们就可以确保所有Blurbs<sup>TM</sup>都存储在myapp对象中。</p>\n\n<pre><code>myapp.add_a_blurb :moody, &quot;Add Blurb here&quot;\n\nmyapp.show_timeline</code></pre>\n",
+        "preparation_code": "class Blurb\n  attr_accessor :content, :time, :mood\n\n  def initialize(mood, content=\"\")\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\n\nend\n\nclass Blurbalizer\n\n  attr_reader :title\n\n  def initialize(title)\n    @title=title\n    @blurbs=[]\n  end\n\n  def add_a_blurb(mood, content)\n    @blurbs << Blurb.new(mood, content)\n    @blurbs.each {|t| t.time -= 73}\n  end\n\n  def show_timeline\n    puts \"Blurbalizer: #{@title} has #{@blurbs.count} Blurbs\\n\"\n    @blurbs.sort_by { |t| t.time}.reverse.each { |t| puts \"#{t.content.ljust(40)} #{t.time}\"}\n  end\n\nend\n\nmyapp = Blurbalizer.new \"The Big Blurb\"\nmyapp.add_a_blurb :sick,\"Today Mount Hood Was Stolen!\"\nmyapp.add_a_blurb :confused,\"I can not believe Mt. Hood was stolen!\"\nmyapp.add_a_blurb :dazed,\"I am speechless!\"\nmyapp.add_a_blurb :mad,\"It was stolen by a giraffe !!\"\nmyapp.add_a_blurb :sad,\"I Left my Hoodie on the Mountain!\"\nmyapp.add_a_blurb :mad,\"I am never going back to that mountain.\"",
+        "load_code": "",
+        "solution_code": "myapp.add_a_blurb(:moody, \"Add Blurb here\")\nmyapp.show_timeline"
+    }, {
+        "lang": "ZH",
+        "title": "这都是关于组合各",
+        "chapter": "N",
+        "validate_stdout_regexp": ":-[|\\)\\(]",
+        "ok": "这是喜怒无常！",
+        "error": "",
+        "text": "<p>一些漂亮的事情可以用Ruby的简单部分来完成，特别是当你把它们组合成新的东西时。这里我们有一个由包含另一个类的类组成的应用程序。而且，事实上，鲁比真的很适合这种生物。它被称为面向对象编程。</p>\n\n<p>我们已经到了TryRuby的<strong>最后一次编程练习</strong>。如果需要，可以向Blurbalizer<sup>TM</sup>添加更多功能。</p>\n\n<p>也许你想用<strong>show_timeline</strong>方法把心情打印成笑脸。您可以将moodify方法添加到Blurb<sup>TM</sup>类中，然后在<em>show_timeline</em>方法中使用该方法：</p>\n\n<pre><code>class Blurb\n  attr_accessor :content, :time, :mood\n\n  def initialize(mood, content=&quot;&quot;)\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\n\n  def moodify\n    if    @mood == :sad\n      return &quot;:-(&quot;\n    elsif @mood == :happy\n      return &quot;:-)&quot;\n    # Add other moods here\n    end\n\n    # The default mood\n    &quot;:-|&quot;\n  end\nend\n\nclass Blurbalizer\n  def initialize(title)\n    @title  = title\n    @blurbs = []\n  end\n\n  def add_a_blurb(mood, content)\n    @blurbs &lt;&lt; Blurb.new(mood, content)\n  end\n\n  def show_timeline\n    puts &quot;Blurbalizer: #{@title} has #{@blurbs.count} Blurbs&quot;\n\n    @blurbs.sort_by { |t|\n      t.time\n    }.reverse.each { |t|\n      puts &quot;#{t.content.ljust(40)} #{t.time}&quot;\n    }\n  end\nend\n\nmyapp.show_timeline</code></pre>\n",
+        "preparation_code": "class Blurb\n  attr_accessor :content, :time, :mood\n\n  def initialize(mood, content=\"\")\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\n\nend\n\nclass Blurbalizer\n\n  attr_reader :title\n\n  def initialize(title)\n    @title=title\n    @blurbs=[]\n  end\n\n  def add_a_blurb(mood, content)\n    @blurbs << Blurb.new(mood, content)\n    @blurbs.each {|t| t.time -= 73}\n  end\n\n  def show_timeline\n    puts \"Blurbalizer: #{@title} has #{@blurbs.count} Blurbs\\n\"\n    @blurbs.sort_by { |t| t.time}.reverse.each { |t| puts \"#{t.content.ljust(40)} #{t.time}\"}\n  end\n\nend\n\nmyapp = Blurbalizer.new \"The Big Blurb\"\nmyapp.add_a_blurb :sick,\"Today Mount Hood Was Stolen!\"\nmyapp.add_a_blurb :confused,\"I can not believe Mt. Hood was stolen!\"\nmyapp.add_a_blurb :dazed,\"I am speechless!\"\nmyapp.add_a_blurb :mad,\"It was stolen by a giraffe !!\"\nmyapp.add_a_blurb :sad,\"I Left my Hoodie on the Mountain!\"\nmyapp.add_a_blurb :mad,\"I am never going back to that mountain.\"",
+        "load_code": "",
+        "solution_code": "class Blurb\n  attr_accessor :content, :time, :mood\n\n  def initialize(mood, content=\"\")\n    @time    = Time.now\n    @content = content[0..39]\n    @mood    = mood\n  end\n\n  def moodify\n    if    @mood == :sad\n      return \":-(\"\n    elsif @mood == :happy\n      return \":-)\"\n    # Add other moods here\n    end\n\n    # The default mood\n    \":-|\"\n  end\nend\n\nclass Blurbalizer\n  def initialize(title)\n    @title  = title\n    @blurbs = []\n  end\n\n  def add_a_blurb(mood, content)\n    @blurbs << Blurb.new(mood, content)\n  end\n\n  def show_timeline\n    puts \"Blurbalizer: #{@title} has #{@blurbs.count} Blurbs\"\n\n    @blurbs.sort_by { |t|\n      t.time\n    }.reverse.each { |t|\n      puts \"#{t.content.ljust(40)} #{t.moodify} #{t.time}\"\n    }\n  end\nend\n\nmyapp.show_timeline"
+    }, {
+        "lang": "ZH",
+        "title": "总结8，“嘿，放松，你做得很好”",
+        "chapter": "Y",
+        "validate_result_regexp": "",
+        "ok": "",
+        "error": "",
+        "text": "<p>最后一节花了一些时间结束，给您一些关于如何使用Ruby的提示。</p>\n\n<h2>Celebrate</h2>\n\n<p>你真的应该得到一个双层蛋糕，双层糖霜和一个弹双吉他的吉他手。我是说你完成了，你真的做到了！毫无疑问，你是一个<strong>合格的红血聪明人！</strong></p>\n",
+        "load_code": "def ruby(f)\n  puts \"Go to www.ruby-lang.org to download Ruby\"\nend\nclass K\n  attr_reader :rb\nend\nmy_first_progam = K.new"
+    }]
+}

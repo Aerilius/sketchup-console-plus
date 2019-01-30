@@ -43,13 +43,16 @@ module AE
         # Get the index of the last path separator so that we can drop the path from the displayed caption in the autocompletion list.
         directory_prefix_length = prefix.rindex('/') || -1
         completions = completions.sort.each_with_index.map{ |filepath, index|
+          alphabetical_score = 2000 + completions.length - index
+          directory_score = (filepath[-1] == '/') ? 1000 : 0
+          extension_score = (File.extname(filepath) == '.rb') ? 100 : 0
           {
             # Drop a directory path if contained within the prefix to make the displayed caption fit into available space.
             :caption => filepath[directory_prefix_length+1..-1],
             :value   => filepath,
             :meta    => :filepath,
             # Score the completion by alphabetic index.
-            :score   => (2000 + completions.length - index) + ((filepath[-1] == '/') ? 1000 : 0)
+            :score   => alphabetical_score + directory_score + extension_score
           }
         }
         action_context.resolve completions

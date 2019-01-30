@@ -118,7 +118,7 @@ define(['jquery', 'bootstrap-notify', './bridge', './translate'], function ($, _
                 return loadFile(filepath).then(function () {
                     addToRecentlyOpenedFiles(filepath);
                     // Try to determine the ace mode from the file name.
-                    var extensionMatch = filepath.match(/\.\w{1,3}$/i);
+                    var extensionMatch = filepath.match(/\.\w{1,4}$/i);
                     if (extensionMatch && extensionMatch[0]) {
                         currentFiletype = extensionMatch[0].toLowerCase();
                         aceEditor.session.setMode(modes[currentFiletype] || 'ace/mode/text');

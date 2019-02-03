@@ -589,6 +589,15 @@ table {
     padding-left: 2px !important;
 }
 
+/* Improve vertical alignment of Chinese characters if they have overheight */
+.ace_line span {
+  line-height: 1em;
+}
+
+.ace_cjk {
+    line-height: 1em;
+}
+
 /* Hide scrollbar. */
 /*.ace_scrollbar {
     display: none;

@@ -1,89 +1,3 @@
-/**
- *
- * @module  Bridge
- * @version 3.0.0
- * @date    2017-08-24
- * @author  Andreas Eisenbarth
- * @license MIT License (MIT)
- *
- * This Bridge provides an intuitive and asynchronous API for message passing between SketchUp's Ruby environment and dialogs.
- * It supports any amount of parameters of any JSON-compatible type and is uses Promises to asynchronously access return values
- * on success or handle failures.
- *
- * It emerged from several deficiencies of SketchUp's previous callback mechanism of the class UI::WebDialog which is in newer
- * versions succeeded by UI::HtmlDialog. Thus the implementation differs between the two.
- * (as documented here: https://github.com/thomthom/sketchup-webdialogs-the-lost-manual).
- *
- * ## UI::WebDialog
- *
- * Based on `execute_script` and custom protocol handler `location.href='skp:callback@parameter'`.
- *
- * - Supports only one string parameter that must be escaped.
- *   => Add JSON support through serialization.
- * - Inproper Unicode support; looses properly escaped calls containing single quotes; drops repeated properly escaped backslashes.
- * - Maximum URL length (2083 characters) in Internet Explorer on Windows (https://support.microsoft.com/en-us/kb/208427)
- *   => JavaScript requestHandler writes serialized message into an input field, and the Ruby request_handler reads it out.
- * - Asynchronous on macOS with message loss for quick successive calls from WebDialog to SketchUp.
- *   => requestHandler implements a message queue and reception of a message is acknowledged fro the Ruby side.
- * - UI::WebDialog#execute_script adds every time a script element.
- *   => Clean-up script elements
- * - UI::WebDialog Procs are not garbage-collected, if the proc contains a reference to an object referencing the dialog they remain in memory
- *
- * ## UI::HtmlDialog
- *
- * Based on `execute_script` and custom object `window.sketchup.callback(parameter,…)`.
- *
- * - Supports JSON parameters
- * - Supports Unicode
- * - No limits on message length
- * - No message loss: subsequent messages don't harm/abort previous messages
- *   => No ack needed.
- * - UI::HtmlDialog#execute_script does not anymore add extra script elements (or cleans them up now).
- *   => No clean-up needed.
- * - Has a new onCompleted callback, but it does not support to return parameters
- *   => Keep callback mechanism.
- * - UI::WebDialog#get_element_value removed: No way to get data from the dialog.
- *   => Bridge#get makes this possible
- *
- * @example Simple call
- *   // On the Ruby side:
- *   bridge.on('add_image'){ |dialog, image_path, point, width, height|
- *     @entities.add_image(image_path, point, width.to_l, height.to_l)
- *   }
- *   // On the JavaScript side:
- *   Bridge.call('add_image', 'http://www.example.com/image/9895.jpg', [10, 10, 0], '2.5m', '1.8m');
- *
- * @example Log output to the Ruby Console
- *   Bridge.puts('Swiss "grüezi" is pronounced [ˈɡryə̯tsiː] and means "您好！" in Chinese.');
- *
- * @example Log an error to the Ruby Console
- *   try {
- *     document.produceError();
- *   } catch (error) {
- *     Bridge.error(error);
- *   }
- *
- * @example Usage with promises
- *   // On the Ruby side:
- *   bridge.on('do_calculation'){ |action_context, length, width|
- *     if validate(length) && validate(width)
- *       result = calculate(length)
- *       action_context.resolve(result)
- *     else
- *       action_context.reject('The input is not valid.')
- *     end
- *   }
- *   // On the JavaScript side:
- *   var promise = Bridge.get('do_calculation', length, width)
- *   promise.then(function (result) {
- *     $('#resultField').text(result);
- *   }, function (failureReason) {
- *     $('#inputField1').addClass('invalid');
- *     $('#inputField2').addClass('invalid');
- *     alert(failureReason);
- *   });
- *
- */
 define(['polyfills/es6-promise'], function (PromiseImplementation) {
     PromiseImplementation.polyfill();
 
@@ -290,6 +204,13 @@ define(['polyfills/es6-promise'], function (PromiseImplementation) {
                 }
                 delete handlers[id];
             }
+        };
+
+        self.__create_error__ = function (type, message, stack) {
+            var errorClass = window[type] || Error;
+            var error = new errorClass(message);
+            if (error.stack) error.stack = stack;
+            return error;
         };
 
         if (typeof window.sketchup !== 'undefined') { // UI::HtmlDialog, SketchUp 2017+

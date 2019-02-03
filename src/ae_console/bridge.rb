@@ -1,89 +1,3 @@
-=begin
-@module  Bridge
-@version 3.0.0
-@date    2017-08-24
-@author  Andreas Eisenbarth
-@license MIT License (MIT)
-
-This Bridge provides an intuitive and asynchronous API for message passing between SketchUp's Ruby environment and dialogs.
-It supports any amount of parameters of any JSON-compatible type and is uses Promises to asynchronously access return values
-on success or handle failures.
-
-It emerged from several deficiencies of SketchUp's previous callback mechanism of the class UI::WebDialog, which has been
-succeeded in newer versions by UI::HtmlDialog. Thus the implementation differs between the two.
-(as documented here: https://github.com/thomthom/sketchup-webdialogs-the-lost-manual).
-
-## UI::WebDialog
-
-Based on `execute_script` and custom protocol handler `location.href='skp:callback@parameter'`.
-
-- Supports only one string parameter that must be escaped.
-  => Add JSON support through serialization.
-- Inproper Unicode support; looses properly escaped calls containing single quotes; drops repeated properly escaped backslashes.
-- Maximum URL length (2083 characters) in Internet Explorer on Windows (https://support.microsoft.com/en-us/kb/208427)
-  => JavaScript requestHandler writes serialized message into an input field, and the Ruby request_handler reads it out.
-- Asynchronous on macOS with message loss for quick successive calls from WebDialog to SketchUp.
-  => requestHandler implements a message queue and reception of a message is acknowledged fro the Ruby side.
-- UI::WebDialog#execute_script adds every time a script element.
-  => Clean-up script elements
-- UI::WebDialog Procs are not garbage-collected, if the proc contains a reference to an object referencing the dialog they remain in memory
-
-## UI::HtmlDialog
-
-Based on `execute_script` and custom object `window.sketchup.callback(parameter,…)`.
-
-- Supports JSON parameters
-- Supports Unicode
-- No limits on message length
-- No message loss: subsequent messages don't harm/abort previous messages
-  => No ack needed.
-- UI::HtmlDialog#execute_script does not anymore add extra script elements (or cleans them up now).
-  => No clean-up needed.
-- Has a new onCompleted callback, but it does not support to return parameters
-  => Keep callback mechanism.
-- UI::WebDialog#get_element_value removed: No way to get data from the dialog.
-  => Bridge#get makes this possible
-
-@example Simple call
-  // On the Ruby side:
-  bridge.on('add_image'){ |dialog, image_path, point, width, height|
-    @entities.add_image(image_path, point, width.to_l, height.to_l)
-  }
-  // On the JavaScript side:
-  Bridge.call('add_image', 'http://www.example.com/image/9895.jpg', [10, 10, 0], '2.5m', '1.8m');
-
-@example Log output to the Ruby Console
-  Bridge.puts('Swiss "grüezi" is pronounced [ˈɡryə̯tsiː] and means "您好！" in Chinese.');
-
-@example Log an error to the Ruby Console
-  try {
-    document.produceError();
-  } catch (error) {
-    Bridge.error(error);
-  }
-
-@example Usage with promises
-  // On the Ruby side:
-  bridge.on('do_calculation'){ |action_context, length, width|
-    if validate(length) && validate(width)
-      result = calculate(length)
-      action_context.resolve(result)
-    else
-      action_context.reject('The input is not valid.')
-    end
-  }
-  // On the JavaScript side:
-  var promise = Bridge.get('do_calculation', length, width)
-  promise.then(function (result) {
-    $('#resultField').text(result);
-  }, function (failureReason) {
-    $('#inputField1').addClass('invalid');
-    $('#inputField2').addClass('invalid');
-    alert(failureReason);
-  });
-
-=end
-
 require(File.expand_path('../promise.rb', __FILE__))
 # Optionally requires 'json.rb'
 # Requires modules Sketchup, UI
@@ -93,6 +7,37 @@ module AE
   module ConsolePlugin
 
     class Bridge
+      # This Bridge provides an intuitive and asynchronous API for message passing between SketchUp's Ruby environment 
+      # and dialogs. It supports any amount of parameters of any JSON-compatible type and it uses Promises to 
+      # asynchronously access return values on success or handle failures.
+      #
+      # Ruby methods:
+      # - `Bridge.new(dialog)`
+      #   Creates a Bridge instance for a UI::WebDialog or UI::HtmlDialog.
+      # - `Bridge.decorate(dialog)`
+      #   Alternatively adds the Bridge methods to a UI::WebDialog or UI::HtmlDialog.
+      # - `Bridge#on(callbackname) { |deferred, *arguments| }`
+      #   Registers a callback on the Bridge.
+      # - `Bridge#call(js_function_name, *arguments)`
+      #   Invokes a JavaScript function with multiple arguments.
+      # - `Bridge#get(js_function_name, *arguments).then{ |result| }`
+      #   Invokes a JavaScript function and returns a promise that will be resolved 
+      #   with the JavaScript function's return value.
+      #
+      # JavaScript functions:
+      # - `Bridge.call(rbCallbackName, ...arguments)`
+      #   Invokes a Ruby callback with multiple arguments.
+      # - `Bridge.get(rbCallbackName, ...arguments).then(function (result) { })`
+      #   Invokes a Ruby callback and returns a promise that will be resolved 
+      #   with the callback's return value.
+      # - `Bridge.puts(stringOrObject)`
+      #   Shorthand to print a string/object to the Ruby console.
+      # - `Bridge.error(errorObject)`
+      #   Shorthand to print an error to the Ruby console.
+      # 
+      # Github project: https://github.com/Aerilius/sketchup-bridge/
+
+      VERSION = '3.0.0' unless defined?(self::VERSION)
 
       # Add the bridge to an existing UI::WebDialog/UI::HtmlDialog.
       # This can be used for convenience and will define the bridge's methods
@@ -199,7 +144,7 @@ module AE
         parameter_string = self.class.serialize(parameters)
         return Promise.new { |resolve, reject|
           handler_name = create_unique_handler_name('resolve/reject')
-          once(handler_name) { |action_context, success, parameters|
+          once(handler_name) { |action_context, success, *parameters|
             if success
               resolve.call(*parameters)
             else
@@ -216,10 +161,16 @@ module AE
                     }).then(function (result) {
                         Bridge.call('#{handler_name}', true, result);
                     }, function (error) {
-                        Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
+                        if (error instanceof Error) {
+                            error = error.name + ': ' + error.message + (error.stack ? '\\n' + error.stack : '');
+                        }
+                        Bridge.call('#{handler_name}', false, error);
                     });
                 } catch (error) {
-                    Bridge.call('#{handler_name}', false, error.name + ': ' + error.message);
+                    if (error instanceof Error) {
+                        error = error.name + ': ' + error.message + (error.stack ? '\\n' + error.stack : '');
+                    }
+                    Bridge.call('#{handler_name}', false, error);
                     Bridge.error(error);
                 }
             })(#{JSMODULE});
@@ -300,8 +251,7 @@ module AE
         end
 
       rescue Exception => error
-        # Log the error in the console.
-        ConsolePlugin.error(error)
+        log_error(error)
       end
 
       # Receives the raw messages from the WebDialog (Bridge.call) and calls the individual callbacks.
@@ -344,8 +294,7 @@ module AE
         end
 
       rescue Exception => error
-        # Log the error in the console.
-        ConsolePlugin.error(error)
+        log_error(error)
       ensure
         # Acknowledge that the message has been received and enable the bridge to send
         # the next message if available.
@@ -362,7 +311,7 @@ module AE
 
         # Error channel (for debugging)
         @handlers["#{NAMESPACE}.error"] = Proc.new { |dialog, type, message, backtrace|
-          ConsolePlugin.error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
+          log_error(type + ': ' + message, {:language => 'javascript', :backtrace => backtrace})
         }
         RESERVED_NAMES << "#{NAMESPACE}.error"
       end
@@ -414,7 +363,8 @@ module AE
               else # any Exception
                 'Error'
               end
-              reason = "new #{error_class}(#{reason.message.inspect})"
+              backtrace = reason.backtrace.join($/)
+              reason = "#{JSMODULE}.__create_error__(#{error_class.inspect}, #{reason.message.inspect}, #{backtrace.inspect})"
             elsif reason.is_a?(String)
               reason = reason.inspect
             else
@@ -540,6 +490,19 @@ module AE
         end
 
       end
+
+      def log_error(error, metadata={})
+        if defined?(AE::ConsolePlugin)
+          ConsolePlugin.error(error, metadata)
+        elsif error.is_a?(Exception)
+          $stderr << "#{error.class.name}: #{error.message}" << $/
+          $stderr << error.backtrace.join($/) << $/
+        else
+          $stderr << error << $/
+          $stderr << metadata[:backtrace].join($/) << $/ if metadata.include?(:backtrace)
+        end
+      end
+      private :log_error
 
       # An error caused by malfunctioning of this library.
       # @private

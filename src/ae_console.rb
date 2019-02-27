@@ -20,7 +20,7 @@ module AE
     ext.creator     = 'Aerilius'
     ext.version     = AE::ConsolePlugin::VERSION
     ext.copyright   = '2012-2019 Andreas Eisenbarth'
-    ext.description = self::TRANSLATE['An alternative Ruby Console with command history and code highlighting.']
+    ext.description = self::TRANSLATE['An alternative Ruby Console with many useful features.']
 
     # Register and load the extension on startup.
     Sketchup.register_extension(ext, true)

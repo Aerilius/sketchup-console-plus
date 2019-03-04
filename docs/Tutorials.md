@@ -2,7 +2,7 @@
 
 The implementation of the tutorials can be found in `src/ae_console/features/feature_ruby_tutorials.rb` and `….js`. The tutorial data files are located in the Resources folder for each language. By default, all English tutorials (fallback) are listed in the user interface, and overriden by localized tutorials if identical file names are found in the directory of the current locale. Thus the file name should not be changed when localizing tutorials, therefore the title within the JSON is intended.
 
-This data format is loosely based on Try Ruby's format with several adaptations:
+This data format is loosely based on [Try Ruby](https://github.com/easydatawarehousing/TryRuby/)'s format with several adaptations:
 
 - Tutorial steps are a sequences/array, not an unordered dictionary with string keys of the sequence numbers.
 - No need for URL-encoding strings, use `\n` instead of `<br/>`
@@ -45,7 +45,7 @@ Documented using [MSON](https://github.com/apiaryio/mson) notation.
   "steps": [
     {
       "text": "An array <code>[]</code> is a container data structure in which you can put other objects. Try to create an array containing a number.",
-      "validate_result_regexp": "^\[-?\d+\]$",
+      "validate_result_regexp": "^\\[-?\\d+\\]$",
       "ok": "Great!",
       "error": "Try again."
     }

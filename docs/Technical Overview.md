@@ -16,11 +16,11 @@ Communication is completely asynchronous and based on **promises**. A promise is
 
 To handle the growing amount of features, they are implemented like extensions, with the core console having only basic functionality. A feature can include both Ruby code and JavaScript code.
 
-Features are searched in the features folder and loaded as soon as the plugin is loaded, and JavaScript is loaded whenever a console dialog is opened. A feature's class is initialized with a struct giving access to several components of the plugin (consoles) on which it can listen for events and act on them (console dialog opened etc.). 
+Features are searched in the features folder and loaded into Ruby as soon as the plugin is loaded. The JavaScript part of features is loaded whenever a console dialog is opened. A feature's class is initialized with a shared struct which gives access to several components of the plugin on which you can listen for events and act on them (observer pattern).
 
 ## JavaScript Modules
 
-Like the ace editor, the console now uses AMD modules. Requirejs loads a module definition after all dependent modules have been loaded asynchronously. If a function needs a module, it can require its dependencies as in an array and than access them as parameters of a callback function:
+Like the ace editor, the console now uses AMD modules. Requirejs loads a module definition after all dependent modules have been loaded asynchronously. If a function needs a module, it can require its dependencies in an array and then access them as parameters of a callback function:
 
     requirejs(['module_name'], function callback (module) {});
 

@@ -54,7 +54,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Aerili
 
 ## Development
 
-You can find a technical overview about this extension in the design folder.
+You can find [documentation in the docs](./docs/README.md) folder.
 
 First, run `bundle install` to install requirements.
 

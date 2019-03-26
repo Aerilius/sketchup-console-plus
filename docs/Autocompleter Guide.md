@@ -17,11 +17,11 @@ using introspection where possible.
 <dt>TokenClassificationByObject:</dt>
 <dd>We have a reference to the exact object in ObjectSpace.</dd>
 <dt>TokenClassificationByClass:</dt>
-<dd>We know the class in ObjectSpace, but it is not instantiated.</dd>
+<dd>We know the class in ObjectSpace, but we don't have an instance of it.</dd>
 <dt>TokenClassificationByDoc:</dt>
 <dd>Fallback to documentation to know what type a method returns (since Ruby is not 
 statically 
-typed, introspection cannot provide the return types).</dd>
+typed, introspection cannot provide the return types). We use statically generated documentation from yardoc. However documentation may sometimes be incomplete and miss return type information.</dd>
 </dl>
 
 <img alt="Forward evaluation state diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/d20b7e5b/design/forward_evaluation_resolver.svg">
@@ -33,7 +33,7 @@ Since a token can be member of multiple classes or objects this results in a tre
  
     … → previous token → last token
 
-1. last token  
+1. Last token  
    ↓
 2. Which types (previous token) respond to that token?  
    ↓

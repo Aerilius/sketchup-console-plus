@@ -4,7 +4,7 @@ With type inference, the data type of an expression can be deduced, which allows
 suggestions or documentation for a class or method.
 
 The type inference strategies below take only the global scope into account (e.g. like when evaluating a simple line on the console).
-For longer console input or complete ruby files, one would have to consider nested scopes and visibility of variables by building an abstract syntax tree.
+For longer console input or complete ruby files, one would have to consider nested scopes and visibility of variables by building an abstract syntax tree out of the complete code.
 
 ## Forward Evaluation Resolver
 
@@ -25,6 +25,22 @@ typed, introspection cannot provide the return types). We use statically generat
 </dl>
 
 <img alt="Forward evaluation state diagram" src="https://cdn.rawgit.com/Aerilius/sketchup-console-plus/d20b7e5b/design/forward_evaluation_resolver.svg">
+
+### Example
+
+```
+model = Sketchup.active_model
+model.selection
+```
+
+1. Search `model` in ObjectSpace  
+  `TokenClassificationByObject(model, is_instance=true)`
+
+2. Search an identifier `selection` in `Sketchup::Model` → We find a method, but don't know its return type.  
+  `TokenClassificationByDoc("Sketchup::Model#selection", is_instance=true)`
+
+3. Search `Sketchup::Model#selection` in yardoc documentation → It returns an `Sketchup::Selection`, but we don't have a reference to the exact instance.  
+  `TokenClassificationByClass(Sketchup::Selection, is_instance=true)`
 
 ## Backtracking Resolver
 
@@ -47,9 +63,12 @@ Usually already with two tokens, the possibilities can be reduced to one.
 unknown_reference.entities.length.to_s
 ```
 
-1. `Array#to_s`, **`Fixnum#to_s`**, `Float#to_s`, `Hash#to_s`, `NilClass#to_s`…
+1. Find classes that have a method `to_s`.  
+  `Array#to_s`, **`Fixnum#to_s`**, `Float#to_s`, `Hash#to_s`, `NilClass#to_s`…
 
-2. `Array#length`, `Hash#length`, **`Sketchup::Entities#length`**, …
+2. Then find classes that have a method `length` which returns an instance of the former classes.  
+  `Array#length`, `Hash#length`, **`Sketchup::Entities#length`**, …
 
-3. **`Sketchup::Model#entities`**, **`Sketchup::Model#active_entities`**, **`Sketchup::ComponentDefinition#entities`**, 
+3. Then find classes that have a method `entities` and return a `Sketchup::Entities` (or `Array` or `Hash`).  
+  **`Sketchup::Model#entities`**, **`Sketchup::Model#active_entities`**, **`Sketchup::ComponentDefinition#entities`**, 
 **`Sketchup::Group#entities`**

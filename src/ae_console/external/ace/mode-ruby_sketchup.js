@@ -45,13 +45,13 @@ var RubySketchUpHighlightRules = function() {
             regex: "#<[^\\>]+>"
         },{
             token: "sketchup.point3d",
-            regex: "Point3d\\(" + float + "," + space + "," + float + "," + space + "\\)"
+            regex: "Point3d\\(" + float + "," + space + float + "," + space + float + "\\)"
         },{
             token: "sketchup.point3d",
             regex: "\\(" + float + unit + "," + space + float + unit + "," + space + float + unit + "\\)"
         },{
             token: "sketchup.vector3d",
-            regex: "Vector3d\\(" + float + "," + space + "," + float + "," + space + "\\)"
+            regex: "Vector3d\\(" + float + "," + space + float + "," + space + float + "\\)"
         },{
             token: "sketchup.vector3d",
             regex: "\\(" + float + "," + space + float + "," + space + float + "\\)"

@@ -146,8 +146,8 @@ table {
 /* Toolbar left, center, right */
 
 .toolbar {
-    background-color: Menu;
-    color: MenuText;
+    background-color: Button;
+    color: ButtonText;
     /* layout */
     display: table-row;
     height: 3em;
@@ -217,7 +217,7 @@ table {
 }
 
 .toolbar h1 {
-    font: Menu;
+    font: menu;
     font-weight: bold !important;
     font-size: inherit;
     margin: 0;
@@ -225,7 +225,7 @@ table {
 }
 
 .toolbar h2 {
-    font: Menu;
+    font: menu;
     font-weight: normal !important;
     font-size: 75%;
     opacity: 0.66;
@@ -247,11 +247,12 @@ table {
     /*position: absolute;*/
     /*z-index: 1000;*/
     /*text-align: left;*/
-    background-color: Menu !important;
-    color: MenuText !important;
+    background-color: Button !important;
+    color: ButtonText !important;
     font: menu !important;
     font-size: 100% !important;
-    border: 1px solid ButtonShadow;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .2);
     box-shadow: 0 0.25em 1em 0 rgba(0, 0, 0, 0.25);
 }
 
@@ -281,7 +282,7 @@ table {
 .menu label select {
     float: right;
     max-width: 100%;
-    color: MenuText;
+    color: ButtonText;
 }
 .menu label input[type=radio],
 .menu label input[type=checkbox] {

@@ -181,7 +181,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                 // No element. Something is wrong, end the traversal.
                 arrayElements.length = 0;
                 break;
-            } else if (nextElement.hasClass('highlight_entity')) { // or 'highlight_entity'
+            } else if (nextElement.hasClass('highlight_entity') && nextElement.data('type') in dataToHighlight) {
                 // This is a visualizable element, add it.
                 arrayElements.push(nextElement);
                 dataToHighlight[nextElement.data('type')].push(nextElement.data('identifier'));

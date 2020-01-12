@@ -495,11 +495,11 @@ module AE
         if defined?(AE::ConsolePlugin)
           ConsolePlugin.error(error, metadata)
         elsif error.is_a?(Exception)
-          $stderr << "#{error.class.name}: #{error.message}" << $/
-          $stderr << error.backtrace.join($/) << $/
+          $stderr << ("#{error.class.name}: #{error.message}" << $/)
+          $stderr << (error.backtrace.join($/) << $/)
         else
-          $stderr << error << $/
-          $stderr << metadata[:backtrace].join($/) << $/ if metadata.include?(:backtrace)
+          $stderr << (error << $/)
+          $stderr << (metadata[:backtrace].join($/) << $/) if metadata.include?(:backtrace)
         end
       end
       private :log_error

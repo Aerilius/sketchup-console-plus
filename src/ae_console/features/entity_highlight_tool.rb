@@ -168,7 +168,7 @@ module AE
         vec = view.camera.up
         vec.length = diameter
         t_circle = Geom::Transformation.new(center, e, 10.degrees)
-        circle = [cp + vec]
+        circle = [center + vec]
         (1..36).each { |i| circle << circle.last.transform(t_circle).transform(t) }
         # Convert to screen space (so that it won't be covered by other geometry).
         circle.map! { |p| view.screen_coords(p) }
@@ -306,7 +306,7 @@ module AE
               # For entities with undefined shape, draw a circle around them.
               center = entity.bounds.center
               # Diameter; consider a minimum for Drawingelements that have no diameter
-              diameter = [entity.bounds.diagonal/2.0, view.pixels_to_model(5, cp)].max
+              diameter = [entity.bounds.diagonal/2.0, view.pixels_to_model(5, center)].max
               @transformations_active[entity].each{ |t|   draw_circle(center, diameter, @color_active,   t) }
               @transformations_inactive[entity].each{ |t| draw_circle(center, diameter, @color_inactive, t) }
             end

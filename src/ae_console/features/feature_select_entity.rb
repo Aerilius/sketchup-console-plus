@@ -28,7 +28,7 @@ module AE
             else
               # This triggers the custom select tool and once an entity is selected,
               # a local variable is created in binding and its name is returned.
-              SelectEntityTool.select_tool.then(proc{ |selected|
+              SelectEntityTool.select_tool.then_do(proc{ |selected|
                 #  Entity was selected and referenced by a variable with this name.
                 binding = console.instance_variable_get(:@binding)
                 name = create_reference_name(selected, binding, desired_name)

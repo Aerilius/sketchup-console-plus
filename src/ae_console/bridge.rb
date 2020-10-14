@@ -374,7 +374,7 @@ module AE
             nil
           }
           # Register these two handlers.
-          self.promise.then(on_resolve, on_reject)
+          self.promise.then_do(on_resolve, on_reject)
           @dialog = dialog
           @id     = id
         end

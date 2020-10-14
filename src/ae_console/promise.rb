@@ -71,7 +71,7 @@ module AE
         #   @yieldparam reason  [String,Exception]        The reason why the promise was rejected.
         #
         # @return [Promise] A new promise for that the on_resolve or on_reject block has been executed successfully.
-        def then(on_resolve=nil, on_reject=nil, &block)
+        def then_fix(on_resolve=nil, on_reject=nil, &block)
           if block_given?
             if on_resolve.respond_to?(:call)
               # When called as: then(proc{on_resolve}){ on_reject }
@@ -106,7 +106,7 @@ module AE
         # @return            [Promise]          A new promise that the on_reject block has been executed successfully.
         def catch(on_reject=nil, &block)
           on_reject = block if block_given?
-          return self.then(nil, on_reject)
+          return self.then_fix(nil, on_reject)
         end
 
         # Creates a promise that is resolved from the start with the given value.
@@ -137,8 +137,8 @@ module AE
               pending_counter = promises.length
               results = Array.new(promises.length)
               promises.each_with_index{ |promise, i|
-                if promise.respond_to?(:then)
-                  promise.then(Proc.new{ |result|
+                if promise.respond_to?(:then_fix)
+                  promise.then_fix(Proc.new{ |result|
                     results[i] = result
                     pending_counter -= 1
                     resolve.call(results) if pending_counter == 0
@@ -160,8 +160,8 @@ module AE
           return Promise.reject(ArgumentError.new('Argument must be iterable')) unless promises.is_a?(Enumerable)
           return Promise.new{ |resolve, reject|
             promises.each{ |promise|
-              if promise.respond_to?(:then)
-                promise.then(resolve, reject)
+              if promise.respond_to?(:then_fix)
+                promise.then_fix(resolve, reject)
               else
                 break resolve.call(promise) # non-Promise value
               end
@@ -190,8 +190,8 @@ module AE
           # If this promise is resolved with another promise, the final results are not yet
           # known, so we we register this promise to be resolved once all results are resolved.
           raise TypeError.new('A promise cannot be resolved with itself.') if results.include?(self)
-          if results.find{ |r| r.respond_to?(:then) }
-            self.class.all(results).then(Proc.new{ |results| resolve(*results) }, method(:reject))
+          if results.find{ |r| r.respond_to?(:then_fix) }
+            self.class.all(results).then_fix(Proc.new{ |results| resolve(*results) }, method(:reject))
             return nil
           end
 
@@ -274,8 +274,8 @@ module AE
           defer{
             begin
               new_results = *reaction.call(*@values)
-              if new_results.find{ |r| r.respond_to?(:then) }
-                self.class.all(new_results).then(Proc.new{ |results| on_success.call(*results) }, on_failure)
+              if new_results.find{ |r| r.respond_to?(:then_fix) }
+                self.class.all(new_results).then_fix(Proc.new{ |results| on_success.call(*results) }, on_failure)
               elsif on_success.respond_to?(:call)
                 on_success.call(*new_results)
               end

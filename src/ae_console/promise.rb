@@ -293,7 +293,12 @@ module AE
 
         def unhandled_rejection(*reasons)
           reason = reasons.first
-          warn("Uncaught promise rejection with reason [#{reason.class}]: \"#{reason}\"")
+          if reason.respond_to?(:message) and reason.respond_to?(:backtrace)
+            reason_txt = "#{reason.message}\n#{reason.backtrace.join("\n")}"
+          else
+            reason_txt = reason
+          end
+          warn("Uncaught promise rejection with reason [#{reason.class}]: \"#{reason_txt}\"")
           if reason.is_a?(Exception) && reason.backtrace
             # Make use of the backtrace to point at the location of the uncaught rejection.
             filtered_backtrace = reason.backtrace.inject([]){ |lines, line|

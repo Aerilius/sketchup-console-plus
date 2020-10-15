@@ -81,7 +81,10 @@ module AE
               on_resolve = block
             end
           end
-          (unhandled_rejection(*@values); return self) if @state == State::REJECTED && !on_reject.respond_to?(:call)
+          if @state == State::REJECTED && !on_reject.respond_to?(:call)
+            unhandled_rejection(*@values)
+            return self
+          end
 
           next_promise = Promise.new { |resolve_next, reject_next| # Do not use self.class.new because a subclass may require arguments.
             @handlers << Handler.new(on_resolve, on_reject, resolve_next, reject_next)

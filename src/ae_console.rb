@@ -19,7 +19,7 @@ module AE
     # Attach some nice info.
     ext.creator     = 'Aerilius'
     ext.version     = AE::ConsolePlugin::VERSION
-    ext.copyright   = '2012-2019 Andreas Eisenbarth'
+    ext.copyright   = '2012-2021 Andreas Eisenbarth'
     ext.description = self::TRANSLATE['An alternative Ruby Console with many useful features.']
 
     # Register and load the extension on startup.

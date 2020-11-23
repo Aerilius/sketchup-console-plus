@@ -301,8 +301,8 @@ module AE
             ['+', 'tt'],
             [['{', '}'], 'tt'],
           ].map{ |markup, tagname|
-            word_boundary = (markup =~ /_\*/) ? '\\b' : ''
             markup_start, markup_end = (markup.is_a?(String)) ? [markup, markup] : markup
+            word_boundary = (markup_start =~ /_\*/ || markup_end =~ /_\*/) ? '\\b' : ''
             regexp      = Regexp.new("#{word_boundary}#{Regexp.quote(markup_start)}([\#\.]?\\w[\\w\\s]*\\w)#{Regexp.quote(markup_end)}#{word_boundary}")
             replacement = "<#{tagname}>\\1</#{tagname}>"
             [regexp, replacement]

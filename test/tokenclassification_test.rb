@@ -4,6 +4,19 @@ module AE
 
   module ConsolePlugin
 
+    if !defined?(Sketchup.get_locale)
+
+      # Create a Mock
+      module Sketchup
+
+        def self.get_locale()
+          return "en-US"
+        end
+
+      end
+
+    end
+
     class TC_TokenClassification < TestCase
 
       # Test-matrix:
@@ -97,12 +110,12 @@ module AE
         @docprovider.stub_data('ClassA::XX', { :return => [['ClassA::XX'], 'description'], :type => :constant })
         @docprovider.stub_data('ClassA::XY', { :return => [['ClassA::XY'], 'description'], :type => :class })
         @docprovider.stub_data('ClassA::XZ', { :return => [['ClassA::XZ'], 'description'], :type => :module })
-        @docprovider.stub_data('ClassA.xx', { :return => [['ClassD'], 'description'], :type => :class_method })
-        @docprovider.stub_data('ClassA.xy', { :return => [['ClassD'], 'description'], :type => :class_method })
-        @docprovider.stub_data('ClassA.xz', { :return => [['ClassD'], 'description'], :type => :class_method })
-        @docprovider.stub_data('ClassA#yx', { :return => [['ClassD'], 'description'], :type => :instance_method })
-        @docprovider.stub_data('ClassA#yy', { :return => [['ClassD'], 'description'], :type => :instance_method })
-        @docprovider.stub_data('ClassA#yz', { :return => [['ClassD'], 'description'], :type => :instance_method })
+        @docprovider.stub_data('ClassA.xxx', { :return => [['ClassD'], 'description'], :type => :class_method })
+        @docprovider.stub_data('ClassA.xxy', { :return => [['ClassD'], 'description'], :type => :class_method })
+        @docprovider.stub_data('ClassA.xxz', { :return => [['ClassD'], 'description'], :type => :class_method })
+        @docprovider.stub_data('ClassA#yyx', { :return => [['ClassD'], 'description'], :type => :instance_method })
+        @docprovider.stub_data('ClassA#yyy', { :return => [['ClassD'], 'description'], :type => :instance_method })
+        @docprovider.stub_data('ClassA#yyz', { :return => [['ClassD'], 'description'], :type => :instance_method })
 
         classification = TokenClassificationByDoc.new('ClassA', :class, '', 0, 'ClassA', false)
         do_resolve_on_a_class(classification)
@@ -194,7 +207,7 @@ module AE
 
       def do_get_completions(classification)
         if classification.type == :class || classification.type == :module
-          actual = classification.get_completions('x')
+          actual = classification.get_completions('xx')
           puts actual.inspect
           assert_equal(3, actual.length, "It should return all matching methods (#{caller.first})")
           assert(actual.all?{ |c| c.type == :class_method }, "The completions should have the correct type (#{caller.first})")
@@ -205,7 +218,7 @@ module AE
           assert(actual.find{ |c| c.type == :class }, "The completions should have the correct type (#{caller.first})")
           assert(actual.find{ |c| c.type == :module }, "The completions should have the correct type (#{caller.first})")
         else
-          actual = classification.get_completions('y')
+          actual = classification.get_completions('yy')
           puts actual.inspect
           assert_equal(3, actual.length, "It should return all matching methods (#{caller.first})")
           assert(actual.all?{ |c| c.type == :instance_method }, "The completions should have the correct type (#{caller.first})")
@@ -338,12 +351,12 @@ class ClassA
   XX = 81
   class XY; end
   module XZ; end
-  def self.xx; end
-  def self.xy; end
-  def self.xz; end
-  def yx; end
-  def yy; end
-  def yz; end
+  def self.xxx; end
+  def self.xxy; end
+  def self.xxz; end
+  def yyx; end
+  def yyy; end
+  def yyz; end
   module ModuleB
     def self.module_function_b; end
   end

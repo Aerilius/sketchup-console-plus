@@ -19,9 +19,10 @@ def generate_apis(yardoc_db, api_output)
 end
 
 def main(*argv)
+  puts("Generating API database for SketchUp")
   # Parameters
-  api_dir         = "../src/ae_console/data/apis"
-  source_dir      = "~/Programmierung/Repos/ruby-api-stubs/SketchUp"
+  api_dir         = File.expand_path(__dir__, "../src/ae_console/data/apis")
+  source_dir      = "~/Programmierung/Repos/ruby-api-stubs/lib/sketchup-api-stubs/stubs"
   
   # SketchUp
   yardoc_db = "./.yardoc_sketchup"

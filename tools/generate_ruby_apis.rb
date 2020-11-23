@@ -20,10 +20,13 @@ def generate_apis(yardoc_db, api_output)
   system("ruby ./yard2hash.rb --input #{yardoc_db} --format json --output #{api_output}")
 end
 
-def main(ruby_version)
+def main(ruby_version=RUBY_VERSION)
+  puts("Generating API database for ruby-#{ruby_version}")
   # Parameters
-  api_dir         = "../src/ae_console/data/apis"
+  api_dir         = File.expand_path(__dir__, "../src/ae_console/data/apis")
   source_dir      = "~/.rvm/src/ruby-#{ruby_version}"
+  source_dir      = "/usr/share/rvm/src/ruby-#{ruby_version}" if !File.exist?(source_dir)
+  raise("Ruby #{ruby_version} source directory not found for at #{source_dir}") if !File.exist?(source_dir)
   # Since the Ruby source directly contains source files in the directory root besides many unrelated folders, we include only .c and .h files.
   core_includes   = %w'*.c'  # *.h
   # We only include interesting stdlib and extension files.
@@ -47,10 +50,6 @@ def main(ruby_version)
   api_output = File.join(api_dir, "ruby-stdlib-#{ruby_version}.json")
   generate_yardoc(includes, yardoc_db)
   generate_apis(yardoc_db, api_output)
-end
-
-if ARGV.length < 1
-  raise ArgumentError.new('Ruby version number required.')
 end
 
 main(*ARGV)

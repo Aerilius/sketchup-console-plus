@@ -315,7 +315,7 @@ module AE
           text = text.to_s.clone
           RDOC_TO_HTML_MAP.each{ |regexp, replacement|
             # Markup
-            text.gsub!(regexp, replacement)
+            text = text.gsub(regexp, replacement)
           }
           # Spaces
           text.gsub!(/  +/){ |spaces| '&nbsp;'*spaces.length }

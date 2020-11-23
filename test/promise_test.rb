@@ -4,7 +4,7 @@ module AE
 
   module ConsolePlugin
 
-    require 'ae_console/promise.rb'
+    require 'ae_console/bridge.rb'
 
     unless defined?(self.error)
       def self.error(*e)

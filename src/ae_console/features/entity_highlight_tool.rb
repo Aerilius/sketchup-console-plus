@@ -2,8 +2,6 @@ module AE
 
   module ConsolePlugin
 
-    require(File.join(PATH, 'promise.rb'))
-
     module EntityDrawingInstructions
 
       def draw_edges(view, entity, line_color=nil, t=IDENTITY)

@@ -241,7 +241,7 @@ module AE
         if string.is_a?(String) && 
            (!string.valid_encoding? ||
             string.encoding == Encoding::BINARY && (string.unicode_normalize rescue true))
-          return string.encode(Encoding::UTF_8, {:invalid => :replace, :undef => :replace})
+          return string.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
         else
           return string
         end

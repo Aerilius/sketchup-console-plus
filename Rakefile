@@ -3,6 +3,10 @@ require 'rake/testtask'
 require 'zip'
 require 'pathname'
 
+# Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
+# to allow pushing to a single host or delete this section to allow pushing to any host.
+ENV['gem_push'] = 'off'
+
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
   t.libs << 'src'

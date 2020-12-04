@@ -11,6 +11,41 @@ module AE
 
     class Bridge
 
+
+      # @private
+      module Utils
+
+        def self.log_error(error, metadata={})
+          if defined?(AE::ConsolePlugin)
+            AE::ConsolePlugin.error(error, metadata)
+          elsif error.is_a?(Exception)
+            $stderr << ("#{error.class.name}: #{error.message}" << $/)
+            $stderr << (error.backtrace.join($/) << $/)
+          else
+            $stderr << (error << $/)
+            $stderr << (metadata[:backtrace].join($/) << $/) if metadata.include?(:backtrace)
+          end
+        end
+
+        def self.filter_backtrace(backtrace, exclude_file, exclude_line_range=nil)
+          return backtrace.inject([]){ |lines, line|
+            line_number_match = line[/(?<=:)(\d+)(?=:)/]
+            if line.match(exclude_file) && (!exclude_line_range.nil? || line_number_match && exclude_line_range.include?(line_number_match.to_i))
+              break lines
+            end
+            lines << line
+          }
+        end
+
+      end
+
+
+    end
+
+
+
+    class Bridge
+
       class Promise
         # A simple promise implementation to follow the ES6 (JavaScript) Promise specification:
         # {#link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise }
@@ -306,20 +341,10 @@ module AE
             reason_txt = reason
           end
           warn("Uncaught promise rejection with reason [#{reason.class}]: \"#{reason_txt}\"")
-          if reason.is_a?(Exception) && reason.backtrace
-            # Make use of the backtrace to point at the location of the uncaught rejection.
-            filtered_backtrace = reason.backtrace.inject([]){ |lines, line|
-              break lines if line.match(__FILE__)
-              lines << line
-            }
-            location = filtered_backtrace.last[/[^\:]+\:\d+/] # /path/filename.rb:linenumber
-          else
-            filtered_backtrace = caller.inject([]){ |lines, line|
-              next lines if line.match(__FILE__)
-              lines << line
-            }
-            location = filtered_backtrace.first[/[^\:]+\:\d+/] # /path/filename.rb:linenumber
-          end
+          backtrace = (reason.is_a?(Exception) && reason.backtrace) ? reason.backtrace : caller
+          # Make use of the backtrace to point at the location of the uncaught rejection.
+          filtered_backtrace = Utils.filter_backtrace(backtrace, exclude_file=__FILE__)
+          location = filtered_backtrace.last[/[^\:]+\:\d+/] # /path/filename.rb:linenumber
           Kernel.warn(filtered_backtrace.join($/))
           Kernel.warn("Tip: Add a Promise#catch block to the promise after the block in #{location}")
         end
@@ -558,29 +583,6 @@ module AE
     end # class Bridge
 
 
-    class Bridge
-
-
-      # @private
-      module Utils
-
-        def self.log_error(error, metadata={})
-          if defined?(AE::ConsolePlugin)
-            AE::ConsolePlugin.error(error, metadata)
-          elsif error.is_a?(Exception)
-            $stderr << ("#{error.class.name}: #{error.message}" << $/)
-            $stderr << (error.backtrace.join($/) << $/)
-          else
-            $stderr << (error << $/)
-            $stderr << (metadata[:backtrace].join($/) << $/) if metadata.include?(:backtrace)
-          end
-        end
-
-
-      end
-
-
-    end
 
 
 
@@ -602,21 +604,20 @@ module AE
       # @private
       class DialogRequestHandler < RequestHandler # abstract class
 
-        def initialize(dialog, bridge=nil)
+        def initialize(bridge=nil)
           super()
-          @dialog = dialog
           @bridge = bridge
         end
 
         def send(message)
           name = message[:name]
           parameters_string = Bridge::JSON.generate(message[:parameters])[1...-1]
-          @dialog.execute_script("#{name}(#{parameters_string})")
+          @bridge.dialog.execute_script("#{name}(#{parameters_string})")
         end
 
         private
 
-        def handle_request(action_context, request) # FIXME: Avoid access to Bridge @handlers and @dialog
+        def handle_request(action_context, request)
           unless request.is_a?(Hash) &&
               (defined?(Integer) ? request['id'].is_a?(Integer) : request['id'].is_a?(Fixnum)) &&
               request['name'].is_a?(String) &&
@@ -633,15 +634,23 @@ module AE
           # later the result to the JavaScript callback even if the dialog has continued
           # sending/receiving messages.
           if request['expectsCallback']
-            response = ActionContext.new(@dialog, self, id)
+            response = ActionContext.new(@bridge.dialog, self, id)
+            # Get the callback.
+            unless @bridge.handlers.include?(name)
+              raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@bridge.dialog} found."))
+            end
+            handler = @bridge.handlers[name]
             begin
-              # Get the callback.
-              unless @bridge.handlers.include?(name)
-                raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@dialog} found."))
-              end
-              handler = @bridge.handlers[name]
               handler.call(response, *parameters)
             rescue Exception => error
+              # Filter the backtrace if the error was caused in the handler block in another script.
+              error.set_backtrace(
+                Utils.filter_backtrace(
+                  error.backtrace,
+                  exclude_file=__FILE__,
+                  exclude_line_range=__LINE__-8..__LINE__-2
+                )
+              )
               # Reject the promise.
               response.reject(error)
               # Re-raise for logging.
@@ -650,10 +659,32 @@ module AE
           else
             # Get the callback.
             unless @bridge.handlers.include?(name)
-              raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@dialog} found."))
+              raise(BridgeRemoteError.new("No registered callback `#{name}` for #{@bridge.dialog} found."))
             end
             handler = @bridge.handlers[name]
-            handler.call(@dialog, *parameters)
+            begin
+              handler.call(@bridge.dialog, *parameters)
+            rescue Exception => error
+              # Filter the backtrace if the error was caused in the handler block in another script.
+              error.set_backtrace(
+                Utils.filter_backtrace(
+                  error.backtrace,
+                  exclude_file=__FILE__,
+                  exclude_line_range=__LINE__-8..__LINE__-2
+                )
+              )
+              if error.is_a?(NoMethodError) && error.message[/undefined method `resolve' for #<UI::(?:Web|Html)Dialog/]
+                new_error = NoMethodError.new(
+                  error.message +
+                  "\nThe Ruby callback only receives a promise that can be resolved/rejected " +
+                  "if it is called from JavaScript with Bridge.get('#{name}', …)"
+                )
+                new_error.set_backtrace(error.backtrace)
+                raise(new_error)
+              else
+                raise(error)
+              end
+            end
           end
         end
 
@@ -682,11 +713,11 @@ module AE
         # @private Not for public use.
         # @param   dialog           [UI::WebDialog]
         # @param   parameter_string [String]
-        def receive(action_context, parameter_string)
+        def receive(dialog, parameter_string)
           # Get message data from the hidden input element.
-          value   = @dialog.get_element_value("#{NAMESPACE}.requestField") # returns empty string if element not found
+          value   = @bridge.dialog.get_element_value("#{NAMESPACE}.requestField") # returns empty string if element not found
           request = Bridge::JSON.parse(value)
-          handle_request(action_context, request)
+          handle_request(dialog, request)
         rescue Exception => error
           Utils.log_error(error)
         ensure
@@ -844,6 +875,7 @@ module AE
       end
 
       # @private
+      attr_reader :dialog
       attr_reader :handlers
 
       private
@@ -856,7 +888,6 @@ module AE
       RESERVED_NAMES = []
       # Callback name where JavaScript messages are received.
       CALLBACKNAME = 'Bridge.receive'
-      attr_reader :dialog
 
       # Create an instance of the Bridge and associate it with a dialog.
       # @param dialog [UI::HtmlDialog, UI::WebDialog]
@@ -867,9 +898,9 @@ module AE
 
         if request_handler.nil?
           if defined?(UI::HtmlDialog) && dialog.is_a?(UI::HtmlDialog) # SketchUp 2017+
-            @request_handler = RequestHandlerHtmlDialog.new(dialog, self)
+            @request_handler = RequestHandlerHtmlDialog.new(self)
           else
-            @request_handler = RequestHandlerWebDialog.new(dialog, self)
+            @request_handler = RequestHandlerWebDialog.new(self)
           end
         else
           @request_handler = request_handler

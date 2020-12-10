@@ -32,7 +32,10 @@ module AE
     private_class_method :create_command
 
     def self.register_menu(command)
-      UI.menu('Window').add_item(command)
+      menu = UI.menu('Window')
+      # Prefer adding a separator before your extension's menu entry when using any other menu than Extensions.
+      menu.add_separator
+      menu.add_item(command)
     end
     private_class_method :register_menu
 

@@ -14,7 +14,7 @@ module AE
     self::TRANSLATE = Translate.new('console.strings') unless defined?(self::TRANSLATE)
 
     # Create the extension.
-    ext = SketchupExtension.new(self::TRANSLATE['Ruby Console+'], File.join(PATH, 'core.rb'))
+    ext = SketchupExtension.new(self::TRANSLATE['Ruby Console+'], File.join(PATH, 'core'))
 
     # Attach some nice info.
     ext.creator     = 'Aerilius'

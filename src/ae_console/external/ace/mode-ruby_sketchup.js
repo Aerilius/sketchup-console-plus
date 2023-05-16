@@ -1,4 +1,5 @@
-ace.define('ace/mode/ruby_sketchup', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/ruby', 'ace/tokenizer', 'ace/mode/matching_brace_outdent', 'ace/mode/folding/coffee', 'ace/mode/ruby_sketchup_highlight_rules'], function(require, exports, module) {
+define('ace/mode/ruby_sketchup', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/ruby', 'ace/tokenizer', 'ace/mode/matching_brace_outdent', 'ace/mode/folding/coffee', 'ace/mode/ruby_sketchup_highlight_rules'],
+  function(require, exports, module) {
 "use strict";
 var oop = require("ace/lib/oop");
 
@@ -24,7 +25,7 @@ exports.Mode = Mode;
 
 
 
-ace.define('ace/mode/ruby_sketchup_highlight_rules', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/ruby_highlight_rules'], function(require, exports, module) {
+define('ace/mode/ruby_sketchup_highlight_rules', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/ruby_highlight_rules'], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -97,7 +98,7 @@ exports.RubySketchUpHighlightRules = RubySketchUpHighlightRules;
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/ruby', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/ruby_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', 'ace/mode/folding/coffee'], function(require, exports, module) {
+define('ace/mode/ruby', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/ruby_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/range', 'ace/mode/folding/coffee'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -161,7 +162,7 @@ exports.Mode = Mode;
 });
 
 
-ace.define('ace/mode/ruby_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
+define('ace/mode/ruby_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -386,7 +387,7 @@ oop.inherits(RubyHighlightRules, TextHighlightRules);
 exports.RubyHighlightRules = RubyHighlightRules;
 });
 
-ace.define('ace/mode/matching_brace_outdent', ['require', 'exports', 'module' , 'ace/range'], function(require, exports, module) {
+define('ace/mode/matching_brace_outdent', ['require', 'exports', 'module' , 'ace/range'], function(require, exports, module) {
 
 
 var Range = require("../range").Range;
@@ -426,7 +427,7 @@ var MatchingBraceOutdent = function() {};
 exports.MatchingBraceOutdent = MatchingBraceOutdent;
 });
 
-ace.define('ace/mode/folding/coffee', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/folding/fold_mode', 'ace/range'], function(require, exports, module) {
+define('ace/mode/folding/coffee', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/folding/fold_mode', 'ace/range'], function(require, exports, module) {
 
 
 var oop = require("../../lib/oop");

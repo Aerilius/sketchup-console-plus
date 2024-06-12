@@ -99,7 +99,7 @@ module AE
           @documentation_browser.set_url(url)
         else
           # Test whether url exists (Sketchup 2017+)
-          Sketchup::Http::Request.new(url, Sketchup::Http::HEAD).start{ |request, response|
+          @request = Sketchup::Http::Request.new(url, Sketchup::Http::HEAD).start{ |request, response|
             if response.status_code == 200
               @documentation_browser.set_url(url)
             else

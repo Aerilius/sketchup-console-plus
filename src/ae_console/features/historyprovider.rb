@@ -40,19 +40,38 @@ module AE
         SEPARATOR_REGEXP = /\n(?:###SEPARATOR###|SEPARATOR_TO_BE_DETERMINED)\n/ unless defined?(self::SEPARATOR_REGEXP)
 
         def initialize
+          @base_dir = File.join(File.dirname(__FILE__), 'history')
+
+          # Capture necessary data in local variables
+          base_dir = @base_dir
+
+          # Define the finalizer without referencing 'self'
+          ObjectSpace.define_finalizer(self, self.class.finalize(base_dir))
+
           # Create the smallest unique id.
           @id = 0
           @id += 1 while @@instances.include?(@id)
           @@instances.push(@id)
-          ObjectSpace.define_finalizer(self, Proc.new{ |id|
-            @@instances.delete(@id)
-          })
           # The data object.
           @data = []
           Dir.mkdir(DATA_DIR) unless File.directory?(DATA_DIR)
           # Try to load stored data.
           @path = File.join(DATA_DIR, "history#{@id}.txt")
           read()
+        end
+
+        def self.finalize(base_dir)
+          proc {
+            # Perform cleanup using 'base_dir'
+            # Avoid referencing 'self' or instance variables here
+            begin
+              # Example cleanup code
+              Dir.delete(base_dir) if Dir.exist?(base_dir)
+            rescue => e
+              # Handle exceptions if necessary
+              warn "Finalizer error: #{e.message}"
+            end
+          }
         end
 
         def push(arg)

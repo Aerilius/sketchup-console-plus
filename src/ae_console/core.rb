@@ -55,6 +55,8 @@ module AE
       return console
     end
 
+    public_class_method :open # Change to public
+
     # Close all consoles.
     def self.close
       @@consoles.each{ |instance| instance.close }
@@ -72,7 +74,7 @@ module AE
         else
           $stderr.write(args.first + $/)
           if args[1].is_a?(Hash) && args[1][:backtrace]
-            $stderr.write(args[1][:backtrace].join($/) + $/)
+            $stderr.write(args[1][:backtrace].join($/))
           end
         end
       else
@@ -94,6 +96,43 @@ module AE
     # In order to get the original caller, we need to detect which calls come from subclasses.
     self::IGNORED_CONSOLE_SUBCLASSERS = [/testup[\/\\]console\.rb/] unless defined?(self::IGNORED_CONSOLE_SUBCLASSERS)
 
+    class StdoutRedirecter
+      def initialize(original_stdout)
+        @original_stdout = original_stdout
+      end
+
+      def write(*args)
+        _caller = [caller.find{ |s| ConsolePlugin::IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
+        ConsolePlugin::PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless ConsolePlugin::PRIMARY_CONSOLE.value.nil?
+        args.each{ |arg| @original_stdout.write(arg) }
+      end
+
+      def flush
+        @original_stdout.flush
+      end
+    end
+
+    class StderrRedirecter
+      def initialize(original_stderr)
+        @original_stderr = original_stderr
+      end
+
+      def write(*args)
+        unless PRIMARY_CONSOLE.value.nil?
+          if args.first && args.first[/warning/i]
+            PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
+          else
+            PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
+          end
+        end
+        args.each{ |arg| @original_stderr.write(arg) }
+      end
+
+      def flush
+        @original_stderr.flush
+      end
+    end
+
     def self.initialize_plugin
       # Load settings
       @@settings ||= Settings.new('AE/Console').load({
@@ -109,34 +148,11 @@ module AE
       })
       # Consoles
       @@consoles ||= []
-      # Observe output of STDOUT and STDERR (#<Sketchup::Console>).
-      # Therefore replace the original stdout (SKETCHUP_CONSOLE) by a modified subclass.
-      @@stdout_redirecter ||= ObjectReplacer.new('$stdout', Class.new($stdout.class){
-        def write(*args)
-          # For write/puts, provide only the direct caller (script file), 
-          # not the complete backtrace.
-          # Ignore callers that are subclasses or intercepters of the console itself.
-          _caller = [caller.find{ |s| IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
-          PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless PRIMARY_CONSOLE.value.nil?
-          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
-          # sends two arguments (string, "\n") or separate method invocations depending on arity.
-          args.each{ |arg| super(arg) }
-        end
-      }.new)
-      @@stderr_redirecter ||= ObjectReplacer.new('$stderr', Class.new($stderr.class){
-        def write(*args)
-          unless PRIMARY_CONSOLE.value.nil?
-            if args.first && args.first[/warning/i]
-              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
-            else
-              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
-            end
-          end
-          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
-          # sends two arguments (string, "\n") or separate method invocations depending on arity.
-          args.each{ |arg| super(arg) }
-        end
-      }.new)
+      
+      # Use the predefined classes
+      @@stdout_redirecter ||= ObjectReplacer.new('$stdout', StdoutRedirecter.new($stdout))
+      @@stderr_redirecter ||= ObjectReplacer.new('$stderr', StderrRedirecter.new($stderr))
+      
       # Eval and $stderr do not catch script errors (why?), but global variable `$!` does.
       @@script_error_catcher ||= Proc.new{
         unless PRIMARY_CONSOLE.value.nil?

@@ -15,6 +15,7 @@ module AE
        ui.rb
        version.rb
     ).each{ |file| require(File.join(PATH, file)) }
+    require "delegate"
 
     # Constants
     self::TRANSLATE = Translate.new('console.strings') unless defined?(self::TRANSLATE)
@@ -94,6 +95,46 @@ module AE
     # In order to get the original caller, we need to detect which calls come from subclasses.
     self::IGNORED_CONSOLE_SUBCLASSERS = [/testup[\/\\]console\.rb/] unless defined?(self::IGNORED_CONSOLE_SUBCLASSERS)
 
+    class SketchupConsoleStdoutDelegator < SimpleDelegator
+
+      def write(*args)
+        # For write/puts, provide only the direct caller (script file), 
+        # not the complete backtrace.
+        # Ignore callers that are subclasses or intercepters of the console itself.
+        _caller = [caller.find{ |s| IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
+        PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless PRIMARY_CONSOLE.value.nil?
+        # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
+        # sends two arguments (string, "\n") or separate method invocations depending on arity.
+        args.each{ |arg| __getobj__.write(arg) }
+      end
+
+      def is_a?(cls)
+        return (self.class < cls) || (__getobj__.is_a?(cls))
+      end
+
+    end # class SketchupConsoleStdoutDelegator
+
+    class SketchupConsoleStderrDelegator < SimpleDelegator
+
+      def write(*args)
+        unless PRIMARY_CONSOLE.value.nil?
+          if args.first && args.first[/warning/i]
+            PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
+          else
+            PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
+          end
+        end
+        # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
+        # sends two arguments (string, "\n") or separate method invocations depending on arity.
+        args.each{ |arg| __getobj__.write(arg) }
+      end
+
+      def is_a?(cls)
+        return (self.class < cls) || (__getobj__.is_a?(cls))
+      end
+
+    end # class SketchupConsoleStderrDelegator
+
     def self.initialize_plugin
       # Load settings
       @@settings ||= Settings.new('AE/Console').load({
@@ -110,33 +151,14 @@ module AE
       # Consoles
       @@consoles ||= []
       # Observe output of STDOUT and STDERR (#<Sketchup::Console>).
+      # In order to reduce the risk of breaking any other plugins, we try to:
+      # - replace the built-in SketchUp console only during the time while this plugin is actively used, and undo all changes afterward.
+      # - imitate its behavior as closely as possible. Originally, a subclass of Sketchup::Console which inherits all methods and behavior
+      #   and also passes `is_a?` checks if another plugin uses that. Since SketchUp 2024, instantiation is not allowed anymore.
+      #   As an alternative, we use a delegator but this would not necessarily pass is_a? checks
       # Therefore replace the original stdout (SKETCHUP_CONSOLE) by a modified subclass.
-      @@stdout_redirecter ||= ObjectReplacer.new('$stdout', Class.new($stdout.class){
-        def write(*args)
-          # For write/puts, provide only the direct caller (script file), 
-          # not the complete backtrace.
-          # Ignore callers that are subclasses or intercepters of the console itself.
-          _caller = [caller.find{ |s| IGNORED_CONSOLE_SUBCLASSERS.none?{ |r| s[r] } }]
-          PRIMARY_CONSOLE.value.print(*args, :backtrace => _caller) unless PRIMARY_CONSOLE.value.nil?
-          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
-          # sends two arguments (string, "\n") or separate method invocations depending on arity.
-          args.each{ |arg| super(arg) }
-        end
-      }.new)
-      @@stderr_redirecter ||= ObjectReplacer.new('$stderr', Class.new($stderr.class){
-        def write(*args)
-          unless PRIMARY_CONSOLE.value.nil?
-            if args.first && args.first[/warning/i]
-              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
-            else
-              PRIMARY_CONSOLE.value.warn(*args, :backtrace => caller)
-            end
-          end
-          # Sketchup::Console supports only one argument, where as Ruby Kernel.puts
-          # sends two arguments (string, "\n") or separate method invocations depending on arity.
-          args.each{ |arg| super(arg) }
-        end
-      }.new)
+      @@stdout_redirecter ||= ObjectReplacer.new('$stdout', SketchupConsoleStdoutDelegator.new($stdout))
+      @@stderr_redirecter ||= ObjectReplacer.new('$stderr', SketchupConsoleStderrDelegator.new($stderr))
       # Eval and $stderr do not catch script errors (why?), but global variable `$!` does.
       @@script_error_catcher ||= Proc.new{
         unless PRIMARY_CONSOLE.value.nil?

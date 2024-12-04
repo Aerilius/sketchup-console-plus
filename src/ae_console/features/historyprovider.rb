@@ -39,14 +39,19 @@ module AE
         SEPARATOR_STRING = "\n###SEPARATOR###\n" unless defined?(self::SEPARATOR_STRING)
         SEPARATOR_REGEXP = /\n(?:###SEPARATOR###|SEPARATOR_TO_BE_DETERMINED)\n/ unless defined?(self::SEPARATOR_REGEXP)
 
+        def self.create_instance_finalizer(instance_id)
+          # The finalizer receives a Ruby object ID, but we need the instance variable @id.
+          # If we create the finalizer inside of an instance method, it would illegally reference
+          # the instance to be deleted. For this reason, we create the fnalizer in a class method.
+          return Proc.new{ |object_id| @@instances.delete(instance_id) }
+        end
+
         def initialize
           # Create the smallest unique id.
           @id = 0
           @id += 1 while @@instances.include?(@id)
           @@instances.push(@id)
-          ObjectSpace.define_finalizer(self, Proc.new{ |id|
-            @@instances.delete(@id)
-          })
+          ObjectSpace.define_finalizer(self, self.class.create_instance_finalizer(@id))
           # The data object.
           @data = []
           Dir.mkdir(DATA_DIR) unless File.directory?(DATA_DIR)

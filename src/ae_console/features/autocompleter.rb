@@ -75,11 +75,15 @@ module AE
             nesting << Object # class of <main>
             nesting.reverse.each_with_index{ |modul, index_from_inside|
               completions.concat(modul.constants.grep(prefix_regexp).map{ |name|
-                return_value = modul.const_get(name)
+                begin
+                  return_value = modul.const_get(name)
+                rescue RuntimeError => e
+                  next
+                end
                 type = (return_value.is_a?(Class)) ? :class : (return_value.is_a?(Module)) ? :module : :constant
                 inherited = index_from_inside
                 TokenClassification.new(name, type, (modul != ::Object) ? modul.name : nil, inherited)
-              })
+              }.compact)
             }
           when GLOBAL_VARIABLE
             completions.concat(Kernel.global_variables.grep(prefix_regexp).map{ |name|

@@ -1,0 +1,61 @@
+name: Release SketchUp extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build_sketchup_extension:
+    name: Build SketchUp extension rbz package
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+
+    - name: Install dependencies
+      run: bundle install
+
+    - name: Build package
+      run: bundle exec rake build_rbz
+
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ae_console*.rbz
+
+    - name: Add package to release
+      uses: actions/github-script@v7
+      env:
+        path: ae_console*.rbz
+      with:
+        script: |
+          // From https://til.simonwillison.net/github-actions/attach-generated-file-to-release
+          const fs = require('fs')
+          const path = require('path')
+          // Resolve any wildcards with glob (by default included from @actions/glob)
+          const globber = await glob.create(process.env.path)
+          const assetPath = (await globber.glob())[0]
+          // Create a release for this tag
+          const tag = context.ref.replace('refs/tags/', '')
+          console.log(`tag: ${tag}`)
+          const release = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: tag,
+            name: tag
+          })
+          // Upload the release asset
+          await github.rest.repos.uploadReleaseAsset({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: release.data.id,
+            name: path.basename(assetPath),
+            data: await fs.readFileSync(assetPath)
+          })

@@ -8,6 +8,7 @@
 /pkg/
 /spec/reports/
 /.bundle/
+/vendor/
 
 # Platform-specific files
 Thumbs.db

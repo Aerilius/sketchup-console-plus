@@ -18,7 +18,7 @@ It lets you open multiple independent instances of the console and remembers the
 
 ## Usage
 
-(Menu) `Window → Ruby Console+`
+Menu: <kbd>Window</kbd> → <kbd>Ruby Console+</kbd>
 
 There are two modes (<kbd>Ctrl</kbd>-<kbd>Tab ↹</kbd>):
 
@@ -55,6 +55,8 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Aerili
 ## Development
 
 You can find [documentation in the docs](./docs/README.md) folder.
+
+This project requires `ruby`, `ruby-bundler` and `npm`.
 
 First, run `bundle install` to install requirements.
 

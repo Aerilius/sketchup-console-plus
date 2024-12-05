@@ -62,7 +62,7 @@ module AE
             :dialog_title    => TRANSLATE['Welcome to Ruby Console+'],
             :scrollable      => false,
             :resizable       => true,
-            :width           => 520,
+            :width           => 560,
             :height          => 240,
         }
         if defined?(UI::HtmlDialog)

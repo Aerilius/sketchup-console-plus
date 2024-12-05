@@ -11,6 +11,7 @@ module AE
         @observers        = {}
         @timer            = nil
         @interval         = (interval.is_a?(Numeric) && interval > 0) ? interval : 2 # in seconds
+        @paused_paths     = []
       end
 
       # Register a handler to do something on an event on a specific file.
@@ -33,6 +34,13 @@ module AE
         if exists
           @observers[path][:mtime] = File.stat(path).mtime.to_i
         end
+      end
+
+      # Ignore the next change for this file (and expected change)
+      # After the next interval, the subsequent changes will be considered again.
+      # @param  [String] path  The path of a registered file
+      def ignore_change(path)
+        @paused_paths << path
       end
 
       # Unregister a handler.
@@ -64,6 +72,7 @@ module AE
 
       def check_files
         @observers.each { |path, hash|
+          next if @paused_paths.include?(path)
           begin
             exists = File.exist?(path)
             mtime = nil
@@ -89,6 +98,7 @@ module AE
             hash[:mtime]  = mtime unless mtime.nil?
           end
         }
+        @paused_paths.clear
       end
 
     end # class FileObserver

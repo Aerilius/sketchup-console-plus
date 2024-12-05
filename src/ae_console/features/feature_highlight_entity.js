@@ -78,6 +78,7 @@ requirejs(['app', 'bridge', 'ace/ace'], function (app, Bridge, ace) {
                 $element.off('mouseover');
                 $element.off('mouseout');
                 if (newStringRepresentation) {
+                  // Change the displayed text, for example to "#<DeletedEntity ...>
                   $element.text(newStringRepresentation);
                 }
             });

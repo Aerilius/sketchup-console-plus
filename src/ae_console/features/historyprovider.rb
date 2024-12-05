@@ -47,6 +47,14 @@ module AE
         end
 
         def initialize
+          @base_dir = File.join(File.dirname(__FILE__), 'history')
+
+          # Capture necessary data in local variables
+          base_dir = @base_dir
+
+          # Define the finalizer without referencing 'self'
+          ObjectSpace.define_finalizer(self, self.class.finalize(base_dir))
+
           # Create the smallest unique id.
           @id = 0
           @id += 1 while @@instances.include?(@id)
@@ -58,6 +66,20 @@ module AE
           # Try to load stored data.
           @path = File.join(DATA_DIR, "history#{@id}.txt")
           read()
+        end
+
+        def self.finalize(base_dir)
+          proc {
+            # Perform cleanup using 'base_dir'
+            # Avoid referencing 'self' or instance variables here
+            begin
+              # Example cleanup code
+              Dir.delete(base_dir) if Dir.exist?(base_dir)
+            rescue => e
+              # Handle exceptions if necessary
+              warn "Finalizer error: #{e.message}"
+            end
+          }
         end
 
         def push(arg)

@@ -56,6 +56,8 @@ module AE
       return console
     end
 
+    public_class_method :open # Change to public
+
     # Close all consoles.
     def self.close
       @@consoles.each{ |instance| instance.close }
@@ -73,7 +75,7 @@ module AE
         else
           $stderr.write(args.first + $/)
           if args[1].is_a?(Hash) && args[1][:backtrace]
-            $stderr.write(args[1][:backtrace].join($/) + $/)
+            $stderr.write(args[1][:backtrace].join($/))
           end
         end
       else
